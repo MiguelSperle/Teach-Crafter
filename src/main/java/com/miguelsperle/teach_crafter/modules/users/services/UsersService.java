@@ -1,10 +1,12 @@
 package com.miguelsperle.teach_crafter.modules.users.services;
 
 import com.miguelsperle.teach_crafter.modules.users.dtos.CreateUserDTO;
-import com.miguelsperle.teach_crafter.modules.users.entity.UsersEntity;
-import com.miguelsperle.teach_crafter.modules.users.entity.exceptions.UserAlreadyExistsException;
+import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
+import com.miguelsperle.teach_crafter.modules.users.entities.exceptions.UserAlreadyExistsException;
 import com.miguelsperle.teach_crafter.modules.users.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,16 @@ import java.util.Optional;
 public class UsersService {
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
+
+    public UsersEntity getUserAuthenticated() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            return (UsersEntity) authentication.getPrincipal();
+        }
+
+        return null;
+    }
 
     public void createUser(CreateUserDTO createUserDTO){
         UsersEntity newUser = new UsersEntity();

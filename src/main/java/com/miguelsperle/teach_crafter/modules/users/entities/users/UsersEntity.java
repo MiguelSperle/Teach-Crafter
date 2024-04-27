@@ -1,4 +1,4 @@
-package com.miguelsperle.teach_crafter.modules.users.entity;
+package com.miguelsperle.teach_crafter.modules.users.entities.users;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -3,7 +3,7 @@ package com.miguelsperle.teach_crafter.infra.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.miguelsperle.teach_crafter.modules.users.entity.UsersEntity;
+import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.auth0.jwt.algorithms.Algorithm;

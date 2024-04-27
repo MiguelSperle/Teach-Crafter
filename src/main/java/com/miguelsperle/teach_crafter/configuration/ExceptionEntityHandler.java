@@ -1,7 +1,8 @@
 package com.miguelsperle.teach_crafter.configuration;
 
 import com.miguelsperle.teach_crafter.dtos.general.MessageResponseDTO;
-import com.miguelsperle.teach_crafter.modules.users.entity.exceptions.UserAlreadyExistsException;
+import com.miguelsperle.teach_crafter.modules.users.entities.exceptions.PasswordNotMatchUsersException;
+import com.miguelsperle.teach_crafter.modules.users.entities.exceptions.UserAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,8 +18,11 @@ public class ExceptionEntityHandler {
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<Object> handleUserNotFound(UsernameNotFoundException exceptions){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponseDTO(exceptions.getMessage(), HttpStatus.NOT_FOUND.value()));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponseDTO(exceptions.getMessage(), HttpStatus.UNAUTHORIZED.value()));
     }
 
-
+    @ExceptionHandler(PasswordNotMatchUsersException.class)
+    public ResponseEntity<Object> handlePasswordNotMatchUsers(PasswordNotMatchUsersException exceptions){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponseDTO(exceptions.getMessage(), HttpStatus.UNAUTHORIZED.value()));
+    }
 }

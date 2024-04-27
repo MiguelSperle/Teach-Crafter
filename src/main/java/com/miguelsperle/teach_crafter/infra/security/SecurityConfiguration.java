@@ -33,6 +33,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 .requestMatchers("/users/register").permitAll()
+                                .requestMatchers("/auth/login").permitAll()
+                                .requestMatchers("/courses/create").hasRole("CREATOR")
                                 .anyRequest().authenticated())
                 .httpBasic(basic -> basic.authenticationEntryPoint(authenticationEntryPoint))
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
