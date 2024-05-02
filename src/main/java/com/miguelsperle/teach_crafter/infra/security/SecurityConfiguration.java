@@ -34,6 +34,8 @@ public class SecurityConfiguration {
                         authorize
                                 .requestMatchers("/users/register").permitAll()
                                 .requestMatchers("/auth/login").permitAll()
+                                .requestMatchers("/reset-password/send-email").permitAll()
+                                .requestMatchers("/reset-password").permitAll()
                                 .requestMatchers("/courses/create").hasRole("CREATOR")
                                 .anyRequest().authenticated())
                 .httpBasic(basic -> basic.authenticationEntryPoint(authenticationEntryPoint))

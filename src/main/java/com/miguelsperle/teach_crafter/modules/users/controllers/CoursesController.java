@@ -1,7 +1,7 @@
 package com.miguelsperle.teach_crafter.modules.users.controllers;
 
 import com.miguelsperle.teach_crafter.dtos.general.MessageResponseDTO;
-import com.miguelsperle.teach_crafter.modules.users.dtos.CreateCourseDTO;
+import com.miguelsperle.teach_crafter.modules.users.dtos.courses.CreateCourseDTO;
 import com.miguelsperle.teach_crafter.modules.users.services.CoursesService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

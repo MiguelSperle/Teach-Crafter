@@ -1,8 +1,8 @@
 package com.miguelsperle.teach_crafter.modules.users.services;
 
-import com.miguelsperle.teach_crafter.modules.users.dtos.CreateCourseDTO;
+import com.miguelsperle.teach_crafter.modules.users.dtos.courses.CreateCourseDTO;
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.CoursesEntity;
-import com.miguelsperle.teach_crafter.modules.users.repository.CoursesRepository;
+import com.miguelsperle.teach_crafter.modules.users.repositories.CoursesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

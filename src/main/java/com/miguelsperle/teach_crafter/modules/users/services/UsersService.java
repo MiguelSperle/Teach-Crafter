@@ -1,12 +1,13 @@
 package com.miguelsperle.teach_crafter.modules.users.services;
 
-import com.miguelsperle.teach_crafter.modules.users.dtos.CreateUserDTO;
+import com.miguelsperle.teach_crafter.modules.users.dtos.users.*;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
-import com.miguelsperle.teach_crafter.modules.users.entities.exceptions.UserAlreadyExistsException;
-import com.miguelsperle.teach_crafter.modules.users.repository.UsersRepository;
+import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserAlreadyExistsException;
+import com.miguelsperle.teach_crafter.modules.users.repositories.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -45,13 +46,69 @@ public class UsersService {
         this.usersRepository.save(newUser);
     }
 
-    public Optional<UsersEntity> getUserByUsernameOrEmail(String username, String email){
+    private Optional<UsersEntity> getUserByUsernameOrEmail(String username, String email){
         return this.usersRepository.findByUsernameOrEmail(username,email);
+    }
+
+    public Optional<UsersEntity> getUserByEmail(String email){
+        return this.usersRepository.findByEmail(email);
+    }
+
+    private Optional<UsersEntity> getUserByUsername(String username){
+        return this.usersRepository.findByUsername(username);
+    }
+
+    public UsersEntity getUserById(String id){
+        return this.usersRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     private void verificationAlreadyExistsUser(String username, String email){
         Optional<UsersEntity> user = this.getUserByUsernameOrEmail(username, email);
 
         if(user.isPresent()) throw new UserAlreadyExistsException("User already exists");
+    }
+
+    public void updateNameUser(UpdateNameUserDTO updateNameUserDTO){
+        UsersEntity loggedUser = this.getUserAuthenticated();
+
+        loggedUser.setName(updateNameUserDTO.newName());
+
+        this.usersRepository.save(loggedUser);
+    }
+
+    public void updateUsernameUser(UpdateUsernameUserDTO updateUsernameUserDTO){
+        UsersEntity loggedUser = this.getUserAuthenticated();
+
+        this.verificationAlreadyExistsUserByNewUsername(updateUsernameUserDTO.newUsername());
+
+        loggedUser.setUsername(updateUsernameUserDTO.newUsername());
+
+        this.usersRepository.save(loggedUser);
+    }
+
+    private void verificationAlreadyExistsUserByNewUsername(String username){
+        Optional<UsersEntity> user = this.getUserByUsername(username);
+
+        if(user.isPresent()) throw new UserAlreadyExistsException("This username is already used");
+    }
+
+    public void updateEmailUser(UpdateEmailUserDTO updateEmailUserDTO){
+        UsersEntity loggedUser = this.getUserAuthenticated();
+
+        this.verificationAlreadyExistsUserByNewEmail(updateEmailUserDTO.newEmail());
+
+        loggedUser.setEmail(updateEmailUserDTO.newEmail());
+
+        this.usersRepository.save(loggedUser);
+    }
+
+    private void verificationAlreadyExistsUserByNewEmail(String email){
+        Optional<UsersEntity> user = this.getUserByEmail(email);
+
+        if(user.isPresent()) throw new UserAlreadyExistsException("This email is already used");
+    }
+
+    public void save(UsersEntity user){
+        this.usersRepository.save(user);
     }
 }

@@ -1,10 +1,10 @@
 package com.miguelsperle.teach_crafter.modules.users.services;
 
 import com.miguelsperle.teach_crafter.infra.security.TokenService;
-import com.miguelsperle.teach_crafter.modules.users.dtos.auth.AuthorizationUsersDTO;
+import com.miguelsperle.teach_crafter.modules.users.dtos.authorization.AuthorizationUsersDTO;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
-import com.miguelsperle.teach_crafter.modules.users.entities.exceptions.PasswordNotMatchUsersException;
-import com.miguelsperle.teach_crafter.modules.users.repository.UsersRepository;
+import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.PasswordNotMatchUserException;
+import com.miguelsperle.teach_crafter.modules.users.repositories.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +29,6 @@ public class AuthorizationUsersService {
     private void verificationPasswordMatch(String passwordSender, String currentPassword){
         boolean passwordMatches = this.passwordEncoder.matches(passwordSender, currentPassword);
 
-        if(!passwordMatches) throw new PasswordNotMatchUsersException("Email/password incorrect");
+        if(!passwordMatches) throw new PasswordNotMatchUserException("Email/password incorrect");
     }
 }

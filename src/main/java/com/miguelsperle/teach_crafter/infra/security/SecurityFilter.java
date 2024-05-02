@@ -1,7 +1,7 @@
 package com.miguelsperle.teach_crafter.infra.security;
 
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
-import com.miguelsperle.teach_crafter.modules.users.repository.UsersRepository;
+import com.miguelsperle.teach_crafter.modules.users.repositories.UsersRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

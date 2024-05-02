@@ -1,4 +1,4 @@
-package com.miguelsperle.teach_crafter.modules.users.dtos;
+package com.miguelsperle.teach_crafter.modules.users.dtos.courses;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

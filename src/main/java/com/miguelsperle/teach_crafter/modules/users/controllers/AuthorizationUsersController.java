@@ -1,8 +1,8 @@
 package com.miguelsperle.teach_crafter.modules.users.controllers;
 
 import com.miguelsperle.teach_crafter.dtos.general.MessageResponseDTO;
-import com.miguelsperle.teach_crafter.modules.users.dtos.auth.AuthorizationResponseDTO;
-import com.miguelsperle.teach_crafter.modules.users.dtos.auth.AuthorizationUsersDTO;
+import com.miguelsperle.teach_crafter.modules.users.dtos.authorization.AuthorizationResponseDTO;
+import com.miguelsperle.teach_crafter.modules.users.dtos.authorization.AuthorizationUsersDTO;
 import com.miguelsperle.teach_crafter.modules.users.services.AuthorizationUsersService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.miguelsperle.teach_crafter.modules.users.repository;
+package com.miguelsperle.teach_crafter.modules.users.repositories;
 
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,4 +9,6 @@ public interface UsersRepository extends JpaRepository<UsersEntity, String> {
     Optional<UsersEntity> findByUsernameOrEmail(String username, String email);
 
     Optional<UsersEntity> findByEmail(String email);
+
+    Optional<UsersEntity> findByUsername(String username);
 }
