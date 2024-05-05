@@ -40,7 +40,7 @@ public class EmailSenderService {
 
             javaMailSender.send(message);
         } catch (MessagingException exception) {
-            System.out.println("Failed to send email: " + exception.getMessage());
+            throw new RuntimeException("Failed to send email", exception);
         }
     }
 }

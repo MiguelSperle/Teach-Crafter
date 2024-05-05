@@ -1,12 +1,13 @@
 package com.miguelsperle.teach_crafter.modules.users.services;
 
 import com.miguelsperle.teach_crafter.modules.users.dtos.passwordResetToken.CreatePasswordResetTokenDTO;
-import com.miguelsperle.teach_crafter.modules.users.dtos.users.UpdatePasswordUserNotLoggedDTO;
+import com.miguelsperle.teach_crafter.modules.users.dtos.passwordResetToken.ResetPasswordUserNotLoggedDTO;
 import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.PasswordResetTokenEntity;
-import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.exceptions.MakeTheProcessAgainException;
+import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.exceptions.ActivePasswordResetTokenException;
+import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.exceptions.ExpiredPasswordResetTokenException;
 import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.exceptions.PasswordResetTokenNotFoundException;
-import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.exceptions.PasswordResetTokenRecoveryIsNotExpiredException;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
+import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserNotFoundException;
 import com.miguelsperle.teach_crafter.modules.users.repositories.PasswordResetTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -44,23 +45,32 @@ public class PasswordResetTokenService {
         this.passwordResetTokenRepository.save(newPasswordResetToken);
     }
 
-    private void verificationAlreadyExistsPasswordResetToken(String email){
-        UsersEntity user = this.usersService.getUserByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    private void verificationAlreadyExistsPasswordResetToken(String email) {
+        UsersEntity user = this.usersService.getUserByEmail(email).orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Optional<PasswordResetTokenEntity> passwordResetToken = this.passwordResetTokenRepository.findByUsersEntityId(user.getId());
 
-         if(passwordResetToken.isPresent()){
-             Date now = new Date();
+        if (passwordResetToken.isPresent()) {
+            if (this.isPasswordResetTokenExpired(passwordResetToken.get())) {
+                this.deleteExpiredPasswordResetToken(passwordResetToken.get());
+            } else {
+                this.sendPasswordResetTokenEmail(user, passwordResetToken.get());
+                throw new ActivePasswordResetTokenException("You have an active password reset token. Please verify your email to continue with password recovery.");
+            }
+        }
+    }
 
-             boolean passwordResetTokenExpired = now.after(passwordResetToken.get().getExpiresIn());
+    private void sendPasswordResetTokenEmail(UsersEntity user, PasswordResetTokenEntity passwordResetToken) {
+        this.emailSenderService.sendSimpleMessage(user.getEmail(), "Recuperação de senha", passwordResetToken.getToken());
+    }
 
-             if(passwordResetTokenExpired){
-                 this.passwordResetTokenRepository.deleteById(passwordResetToken.get().getId());
-             } else {
-                 this.emailSenderService.sendSimpleMessage(user.getEmail(), "Recuperação de senha", passwordResetToken.get().getToken());
-                 throw new PasswordResetTokenRecoveryIsNotExpiredException("The token still is not expired");
-             }
-         }
+    private void deleteExpiredPasswordResetToken(PasswordResetTokenEntity passwordResetToken) {
+        this.passwordResetTokenRepository.deleteById(passwordResetToken.getId());
+    }
+
+    private boolean isPasswordResetTokenExpired(PasswordResetTokenEntity passwordResetToken) {
+        Date now = new Date();
+        return now.after(passwordResetToken.getExpiresIn());
     }
 
     private Date genExpirationDate() {
@@ -82,31 +92,27 @@ public class PasswordResetTokenService {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes); // 32 characters
     }
 
-    public PasswordResetTokenEntity getPasswordResetTokenByToken(String token){
+    private PasswordResetTokenEntity getPasswordResetTokenByToken(String token){
         return this.passwordResetTokenRepository.findByToken(token).orElseThrow(() -> new PasswordResetTokenNotFoundException("Password reset token not found"));
     }
 
-    public void updatePasswordUserNotLogged(UpdatePasswordUserNotLoggedDTO updatePasswordUserNotLoggedDTO){
-        PasswordResetTokenEntity passwordResetToken = this.getPasswordResetTokenByToken(updatePasswordUserNotLoggedDTO.token());
+    public void resetPasswordUserNotLogged(ResetPasswordUserNotLoggedDTO resetPasswordUserNotLoggedDTO){
+        PasswordResetTokenEntity passwordResetToken = this.getPasswordResetTokenByToken(resetPasswordUserNotLoggedDTO.token());
 
-        this.verificationPasswordResetTokenExpired(passwordResetToken.getId(), passwordResetToken.getExpiresIn());
+        this.verificationExpiredPasswordResetToken(passwordResetToken);
 
         UsersEntity user = this.usersService.getUserById(passwordResetToken.getUsersEntity().getId());
 
-        user.setPassword(passwordEncoder.encode(updatePasswordUserNotLoggedDTO.newPassword()));
-        this.passwordResetTokenRepository.deleteById(passwordResetToken.getId());
+        user.setPassword(passwordEncoder.encode(resetPasswordUserNotLoggedDTO.newPassword()));
+        this.deleteExpiredPasswordResetToken(passwordResetToken);
 
         this.usersService.save(user);
     }
 
-    private void verificationPasswordResetTokenExpired(String id, Date expiresIn){
-        Date now = new Date();
-
-        boolean passwordResetTokenExpired = now.after(expiresIn);
-
-        if(passwordResetTokenExpired){
-            this.passwordResetTokenRepository.deleteById(id);
-            throw new MakeTheProcessAgainException("Make the process again");
+    private void verificationExpiredPasswordResetToken(PasswordResetTokenEntity passwordResetToken) {
+        if (this.isPasswordResetTokenExpired(passwordResetToken)) {
+            this.deleteExpiredPasswordResetToken(passwordResetToken);
+            throw new ExpiredPasswordResetTokenException("The password reset token has already expired. Please make the process again");
         }
     }
 }

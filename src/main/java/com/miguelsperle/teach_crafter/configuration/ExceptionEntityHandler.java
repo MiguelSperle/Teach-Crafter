@@ -1,11 +1,12 @@
 package com.miguelsperle.teach_crafter.configuration;
 
 import com.miguelsperle.teach_crafter.dtos.general.MessageResponseDTO;
-import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.exceptions.MakeTheProcessAgainException;
-import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.exceptions.PasswordResetTokenRecoveryIsNotExpiredException;
+import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.exceptions.ActivePasswordResetTokenException;
+import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.exceptions.ExpiredPasswordResetTokenException;
 import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.exceptions.PasswordResetTokenNotFoundException;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.PasswordNotMatchUserException;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserAlreadyExistsException;
+import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,8 +21,13 @@ public class ExceptionEntityHandler {
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<Object> handleUserNotFound(UsernameNotFoundException exception){
+    public ResponseEntity<Object> handleUsernameNotFound(UsernameNotFoundException exception){
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponseDTO(exception.getMessage(), HttpStatus.UNAUTHORIZED.value()));
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Object> handleUserNotFound(UserNotFoundException exception){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponseDTO(exception.getMessage(), HttpStatus.NOT_FOUND.value()));
     }
 
     @ExceptionHandler(PasswordNotMatchUserException.class)
@@ -34,13 +40,13 @@ public class ExceptionEntityHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponseDTO(exception.getMessage(), HttpStatus.NOT_FOUND.value()));
     }
 
-    @ExceptionHandler(MakeTheProcessAgainException.class)
-    public ResponseEntity<Object> handleMakeTheProcessAgain(MakeTheProcessAgainException exception){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponseDTO(exception.getMessage(), HttpStatus.BAD_REQUEST.value()));
+    @ExceptionHandler(ExpiredPasswordResetTokenException.class)
+    public ResponseEntity<Object> handleExpiredPasswordResetToken(ExpiredPasswordResetTokenException exception){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponseDTO(exception.getMessage(), HttpStatus.FORBIDDEN.value()));
     }
 
-    @ExceptionHandler(PasswordResetTokenRecoveryIsNotExpiredException.class)
-    public ResponseEntity<Object> handlePasswordResetTokenRecoveryIsNotExpired(PasswordResetTokenRecoveryIsNotExpiredException exception){
+    @ExceptionHandler(ActivePasswordResetTokenException.class) // TESTE
+    public ResponseEntity<Object> handleActivePasswordResetToken(ActivePasswordResetTokenException exception){
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponseDTO(exception.getMessage(), HttpStatus.CONFLICT.value()));
     }
 }
