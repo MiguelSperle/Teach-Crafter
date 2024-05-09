@@ -55,7 +55,7 @@ public class PasswordResetTokenService {
                 this.deleteExpiredPasswordResetToken(passwordResetToken.get());
             } else {
                 this.sendPasswordResetTokenEmail(user, passwordResetToken.get());
-                throw new ActivePasswordResetTokenException("You have an active password reset token. Please verify your email to continue with password recovery.");
+                throw new ActivePasswordResetTokenException("You have an active password reset token. Please check your email to continue with password recovery.");
             }
         }
     }
