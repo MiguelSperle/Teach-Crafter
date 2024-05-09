@@ -1,7 +1,6 @@
 package com.miguelsperle.teach_crafter.utils.mocks;
 
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
-import java.util.UUID;
 
 public class UsersEntityCreator {
     public static UsersEntity createValidUsersEntity(){

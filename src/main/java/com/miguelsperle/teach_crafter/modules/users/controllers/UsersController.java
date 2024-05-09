@@ -4,9 +4,9 @@ import com.miguelsperle.teach_crafter.dtos.general.MessageResponseDTO;
 import com.miguelsperle.teach_crafter.modules.users.dtos.cloudinary.UploadImageModelDTO;
 import com.miguelsperle.teach_crafter.modules.users.dtos.users.*;
 import com.miguelsperle.teach_crafter.modules.users.services.UsersService;
+import com.miguelsperle.teach_crafter.modules.users.services.RequestFieldValidationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -18,14 +18,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UsersController {
     private final UsersService usersService;
+    private final RequestFieldValidationService requestFieldValidationService;
 
     @PostMapping("/register")
     public ResponseEntity<Object> registerUser(@RequestBody @Valid CreateUserDTO createUserDTO, BindingResult bindingResult){
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(new MessageResponseDTO(String.valueOf(bindingResult.getAllErrors().stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                            .findFirst().get()), HttpStatus.BAD_REQUEST.value()));
-        }
+        this.requestFieldValidationService.validationErrors(bindingResult);
 
         this.usersService.createUser(createUserDTO);
 
@@ -37,11 +34,7 @@ public class UsersController {
 
     @PutMapping("/update-name")
     public ResponseEntity<Object> updateNameUser(@RequestBody @Valid UpdateNameUserDTO updateNameUserDTO, BindingResult bindingResult){
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(new MessageResponseDTO(String.valueOf(bindingResult.getAllErrors().stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .findFirst().get()), HttpStatus.BAD_REQUEST.value()));
-        }
+        this.requestFieldValidationService.validationErrors(bindingResult);
 
         this.usersService.updateNameUser(updateNameUserDTO);
 
@@ -51,11 +44,7 @@ public class UsersController {
 
     @PutMapping("/update-username")
     public ResponseEntity<Object> updateUsernameUser(@RequestBody @Valid UpdateUsernameUserDTO updateUsernameUserDTO, BindingResult bindingResult){
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(new MessageResponseDTO(String.valueOf(bindingResult.getAllErrors().stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .findFirst().get()), HttpStatus.BAD_REQUEST.value()));
-        }
+        this.requestFieldValidationService.validationErrors(bindingResult);
 
         this.usersService.updateUsernameUser(updateUsernameUserDTO);
 
@@ -65,11 +54,7 @@ public class UsersController {
 
     @PutMapping("/update-email")
     public ResponseEntity<Object> updateEmailUser(@RequestBody @Valid UpdateEmailUserDTO updateEmailUserDTO, BindingResult bindingResult){
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(new MessageResponseDTO(String.valueOf(bindingResult.getAllErrors().stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .findFirst().get()), HttpStatus.BAD_REQUEST.value()));
-        }
+        this.requestFieldValidationService.validationErrors(bindingResult);
 
         this.usersService.updateEmailUser(updateEmailUserDTO);
 
@@ -79,11 +64,7 @@ public class UsersController {
 
     @PutMapping("/update-password")
     public ResponseEntity<Object> updatePasswordUserLogged(@RequestBody @Valid UpdatePasswordUserLoggedDTO updatePasswordUserLoggedDTO, BindingResult bindingResult){
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(new MessageResponseDTO(String.valueOf(bindingResult.getAllErrors().stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .findFirst().get()), HttpStatus.BAD_REQUEST.value()));
-        }
+        this.requestFieldValidationService.validationErrors(bindingResult);
 
         this.usersService.updatePasswordUserLogged(updatePasswordUserLoggedDTO);
 
@@ -93,11 +74,7 @@ public class UsersController {
 
     @PutMapping("/update-image")
     public ResponseEntity<Object> updateImageUser(@Valid UploadImageModelDTO uploadImageModelDTO, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(new MessageResponseDTO(String.valueOf(bindingResult.getAllErrors().stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .findFirst().get()), HttpStatus.BAD_REQUEST.value()));
-        }
+        this.requestFieldValidationService.validationErrors(bindingResult);
 
         this.usersService.updateImageUser(uploadImageModelDTO);
 

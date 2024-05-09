@@ -1,12 +1,12 @@
 package com.miguelsperle.teach_crafter.modules.users.controllers;
 
-import com.miguelsperle.teach_crafter.dtos.general.MessageResponseDTO;
+
 import com.miguelsperle.teach_crafter.modules.users.dtos.authorization.AuthorizationResponseDTO;
 import com.miguelsperle.teach_crafter.modules.users.dtos.authorization.AuthorizationUsersDTO;
 import com.miguelsperle.teach_crafter.modules.users.services.AuthorizationUsersService;
+import com.miguelsperle.teach_crafter.modules.users.services.RequestFieldValidationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -20,13 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthorizationUsersController {
     private final AuthorizationUsersService authorizationUsersService;
+    private final RequestFieldValidationService requestFieldValidationService;
     @PostMapping("/login")
     public ResponseEntity<Object> authorizationUsers(@RequestBody @Valid AuthorizationUsersDTO authorizationUsersDTO, BindingResult bindingResult){
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(new MessageResponseDTO(String.valueOf(bindingResult.getAllErrors().stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .findFirst().get()), HttpStatus.BAD_REQUEST.value()));
-        }
+        this.requestFieldValidationService.validationErrors(bindingResult);
 
         String token = this.authorizationUsersService.authorizationUsers(authorizationUsersDTO);
 
