@@ -126,7 +126,7 @@ public class UsersService {
 
         this.verificationPasswordMatch(updatePasswordUserLoggedDTO.currentPassword(), loggedUser.getPassword());
 
-        loggedUser.setPassword(passwordEncoder.encode(updatePasswordUserLoggedDTO.newPassword()));
+        loggedUser.setPassword(this.passwordEncoder.encode(updatePasswordUserLoggedDTO.newPassword()));
 
         this.usersRepository.save(loggedUser);
     }
