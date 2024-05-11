@@ -134,7 +134,7 @@ public class UsersService {
     public void updateImageUser(UploadImageModelDTO uploadImageModelDTO) {
         UsersEntity loggedUser = this.getUserAuthenticated();
 
-        loggedUser.setAvatar(cloudinaryService.uploadFile(uploadImageModelDTO.file(), "profile_pics"));
+        loggedUser.setAvatar(this.cloudinaryService.uploadFile(uploadImageModelDTO.file(), "profile_pics"));
 
         this.usersRepository.save(loggedUser);
     }

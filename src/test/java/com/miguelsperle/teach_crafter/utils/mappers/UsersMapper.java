@@ -23,15 +23,15 @@ public class UsersMapper {
         return new UpdateNameUserDTO(usersEntity.getName());
     }
 
-    public static UpdateUsernameUserDTO toConvertUpdateUsernameUserDTO(UsersEntity usersEntity){
-        return new UpdateUsernameUserDTO(usersEntity.getUsername(), null);
+    public static UpdateUsernameUserDTO toConvertUpdateUsernameUserDTO(UsersEntity usersEntity, String currentPassword){
+        return new UpdateUsernameUserDTO(usersEntity.getUsername(), currentPassword);
     }
 
-    public static UpdateEmailUserDTO toConvertUpdateEmailUserDTO(UsersEntity usersEntity){
-        return new UpdateEmailUserDTO(usersEntity.getEmail(), null);
+    public static UpdateEmailUserDTO toConvertUpdateEmailUserDTO(UsersEntity usersEntity, String currentPassword){
+        return new UpdateEmailUserDTO(usersEntity.getEmail(), currentPassword);
     }
 
-    public static UpdatePasswordUserLoggedDTO toConvertUpdatePasswordUserLoggedDTO(UsersEntity usersEntity){
-        return new UpdatePasswordUserLoggedDTO(usersEntity.getPassword(), null);
+    public static UpdatePasswordUserLoggedDTO toConvertUpdatePasswordUserLoggedDTO(UsersEntity usersEntity, String currentPassword){
+        return new UpdatePasswordUserLoggedDTO(usersEntity.getPassword(), currentPassword);
     }
 }

@@ -1,7 +1,7 @@
 package com.miguelsperle.teach_crafter.configuration;
 
-import com.miguelsperle.teach_crafter.configuration.exceptions.general.MissingFieldException;
 import com.miguelsperle.teach_crafter.dtos.general.MessageResponseDTO;
+import com.miguelsperle.teach_crafter.exceptions.general.MissingFieldException;
 import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.exceptions.ActivePasswordResetTokenException;
 import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.exceptions.ExpiredPasswordResetTokenException;
 import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.exceptions.PasswordResetTokenNotFoundException;

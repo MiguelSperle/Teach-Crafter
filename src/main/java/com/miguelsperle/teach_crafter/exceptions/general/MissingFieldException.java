@@ -1,4 +1,4 @@
-package com.miguelsperle.teach_crafter.configuration.exceptions.general;
+package com.miguelsperle.teach_crafter.exceptions.general;
 
 public class MissingFieldException extends RuntimeException {
     public MissingFieldException(String message){

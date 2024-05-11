@@ -1,6 +1,6 @@
 package com.miguelsperle.teach_crafter.modules.users.services;
 
-import com.miguelsperle.teach_crafter.configuration.exceptions.general.MissingFieldException;
+import com.miguelsperle.teach_crafter.exceptions.general.MissingFieldException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;

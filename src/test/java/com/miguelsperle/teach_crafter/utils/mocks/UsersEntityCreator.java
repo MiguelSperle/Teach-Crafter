@@ -3,7 +3,7 @@ package com.miguelsperle.teach_crafter.utils.mocks;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 
 public class UsersEntityCreator {
-    public static UsersEntity createValidUsersEntity(){
+    public static UsersEntity createValidAuthenticatedUsersEntity(){
         return UsersEntity
                 .builder()
                 .id("1")
@@ -11,6 +11,19 @@ public class UsersEntityCreator {
                 .email("james123@gmail.com")
                 .username("james_captain")
                 .password("$2bç02$Zn5ue7Tl1Mg/SQ7vpIAI8OeNNv3l.UWwF2t7A.cRw3ZQftEil7FZG") // test12345
+                .avatar("default_profile_picture_url_when_the_user_register")
+                .build();
+    }
+
+    public static UsersEntity createSecondValidUsersEntity(){
+        return UsersEntity
+                .builder()
+                .id("2")
+                .name("Jayson")
+                .email("jayson@gmail.com")
+                .username("jayson_tatum")
+                .password("$c33e29fc98a4d5n329fas292c8a4930739a17f8f39c7b415f2471b15770158") // test1234567
+                .avatar("default_profile_picture_url_when_the_user_register")
                 .build();
     }
 
@@ -32,21 +45,21 @@ public class UsersEntityCreator {
     public static UsersEntity createUsersEntityToUpdateName() {
         return UsersEntity
                 .builder()
-                .name("LebronJames")
+                .name("Lebron")
                 .build();
     }
 
     public static UsersEntity createUsersEntityToUpdateUsername(){
         return UsersEntity
                 .builder()
-                .username("james_rossy")
+                .username("jayson_tatum")
                 .build();
     }
 
     public static UsersEntity createUsersEntityToUpdateEmail(){
         return UsersEntity
                 .builder()
-                .email("lebronjames123@gmail.com")
+                .email("jayson@gmail.com")
                 .build();
     }
 
@@ -54,6 +67,13 @@ public class UsersEntityCreator {
         return UsersEntity
                 .builder()
                 .password("v2Test12345")
+                .build();
+    }
+
+    public static UsersEntity createValidCurrentPasswordAuthenticatedUsersEntity(){
+        return UsersEntity
+                .builder()
+                .password("test12345")
                 .build();
     }
 }
