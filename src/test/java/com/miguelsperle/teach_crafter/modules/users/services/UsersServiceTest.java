@@ -283,7 +283,7 @@ public class UsersServiceTest {
         MultipartFile mockFile = mock(MultipartFile.class);
         UploadImageModelDTO uploadImageModelDTO = new UploadImageModelDTO(mockFile);
 
-        String expectedUrl = "new_profile_picture_url_when_the_user_update_their_profile_picture";
+        String expectedUrl = "new_profile_picture_url_when_the_user_updates_their_profile_picture";
         when(this.cloudinaryService.uploadFile(mockFile, "profile_pics")).thenReturn(expectedUrl);
 
         this.usersService.updateImageUser(uploadImageModelDTO);
@@ -293,6 +293,9 @@ public class UsersServiceTest {
 
         // Verify if the method save was called with a specific argument
         verify(this.usersRepository).save(userCaptor.capture());
+
+        System.out.println(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+        System.out.println(userCaptor.getValue());
 
         assertEquals(expectedUrl, userCaptor.getValue().getAvatar());
     }
