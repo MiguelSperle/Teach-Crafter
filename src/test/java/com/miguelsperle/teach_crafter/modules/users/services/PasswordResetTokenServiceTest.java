@@ -51,8 +51,6 @@ public class PasswordResetTokenServiceTest {
     public void user_not_logged_should_be_able_to_create_a_password_reset_token_to_reset_their_password(){
         when(this.usersService.getUserByEmail(any())).thenReturn(Optional.of(UsersEntityCreator.createValidAuthenticatedUsersEntity()));
 
-        when(this.passwordResetTokenRepository.findByUsersEntityId(any())).thenReturn(Optional.empty());
-
         when(this.passwordResetTokenRepository.save(any(PasswordResetTokenEntity.class))).thenReturn(PasswordResetTokenEntityCreator.createPasswordResetTokenToBeSaved());
 
         CreatePasswordResetTokenDTO convertedToCreatePasswordResetTokenDTO = PasswordResetTokenMapper.toConvertCreatePasswordResetTokenDTO(UsersEntityCreator.createValidAuthenticatedUsersEntity());

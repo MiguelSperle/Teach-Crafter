@@ -24,21 +24,21 @@ public class EmailSenderService {
 
     public void sendSimpleMessage(String to, String subject, String token) {
         try {
-            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessage message = this.javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
             Context context = new Context();
             context.setVariable("email", to);
             context.setVariable("token", token);
 
-            String processTemplate = springTemplateEngine.process("resetPasswordTemplate.html", context);
+            String processTemplate = this.springTemplateEngine.process("resetPasswordTemplate.html", context);
 
-            helper.setFrom(mailUsername);
+            helper.setFrom(this.mailUsername);
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(processTemplate, true);
 
-            javaMailSender.send(message);
+            this.javaMailSender.send(message);
         } catch (MessagingException exception) {
             throw new RuntimeException("Failed to send email", exception);
         }

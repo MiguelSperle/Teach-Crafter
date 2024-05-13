@@ -40,7 +40,7 @@ public class PasswordResetTokenService {
         newPasswordResetToken.setExpiresIn(this.genExpirationDate());
         newPasswordResetToken.setUsersEntity(user.get());
 
-       // this.emailSenderService.sendSimpleMessage(createPasswordResetTokenDTO.currentEmail(), "Recuperação de senha", this.genToken());
+        // this.emailSenderService.sendSimpleMessage(createPasswordResetTokenDTO.currentEmail(), "Recuperação de senha", this.genToken());
 
         this.sendPasswordResetTokenEmail(user.get(), this.genToken());
 
