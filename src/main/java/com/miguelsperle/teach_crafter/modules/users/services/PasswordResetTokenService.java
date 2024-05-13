@@ -29,7 +29,7 @@ public class PasswordResetTokenService {
     private final PasswordEncoder passwordEncoder;
     private final EmailSenderService emailSenderService;
 
-    public void createPasswordResetToken(CreatePasswordResetTokenDTO createPasswordResetTokenDTO){
+    public PasswordResetTokenEntity createPasswordResetToken(CreatePasswordResetTokenDTO createPasswordResetTokenDTO){
         PasswordResetTokenEntity newPasswordResetToken = new PasswordResetTokenEntity();
 
         this.verificationAlreadyExistsPasswordResetToken(createPasswordResetTokenDTO.currentEmail());
@@ -40,9 +40,11 @@ public class PasswordResetTokenService {
         newPasswordResetToken.setExpiresIn(this.genExpirationDate());
         newPasswordResetToken.setUsersEntity(user.get());
 
-        this.emailSenderService.sendSimpleMessage(createPasswordResetTokenDTO.currentEmail(), "Recuperação de senha", this.genToken());
+       // this.emailSenderService.sendSimpleMessage(createPasswordResetTokenDTO.currentEmail(), "Recuperação de senha", this.genToken());
 
-        this.passwordResetTokenRepository.save(newPasswordResetToken);
+        this.sendPasswordResetTokenEmail(user.get(), this.genToken());
+
+        return this.passwordResetTokenRepository.save(newPasswordResetToken);
     }
 
     private void verificationAlreadyExistsPasswordResetToken(String email) {
@@ -54,14 +56,15 @@ public class PasswordResetTokenService {
             if (this.isPasswordResetTokenExpired(passwordResetToken.get())) {
                 this.deleteExpiredPasswordResetToken(passwordResetToken.get());
             } else {
-                this.sendPasswordResetTokenEmail(user, passwordResetToken.get());
+                this.sendPasswordResetTokenEmail(user, passwordResetToken.get().getToken());
                 throw new ActivePasswordResetTokenException("You have an active password reset token. Please check your email to continue with password recovery.");
             }
         }
     }
 
-    private void sendPasswordResetTokenEmail(UsersEntity user, PasswordResetTokenEntity passwordResetToken) {
-        this.emailSenderService.sendSimpleMessage(user.getEmail(), "Recuperação de senha", passwordResetToken.getToken());
+    // PasswordResetTokenEntity passwordResetTokenEntity.getToken()
+    private void sendPasswordResetTokenEmail(UsersEntity user, String token) {
+        this.emailSenderService.sendSimpleMessage(user.getEmail(), "Recuperação de senha", token);
     }
 
     private void deleteExpiredPasswordResetToken(PasswordResetTokenEntity passwordResetToken) {

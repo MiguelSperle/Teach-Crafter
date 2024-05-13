@@ -30,17 +30,15 @@ public class PasswordResetTokenController {
             return ResponseEntity.ok().body(new MessageResponseDTO(exception.getMessage(), HttpStatus.OK.value()));
         }
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new MessageResponseDTO("Please check your email", HttpStatus.OK.value()));
+        return ResponseEntity.status(HttpStatus.OK).body(new MessageResponseDTO("Please check your email", HttpStatus.OK.value()));
     }
 
     @PutMapping
-    public ResponseEntity<Object> resetPassword(@RequestBody @Valid ResetPasswordUserNotLoggedDTO resetPasswordUserNotLoggedDTO, BindingResult bindingResult){
+    public ResponseEntity<Object> resetPassword(@RequestBody @Valid ResetPasswordUserNotLoggedDTO resetPasswordUserNotLoggedDTO, BindingResult bindingResult) {
         this.requestFieldValidationService.validationErrors(bindingResult);
 
         this.passwordResetTokensService.resetPasswordUserNotLogged(resetPasswordUserNotLoggedDTO);
 
-        return ResponseEntity.ok()
-                .body(new MessageResponseDTO("Password reset successfully", HttpStatus.OK.value()));
+        return ResponseEntity.ok().body(new MessageResponseDTO("Password reset successfully", HttpStatus.OK.value()));
     }
 }

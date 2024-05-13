@@ -67,7 +67,9 @@ public class AuthorizationUsersServiceTest {
             this.authorizationUsersService.authorizationUsers(convertedToAuthorizationUsersDTO);
         });
 
-        assertThat(exception.getMessage()).isEqualTo("Email/password incorrect");
+        String resultMessage = "Email/password incorrect";
+
+        assertEquals(exception.getMessage(), resultMessage);
     }
 
     @Test
@@ -83,6 +85,8 @@ public class AuthorizationUsersServiceTest {
             this.authorizationUsersService.authorizationUsers(convertedToAuthorizationUsersDTO);
         });
 
-        assertThat(exception.getMessage()).isEqualTo("Email/password incorrect");
+        String resultMessage = "Email/password incorrect";
+
+        assertEquals(exception.getMessage(), resultMessage);
     }
 }

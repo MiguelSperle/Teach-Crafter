@@ -70,7 +70,9 @@ public class UsersServiceTest {
             this.usersService.createUser(convertedToCreateUserDTO);
         });
 
-        assertThat(exception.getMessage()).isEqualTo("User already exists");
+        String resultMessage = "User already exists";
+
+        assertEquals(exception.getMessage(), resultMessage);
     }
 
     private void configureAuthenticationSecurityForTest(){
@@ -144,7 +146,9 @@ public class UsersServiceTest {
             this.usersService.updateUsernameUser(convertedToUpdateUsernameUserDTO);
         });
 
-        assertThat(exception.getMessage()).isEqualTo("This username is already used");
+        String resultMessage = "This username is already used";
+
+        assertEquals(exception.getMessage(), resultMessage);
     }
 
     @Test
@@ -164,7 +168,9 @@ public class UsersServiceTest {
             this.usersService.updateUsernameUser(convertedToUpdateUsernameUserDTO);
         });
 
-        assertThat(exception.getMessage()).isEqualTo("Incorrect password");
+        String resultMessage = "Incorrect password";
+
+        assertEquals(exception.getMessage(), resultMessage);
     }
 
     @Test
@@ -206,7 +212,9 @@ public class UsersServiceTest {
             this.usersService.updateEmailUser(convertedToUpdateEmailUserDTO);
         });
 
-        assertThat(exception.getMessage()).isEqualTo("This email is already used");
+        String resultMessage = "This email is already used";
+
+        assertEquals(exception.getMessage(), resultMessage);
     }
 
     @Test
@@ -226,7 +234,9 @@ public class UsersServiceTest {
             this.usersService.updateEmailUser(convertedToUpdateEmailUserDTO);
         });
 
-        assertThat(exception.getMessage()).isEqualTo("Incorrect password");
+        String resultMessage = "Incorrect password";
+
+        assertEquals(exception.getMessage(), resultMessage);
     }
 
     @Test
@@ -270,7 +280,9 @@ public class UsersServiceTest {
             this.usersService.updatePasswordUserLogged(convertedToUpdatePasswordUserLoggedDTO);
         });
 
-        assertThat(exception.getMessage()).isEqualTo("Incorrect password");
+        String resultMessage = "Incorrect password";
+
+        assertEquals(exception.getMessage(), resultMessage);
     }
 
     @Test
@@ -293,9 +305,6 @@ public class UsersServiceTest {
 
         // Verify if the method save was called with a specific argument
         verify(this.usersRepository).save(userCaptor.capture());
-
-        System.out.println(UsersEntityCreator.createValidAuthenticatedUsersEntity());
-        System.out.println(userCaptor.getValue());
 
         assertEquals(expectedUrl, userCaptor.getValue().getAvatar());
     }
