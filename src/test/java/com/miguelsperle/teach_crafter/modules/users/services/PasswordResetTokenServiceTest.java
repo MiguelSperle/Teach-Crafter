@@ -84,7 +84,9 @@ public class PasswordResetTokenServiceTest {
 
         String resultMessage = "You have an active password reset token. Please check your email to continue with password recovery.";
 
-        assertEquals(exception.getMessage(), resultMessage);
+        assertEquals(resultMessage, exception.getMessage());
+        // First argument is what I expect
+        // Second argument is the real value obtained
     }
 
 
@@ -136,6 +138,8 @@ public class PasswordResetTokenServiceTest {
         verify(this.usersService).save(userCaptor.capture());
 
         assertEquals(mockHashPassword, userCaptor.getValue().getPassword());
+        // First argument is what I expect
+        // Second argument is the real value obtained
     }
 
     @Test
@@ -158,7 +162,9 @@ public class PasswordResetTokenServiceTest {
 
         String resultMessage = "The password reset token has already expired. Please make the process again";
 
-        assertEquals(exception.getMessage(), resultMessage);
+        assertEquals(resultMessage, exception.getMessage());
+        // First argument is what I expect
+        // Second argument is the real value obtained
     }
 
     private Date genExpirationDate() {

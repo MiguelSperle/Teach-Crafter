@@ -14,7 +14,7 @@ public class TokenGenerator {
             Algorithm algorithm = Algorithm.HMAC256(secret);
 
             return JWT.create()
-                    .withIssuer("aa")
+                    .withIssuer("test")
                     .withSubject(id)
                     .withExpiresAt(genExpirationDate())
                     .sign(algorithm);

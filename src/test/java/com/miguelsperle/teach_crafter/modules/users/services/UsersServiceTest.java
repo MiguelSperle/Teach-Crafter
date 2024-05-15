@@ -72,7 +72,9 @@ public class UsersServiceTest {
 
         String resultMessage = "User already exists";
 
-        assertEquals(exception.getMessage(), resultMessage);
+        assertEquals(resultMessage, exception.getMessage());
+        // First argument is what I expect
+        // Second argument is the real value obtained
     }
 
     private void configureAuthenticationSecurityForTest(){
@@ -105,6 +107,8 @@ public class UsersServiceTest {
         verify(this.usersRepository).save(userCaptor.capture());
 
         assertEquals(convertedToUpdateNameUserDTO.newName(), userCaptor.getValue().getName());
+        // First argument is what I expect
+        // Second argument is the real value obtained
     }
 
     @Test
@@ -129,6 +133,8 @@ public class UsersServiceTest {
         verify(this.usersRepository).save(userCaptor.capture());
 
         assertEquals(convertedToUpdateUsernameUserDTO.newUsername(), userCaptor.getValue().getUsername());
+        // First argument is what I expect
+        // Second argument is the real value obtained
     }
 
     @Test
@@ -148,7 +154,9 @@ public class UsersServiceTest {
 
         String resultMessage = "This username is already used";
 
-        assertEquals(exception.getMessage(), resultMessage);
+        assertEquals(resultMessage, exception.getMessage());
+        // First argument is what I expect
+        // Second argument is the real value obtained
     }
 
     @Test
@@ -170,7 +178,9 @@ public class UsersServiceTest {
 
         String resultMessage = "Incorrect password";
 
-        assertEquals(exception.getMessage(), resultMessage);
+        assertEquals(resultMessage, exception.getMessage());
+        // First argument is what I expect
+        // Second argument is the real value obtained
     }
 
     @Test
@@ -195,6 +205,8 @@ public class UsersServiceTest {
         verify(this.usersRepository).save(userCaptor.capture());
 
         assertEquals(convertedToUpdateEmailUserDTO.newEmail(), userCaptor.getValue().getEmail());
+        // First argument is what I expect
+        // Second argument is the real value obtained
     }
 
     @Test
@@ -214,7 +226,9 @@ public class UsersServiceTest {
 
         String resultMessage = "This email is already used";
 
-        assertEquals(exception.getMessage(), resultMessage);
+        assertEquals(resultMessage, exception.getMessage());
+        // First argument is what I expect
+        // Second argument is the real value obtained
     }
 
     @Test
@@ -236,7 +250,9 @@ public class UsersServiceTest {
 
         String resultMessage = "Incorrect password";
 
-        assertEquals(exception.getMessage(), resultMessage);
+        assertEquals(resultMessage, exception.getMessage());
+        // First argument is what I expect
+        // Second argument is the real value obtained
     }
 
     @Test
@@ -263,6 +279,8 @@ public class UsersServiceTest {
         verify(this.usersRepository).save(userCaptor.capture());
 
         assertEquals(mockHashPassword, userCaptor.getValue().getPassword());
+        // First argument is what I expect
+        // Second argument is the real value obtained
     }
 
     @Test
@@ -282,7 +300,9 @@ public class UsersServiceTest {
 
         String resultMessage = "Incorrect password";
 
-        assertEquals(exception.getMessage(), resultMessage);
+        assertEquals(resultMessage, exception.getMessage());
+        // First argument is what I expect
+        // Second argument is the real value obtained
     }
 
     @Test
@@ -307,5 +327,7 @@ public class UsersServiceTest {
         verify(this.usersRepository).save(userCaptor.capture());
 
         assertEquals(expectedUrl, userCaptor.getValue().getAvatar());
+        // First argument is what I expect
+        // Second argument is the real value obtained
     }
 }

@@ -54,6 +54,8 @@ public class AuthorizationUsersServiceTest {
 
         assertNotNull(token);
         assertEquals(generatedToken, token);
+        // First argument is what I expect
+        // Second argument is the real value obtained
     }
 
     @Test
@@ -69,7 +71,9 @@ public class AuthorizationUsersServiceTest {
 
         String resultMessage = "Email/password incorrect";
 
-        assertEquals(exception.getMessage(), resultMessage);
+        assertEquals(resultMessage, exception.getMessage());
+        // First argument is what I expect
+        // Second argument is the real value obtained
     }
 
     @Test
@@ -87,6 +91,8 @@ public class AuthorizationUsersServiceTest {
 
         String resultMessage = "Email/password incorrect";
 
-        assertEquals(exception.getMessage(), resultMessage);
+        assertEquals(resultMessage, exception.getMessage());
+        // First argument is what I expect
+        // Second argument is the real value obtained
     }
 }

@@ -20,12 +20,12 @@ public class CloudinaryService {
             options.put("folder", folderName);
 
             byte[] fileBytes = file.getBytes();
-            Map uploadedFile = cloudinary.uploader().upload(fileBytes, options);
+            Map uploadedFile = this.cloudinary.uploader().upload(fileBytes, options);
 
             String publicId = (String) uploadedFile.get("public_id");
-            return cloudinary.url().secure(true).generate(publicId);
+            return this.cloudinary.url().secure(true).generate(publicId);
         } catch (IOException exception) {
-            throw new RuntimeException("Error while upload a file", exception);
+            throw new RuntimeException("Error while uploading a file", exception);
         }
     }
 }
