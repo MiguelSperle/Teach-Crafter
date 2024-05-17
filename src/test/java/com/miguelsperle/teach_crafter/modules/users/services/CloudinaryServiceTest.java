@@ -45,7 +45,7 @@ public class CloudinaryServiceTest {
 
         when(this.cloudinary.url()).thenReturn(mockUrl);
 
-        when(mockUrl.secure(true)).thenReturn(mockUrl);
+        when(this.cloudinary.url().secure(true)).thenReturn(mockUrl);
 
         when(this.mockFile.getBytes()).thenReturn("test-file-content".getBytes());
 
@@ -53,10 +53,10 @@ public class CloudinaryServiceTest {
         uploadedFileResponse.put("public_id", "8Bs90kDnE3vz2X1rWj4T");
         // We generate a random public_id
 
-        when(mockUploader.upload(any(), any())).thenReturn(uploadedFileResponse);
+        when(this.cloudinary.uploader().upload(any(), any())).thenReturn(uploadedFileResponse);
 
         String expectedUrl = "https://test-url/profile_pics/8Bs90kDnE3vz2X1rWj4T";
-        when(mockUrl.generate("8Bs90kDnE3vz2X1rWj4T")).thenReturn(expectedUrl);
+        when(this.cloudinary.url().generate("8Bs90kDnE3vz2X1rWj4T")).thenReturn(expectedUrl);
 
         String resultUrl = this.cloudinaryService.uploadFile(this.mockFile, "profile_pics");
 
@@ -65,7 +65,7 @@ public class CloudinaryServiceTest {
         // First argument is what I expect
         // Second argument is the real value obtained
 
-        verify(mockUploader).upload(eq("test-file-content".getBytes()), argThat(map -> "profile_pics".equals(map.get("folder"))));
+        verify(this.cloudinary.uploader()).upload(eq("test-file-content".getBytes()), argThat(map -> "profile_pics".equals(map.get("folder"))));
         // Verify if the method upload was called with specifics arguments ( if it has a key = folder with value = profile_pics )
     }
 

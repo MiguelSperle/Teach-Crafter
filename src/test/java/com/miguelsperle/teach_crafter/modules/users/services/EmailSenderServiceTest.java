@@ -69,8 +69,8 @@ public class EmailSenderServiceTest {
         this.emailSenderService.sendSimpleMessage(this.to, this.subject, this.token);
 
         verify(this.javaMailSender, atLeastOnce()).createMimeMessage();
-        verify(this.javaMailSender, atLeastOnce()).send(this.mimeMessage);
         verify(this.springTemplateEngine, atLeastOnce()).process(any(String.class), any());
+        verify(this.javaMailSender, atLeastOnce()).send(this.mimeMessage);
     }
 
     @Test
@@ -84,7 +84,7 @@ public class EmailSenderServiceTest {
 
         String expectedErrorMessage = "Failed to send email";
 
-        // Verify if the cause is kind of MailSendException.class
+        // Verify if the cause is kind of RuntimeException.class
         assertInstanceOf(RuntimeException.class, exception.getCause());
 
         assertEquals(expectedErrorMessage, exception.getMessage());
