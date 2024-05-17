@@ -2,6 +2,8 @@ package com.miguelsperle.teach_crafter.configuration;
 
 import com.miguelsperle.teach_crafter.dtos.general.MessageResponseDTO;
 import com.miguelsperle.teach_crafter.exceptions.general.MissingFieldException;
+import com.miguelsperle.teach_crafter.exceptions.general.TaskDeniedException;
+import com.miguelsperle.teach_crafter.modules.users.entities.courses.exceptions.CourseNotFoundException;
 import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.exceptions.ActivePasswordResetTokenException;
 import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.exceptions.ExpiredPasswordResetTokenException;
 import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.exceptions.PasswordResetTokenNotFoundException;
@@ -54,5 +56,15 @@ public class ExceptionEntityHandler {
     @ExceptionHandler(ActivePasswordResetTokenException.class) // TESTE
     public ResponseEntity<Object> handleActivePasswordResetTokenException(ActivePasswordResetTokenException exception){
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponseDTO(exception.getMessage(), HttpStatus.CONFLICT.value()));
+    }
+
+    @ExceptionHandler(CourseNotFoundException.class)
+    public ResponseEntity<Object> handleCourseNotFoundException(CourseNotFoundException exception){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponseDTO(exception.getMessage(), HttpStatus.NOT_FOUND.value()));
+    }
+
+    @ExceptionHandler(TaskDeniedException.class)
+    public ResponseEntity<Object> handleTaskDeniedException(TaskDeniedException exception){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponseDTO(exception.getMessage(), HttpStatus.UNAUTHORIZED.value()));
     }
 }
