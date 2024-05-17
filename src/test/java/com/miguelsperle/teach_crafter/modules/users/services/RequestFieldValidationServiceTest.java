@@ -11,8 +11,7 @@ import org.springframework.validation.ObjectError;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -35,9 +34,9 @@ public class RequestFieldValidationServiceTest {
             this.requestFieldValidationService.validationErrors(bindingResult);
         });
 
-        String resultMessage = "Field is required";
+        String expectedErrorMessage = "Field is required";
 
-        assertEquals(resultMessage, exception.getMessage());
+        assertEquals(expectedErrorMessage, exception.getMessage());
         // First argument is what I expect
         // Second argument is the real value obtained
     }

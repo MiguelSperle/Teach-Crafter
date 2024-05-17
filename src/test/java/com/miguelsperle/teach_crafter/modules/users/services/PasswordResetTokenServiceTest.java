@@ -46,10 +46,14 @@ public class PasswordResetTokenServiceTest {
     @Mock
     private EmailSenderService emailSenderService;
 
+    private void configureValidAuthenticatedUserMockForTest(){
+        when(this.usersService.getUserByEmail(any())).thenReturn(Optional.of(UsersEntityCreator.createValidAuthenticatedUsersEntity()));
+    }
+
     @Test
     @DisplayName("User not logged should be able to create a password reset token to reset their password")
     public void user_not_logged_should_be_able_to_create_a_password_reset_token_to_reset_their_password(){
-        when(this.usersService.getUserByEmail(any())).thenReturn(Optional.of(UsersEntityCreator.createValidAuthenticatedUsersEntity()));
+       this.configureValidAuthenticatedUserMockForTest();
 
         when(this.passwordResetTokenRepository.save(any(PasswordResetTokenEntity.class))).thenReturn(PasswordResetTokenEntityCreator.createPasswordResetTokenToBeSaved());
 
@@ -66,7 +70,7 @@ public class PasswordResetTokenServiceTest {
     @Test
     @DisplayName("User not logged should not be able to create a password reset token to reset their password if one already exists")
     public void user_not_logged_should_be_able_to_create_a_password_reset_token_to_reset_their_password_if_one_already_exists(){
-        when(this.usersService.getUserByEmail(any())).thenReturn(Optional.of(UsersEntityCreator.createValidAuthenticatedUsersEntity()));
+       this.configureValidAuthenticatedUserMockForTest();
 
         PasswordResetTokenEntity passwordResetToken = PasswordResetTokenEntityCreator.createValidPasswordResetToken();
         passwordResetToken.setUsersEntity(UsersEntityCreator.createValidAuthenticatedUsersEntity());
@@ -82,9 +86,9 @@ public class PasswordResetTokenServiceTest {
 
         verify(this.emailSenderService).sendSimpleMessage(any(), any(), any());
 
-        String resultMessage = "You have an active password reset token. Please check your email to continue with password recovery.";
+        String expectedErrorMessage = "You have an active password reset token. Please check your email to continue with password recovery.";
 
-        assertEquals(resultMessage, exception.getMessage());
+        assertEquals(expectedErrorMessage, exception.getMessage());
         // First argument is what I expect
         // Second argument is the real value obtained
     }
@@ -93,7 +97,7 @@ public class PasswordResetTokenServiceTest {
     @Test
     @DisplayName("Should be able to delete expired password reset token")
     public void should_be_able_to_delete_expired_password_reset_token(){
-        when(this.usersService.getUserByEmail(any())).thenReturn(Optional.of(UsersEntityCreator.createValidAuthenticatedUsersEntity()));
+        this.configureValidAuthenticatedUserMockForTest();
 
         PasswordResetTokenEntity expiredPasswordResetToken = PasswordResetTokenEntityCreator.createValidPasswordResetToken();
         expiredPasswordResetToken.setUsersEntity(UsersEntityCreator.createValidAuthenticatedUsersEntity());
@@ -160,9 +164,9 @@ public class PasswordResetTokenServiceTest {
 
         verify(this.passwordResetTokenRepository).deleteById(passwordResetToken.getId());
 
-        String resultMessage = "The password reset token has already expired. Please make the process again";
+        String expectedErrorMessage = "The password reset token has already expired. Please make the process again";
 
-        assertEquals(resultMessage, exception.getMessage());
+        assertEquals(expectedErrorMessage, exception.getMessage());
         // First argument is what I expect
         // Second argument is the real value obtained
     }

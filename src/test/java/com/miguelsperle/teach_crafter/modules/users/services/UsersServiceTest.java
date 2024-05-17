@@ -6,8 +6,6 @@ import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.PasswordNotMatchUserException;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserAlreadyExistsException;
 import com.miguelsperle.teach_crafter.modules.users.repositories.UsersRepository;
-import com.miguelsperle.teach_crafter.modules.users.services.CloudinaryService;
-import com.miguelsperle.teach_crafter.modules.users.services.UsersService;
 import com.miguelsperle.teach_crafter.utils.mappers.UsersMapper;
 import com.miguelsperle.teach_crafter.utils.mocks.UsersEntityCreator;
 import org.junit.jupiter.api.DisplayName;
@@ -70,14 +68,14 @@ public class UsersServiceTest {
             this.usersService.createUser(convertedToCreateUserDTO);
         });
 
-        String resultMessage = "User already exists";
+        String expectedErrorMessage = "User already exists";
 
-        assertEquals(resultMessage, exception.getMessage());
+        assertEquals(expectedErrorMessage, exception.getMessage());
         // First argument is what I expect
         // Second argument is the real value obtained
     }
 
-    private void configureAuthenticationSecurityForTest(){
+    private void configureAuthenticationSecurityMockForTest(){
         Authentication authentication = mock(Authentication.class);
 
         SecurityContext securityContext = mock(SecurityContext.class);
@@ -92,7 +90,7 @@ public class UsersServiceTest {
     @Test
     @DisplayName("User should be able to update their name")
     public void user_should_be_able_to_update_their_name(){
-        this.configureAuthenticationSecurityForTest();
+        this.configureAuthenticationSecurityMockForTest();
 
         when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
@@ -114,7 +112,7 @@ public class UsersServiceTest {
     @Test
     @DisplayName("User should be able to update their username")
     public void user_should_be_able_to_update_their_username(){
-        this.configureAuthenticationSecurityForTest();
+        this.configureAuthenticationSecurityMockForTest();
 
         when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
@@ -140,7 +138,7 @@ public class UsersServiceTest {
     @Test
     @DisplayName("User should not be able to update their username if another user already has the same username")
     public void user_should_not_be_able_to_update_their_username_if_another_user_already_has_the_same_username(){
-        this.configureAuthenticationSecurityForTest();
+        this.configureAuthenticationSecurityMockForTest();
 
         when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
@@ -152,9 +150,9 @@ public class UsersServiceTest {
             this.usersService.updateUsernameUser(convertedToUpdateUsernameUserDTO);
         });
 
-        String resultMessage = "This username is already used";
+        String expectedErrorMessage = "This username is already used";
 
-        assertEquals(resultMessage, exception.getMessage());
+        assertEquals(expectedErrorMessage, exception.getMessage());
         // First argument is what I expect
         // Second argument is the real value obtained
     }
@@ -162,7 +160,7 @@ public class UsersServiceTest {
     @Test
     @DisplayName("User should not be able to update their username with an invalid password")
     public void user_should_not_be_able_to_update_their_username_with_an_invalid_password(){
-        this.configureAuthenticationSecurityForTest();
+        this.configureAuthenticationSecurityMockForTest();
 
         when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
@@ -176,9 +174,9 @@ public class UsersServiceTest {
             this.usersService.updateUsernameUser(convertedToUpdateUsernameUserDTO);
         });
 
-        String resultMessage = "Incorrect password";
+        String expectedErrorMessage = "Incorrect password";
 
-        assertEquals(resultMessage, exception.getMessage());
+        assertEquals(expectedErrorMessage, exception.getMessage());
         // First argument is what I expect
         // Second argument is the real value obtained
     }
@@ -186,7 +184,7 @@ public class UsersServiceTest {
     @Test
     @DisplayName("User should be able to update their email")
     public void user_should_be_able_to_update_their_email(){
-        this.configureAuthenticationSecurityForTest();
+        this.configureAuthenticationSecurityMockForTest();
 
         when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
@@ -212,7 +210,7 @@ public class UsersServiceTest {
     @Test
     @DisplayName("User should not be able to update their email if another user already has the same email")
     public void user_should_not_be_able_to_update_their_email_if_another_user_already_has_the_same_email(){
-        this.configureAuthenticationSecurityForTest();
+        this.configureAuthenticationSecurityMockForTest();
 
         when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
@@ -224,9 +222,9 @@ public class UsersServiceTest {
             this.usersService.updateEmailUser(convertedToUpdateEmailUserDTO);
         });
 
-        String resultMessage = "This email is already used";
+        String expectedErrorMessage = "This email is already used";
 
-        assertEquals(resultMessage, exception.getMessage());
+        assertEquals(expectedErrorMessage, exception.getMessage());
         // First argument is what I expect
         // Second argument is the real value obtained
     }
@@ -234,7 +232,7 @@ public class UsersServiceTest {
     @Test
     @DisplayName("User should not be able to update their email with an invalid password")
     public void user_should_not_be_able_to_update_their_email_with_an_invalid_password(){
-        this.configureAuthenticationSecurityForTest();
+        this.configureAuthenticationSecurityMockForTest();
 
         when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
@@ -248,9 +246,9 @@ public class UsersServiceTest {
             this.usersService.updateEmailUser(convertedToUpdateEmailUserDTO);
         });
 
-        String resultMessage = "Incorrect password";
+        String expectedErrorMessage = "Incorrect password";
 
-        assertEquals(resultMessage, exception.getMessage());
+        assertEquals(expectedErrorMessage, exception.getMessage());
         // First argument is what I expect
         // Second argument is the real value obtained
     }
@@ -258,7 +256,7 @@ public class UsersServiceTest {
     @Test
     @DisplayName("User should be able to update their password")
     public void user_should_be_able_to_update_their_password(){
-        this.configureAuthenticationSecurityForTest();
+        this.configureAuthenticationSecurityMockForTest();
 
         when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
@@ -286,7 +284,7 @@ public class UsersServiceTest {
     @Test
     @DisplayName("User should not be able to update their password with an invalid password")
     public void user_should_not_be_able_to_update_their_password_with_an_invalid_password(){
-        this.configureAuthenticationSecurityForTest();
+        this.configureAuthenticationSecurityMockForTest();
 
         when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
@@ -298,9 +296,9 @@ public class UsersServiceTest {
             this.usersService.updatePasswordUserLogged(convertedToUpdatePasswordUserLoggedDTO);
         });
 
-        String resultMessage = "Incorrect password";
+        String expectedErrorMessage = "Incorrect password";
 
-        assertEquals(resultMessage, exception.getMessage());
+        assertEquals(expectedErrorMessage, exception.getMessage());
         // First argument is what I expect
         // Second argument is the real value obtained
     }
@@ -308,7 +306,7 @@ public class UsersServiceTest {
     @Test
     @DisplayName("User should be able to update their image")
     public void user_should_be_able_to_update_their_image(){
-        this.configureAuthenticationSecurityForTest();
+        this.configureAuthenticationSecurityMockForTest();
 
         when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
