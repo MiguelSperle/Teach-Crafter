@@ -2,7 +2,7 @@ package com.miguelsperle.teach_crafter.modules.users.services;
 
 import com.miguelsperle.teach_crafter.infra.security.TokenService;
 import com.miguelsperle.teach_crafter.modules.users.dtos.authorization.AuthorizationUsersDTO;
-import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.PasswordNotMatchUserException;
+import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserPasswordMismatchException;
 import com.miguelsperle.teach_crafter.modules.users.repositories.UsersRepository;
 import com.miguelsperle.teach_crafter.utils.mappers.UsersMapper;
 import com.miguelsperle.teach_crafter.utils.mocks.TokenGenerator;
@@ -88,7 +88,7 @@ public class AuthorizationUsersServiceTest {
 
         AuthorizationUsersDTO convertedToAuthorizationUsersDTO = UsersMapper.toConvertAuthorizationUsersDTO(UsersEntityCreator.createUsersEntityToLogin());
 
-        PasswordNotMatchUserException exception = assertThrows(PasswordNotMatchUserException.class, () -> {
+        UserPasswordMismatchException exception = assertThrows(UserPasswordMismatchException.class, () -> {
             this.authorizationUsersService.authorizationUsers(convertedToAuthorizationUsersDTO);
         });
 

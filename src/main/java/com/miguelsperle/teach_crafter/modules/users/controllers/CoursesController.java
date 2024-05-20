@@ -1,10 +1,8 @@
 package com.miguelsperle.teach_crafter.modules.users.controllers;
 
 import com.miguelsperle.teach_crafter.dtos.general.MessageResponseDTO;
-import com.miguelsperle.teach_crafter.modules.users.dtos.courses.CourseResponseDTO;
-import com.miguelsperle.teach_crafter.modules.users.dtos.courses.CreateCourseDTO;
-import com.miguelsperle.teach_crafter.modules.users.dtos.courses.UpdateCourseDescriptionDTO;
-import com.miguelsperle.teach_crafter.modules.users.dtos.courses.UpdateCourseNameDTO;
+import com.miguelsperle.teach_crafter.modules.users.dtos.courses.*;
+import com.miguelsperle.teach_crafter.modules.users.entities.courses.CoursesEntity;
 import com.miguelsperle.teach_crafter.modules.users.services.CoursesService;
 import com.miguelsperle.teach_crafter.modules.users.services.RequestFieldValidationService;
 import jakarta.validation.Valid;
@@ -54,7 +52,7 @@ public class CoursesController {
     }
 
     @GetMapping("/creator-owned")
-    public List<CourseResponseDTO> getAllCoursesCreatedByCreatorUser(){
+    public List<CourseResponseDTO> getAllCoursesCreatedByCreatorUser() {
         return this.coursesService.getAllCoursesCreatedByCreatorUser();
     }
 
@@ -66,7 +64,12 @@ public class CoursesController {
     }
 
     @GetMapping
-    public List<CourseResponseDTO> getCoursesByDescriptionKeyword(@RequestParam String descriptionKeyword){
+    public List<CourseResponseDTO> getCoursesByDescriptionKeyword(@RequestParam String descriptionKeyword) {
         return this.coursesService.getCoursesByDescriptionKeyword(descriptionKeyword);
+    }
+
+    @GetMapping("/subscribed")
+    public List<CoursesSubscribedResponseDTO> getCoursesByUserSubscriptions() {
+        return this.coursesService.getCoursesByUserSubscriptions();
     }
 }

@@ -1,10 +1,7 @@
 package com.miguelsperle.teach_crafter.modules.users.services;
 
 import com.miguelsperle.teach_crafter.exceptions.general.TaskDeniedException;
-import com.miguelsperle.teach_crafter.modules.users.dtos.courses.CourseResponseDTO;
-import com.miguelsperle.teach_crafter.modules.users.dtos.courses.CreateCourseDTO;
-import com.miguelsperle.teach_crafter.modules.users.dtos.courses.UpdateCourseDescriptionDTO;
-import com.miguelsperle.teach_crafter.modules.users.dtos.courses.UpdateCourseNameDTO;
+import com.miguelsperle.teach_crafter.modules.users.dtos.courses.*;
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.CoursesEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.exceptions.CourseNotFoundException;
 import com.miguelsperle.teach_crafter.modules.users.entities.subscription.SubscriptionEntity;
@@ -14,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -140,5 +138,17 @@ public class CoursesService {
                     coursesEntity.getUsersEntity().getName()
             );
         }).toList();
+    }
+
+    public List<CoursesSubscribedResponseDTO> getCoursesByUserSubscriptions() {
+        UsersEntity user = this.usersService.getUserAuthenticated();
+
+        return this.subscriptionService.getAllSubscriptionsByUserId(user.getId()).stream().map(subscriptionEntity -> new CoursesSubscribedResponseDTO(
+                subscriptionEntity.getCoursesEntity().getId(),
+                subscriptionEntity.getCoursesEntity().getName(),
+                subscriptionEntity.getCoursesEntity().getDescription(),
+                subscriptionEntity.getCoursesEntity().getCreatedAt(),
+                subscriptionEntity.getCoursesEntity().getUsersEntity().getName()
+        )).toList();
     }
 }

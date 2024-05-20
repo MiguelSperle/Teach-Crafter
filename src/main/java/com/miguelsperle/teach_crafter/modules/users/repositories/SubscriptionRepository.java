@@ -8,6 +8,8 @@ import java.util.Optional;
 
 public interface SubscriptionRepository extends JpaRepository<SubscriptionEntity, String> {
     List<SubscriptionEntity> findAllByCoursesEntityId(String courseId);
+    List<SubscriptionEntity> findAllByUsersEntityId(String userId);
     void deleteAllByCoursesEntityId(String courseId);
+    void deleteByUsersEntityIdAndCoursesEntityId(String userId, String courseId);
     Optional<SubscriptionEntity> findByUsersEntityIdAndCoursesEntityId(String userId, String courseId);
 }

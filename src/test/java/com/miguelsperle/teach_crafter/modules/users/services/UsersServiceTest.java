@@ -3,8 +3,8 @@ package com.miguelsperle.teach_crafter.modules.users.services;
 import com.miguelsperle.teach_crafter.modules.users.dtos.cloudinary.UploadImageModelDTO;
 import com.miguelsperle.teach_crafter.modules.users.dtos.users.*;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
-import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.PasswordNotMatchUserException;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserAlreadyExistsException;
+import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserPasswordMismatchException;
 import com.miguelsperle.teach_crafter.modules.users.repositories.UsersRepository;
 import com.miguelsperle.teach_crafter.utils.mappers.UsersMapper;
 import com.miguelsperle.teach_crafter.utils.mocks.UsersEntityCreator;
@@ -170,7 +170,7 @@ public class UsersServiceTest {
 
         UpdateUsernameUserDTO convertedToUpdateUsernameUserDTO = UsersMapper.toConvertUpdateUsernameUserDTO(UsersEntityCreator.createUsersEntityToUpdateUsername(), UsersEntityCreator.createValidCurrentPasswordAuthenticatedUsersEntity().getPassword());
 
-        PasswordNotMatchUserException exception = assertThrows(PasswordNotMatchUserException.class, () -> {
+        UserPasswordMismatchException exception = assertThrows(UserPasswordMismatchException.class, () -> {
             this.usersService.updateUsernameUser(convertedToUpdateUsernameUserDTO);
         });
 
@@ -242,7 +242,7 @@ public class UsersServiceTest {
 
         UpdateEmailUserDTO convertedToUpdateEmailUserDTO = UsersMapper.toConvertUpdateEmailUserDTO(UsersEntityCreator.createUsersEntityToUpdateEmail(), UsersEntityCreator.createValidCurrentPasswordAuthenticatedUsersEntity().getPassword());
 
-        PasswordNotMatchUserException exception = assertThrows(PasswordNotMatchUserException.class, () -> {
+        UserPasswordMismatchException exception = assertThrows(UserPasswordMismatchException.class, () -> {
             this.usersService.updateEmailUser(convertedToUpdateEmailUserDTO);
         });
 
@@ -292,7 +292,7 @@ public class UsersServiceTest {
 
         UpdatePasswordUserLoggedDTO convertedToUpdatePasswordUserLoggedDTO = UsersMapper.toConvertUpdatePasswordUserLoggedDTO(UsersEntityCreator.createUsersEntityToUpdatePassword(), UsersEntityCreator.createValidCurrentPasswordAuthenticatedUsersEntity().getPassword());
 
-        PasswordNotMatchUserException exception = assertThrows(PasswordNotMatchUserException.class, () -> {
+        UserPasswordMismatchException exception = assertThrows(UserPasswordMismatchException.class, () -> {
             this.usersService.updatePasswordUserLogged(convertedToUpdatePasswordUserLoggedDTO);
         });
 

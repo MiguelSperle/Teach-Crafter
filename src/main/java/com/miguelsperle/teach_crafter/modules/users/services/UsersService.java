@@ -3,7 +3,7 @@ package com.miguelsperle.teach_crafter.modules.users.services;
 import com.miguelsperle.teach_crafter.modules.users.dtos.cloudinary.UploadImageModelDTO;
 import com.miguelsperle.teach_crafter.modules.users.dtos.users.*;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
-import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.PasswordNotMatchUserException;
+import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserPasswordMismatchException;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserAlreadyExistsException;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserNotFoundException;
 import com.miguelsperle.teach_crafter.modules.users.repositories.UsersRepository;
@@ -102,7 +102,7 @@ public class UsersService {
     private void verifyPasswordMatch(String passwordSender, String currentPassword){
         boolean passwordMatches = this.passwordEncoder.matches(passwordSender, currentPassword);
 
-        if(!passwordMatches) throw new PasswordNotMatchUserException("Incorrect password");
+        if(!passwordMatches) throw new UserPasswordMismatchException("Incorrect password");
     }
 
     public void updateEmailUser(UpdateEmailUserDTO updateEmailUserDTO){
