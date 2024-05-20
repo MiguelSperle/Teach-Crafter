@@ -7,25 +7,30 @@ import com.miguelsperle.teach_crafter.modules.users.dtos.courses.UpdateCourseDes
 import com.miguelsperle.teach_crafter.modules.users.dtos.courses.UpdateCourseNameDTO;
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.CoursesEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.exceptions.CourseNotFoundException;
+import com.miguelsperle.teach_crafter.modules.users.entities.subscription.SubscriptionEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 import com.miguelsperle.teach_crafter.modules.users.repositories.CoursesRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class CoursesService {
-    private final CoursesRepository coursesRepository;
-    private final UsersService usersService;
+    @Autowired
+    private CoursesRepository coursesRepository;
+    @Autowired
+    private UsersService usersService;
+    @Autowired
+    @Lazy
+    private SubscriptionService subscriptionService;
 
     public void createCourse(CreateCourseDTO createCourseDTO) {
         CoursesEntity newCourse = new CoursesEntity();
 
-        this.verifyCreatorUserHasReachedCourseCreationLimit();
+        this.verifyCreatorUserReachedCourseCreationLimit();
 
         newCourse.setName(createCourseDTO.name());
         newCourse.setDescription(createCourseDTO.description());
@@ -35,12 +40,14 @@ public class CoursesService {
         this.coursesRepository.save(newCourse);
     }
 
-    private void verifyCreatorUserHasReachedCourseCreationLimit() {
-        UsersEntity userLogged = this.usersService.getUserAuthenticated();
+    private void verifyCreatorUserReachedCourseCreationLimit() {
+        UsersEntity user = this.usersService.getUserAuthenticated();
 
-        List<CoursesEntity> courses = this.getAllCoursesByCreatorUserId(userLogged.getId());
+        List<CoursesEntity> courses = this.getAllCoursesByCreatorUserId(user.getId());
 
-        if (courses.size() == 5) {
+        final int maxCourseCreationLimit = 5;
+
+        if (Objects.equals(courses.size(), maxCourseCreationLimit)) {
             throw new TaskDeniedException("Task not allowed");
         }
     }
@@ -49,7 +56,7 @@ public class CoursesService {
         return this.coursesRepository.findAllByUsersEntityId(userId);
     }
 
-    private CoursesEntity getCourseById(String courseId) {
+    public CoursesEntity getCourseById(String courseId) {
         return this.coursesRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException("Course not found"));
     }
 
@@ -76,23 +83,62 @@ public class CoursesService {
     private void verifyCreatorUserIdAuthenticatedMatchesCourseOwnerId(String courseId) {
         CoursesEntity course = this.getCourseById(courseId);
 
-        UsersEntity userLogged = this.usersService.getUserAuthenticated();
+        UsersEntity user = this.usersService.getUserAuthenticated();
 
-        if (!Objects.equals(course.getUsersEntity().getId(), userLogged.getId())) {
+        if (!Objects.equals(course.getUsersEntity().getId(), user.getId())) {
             throw new TaskDeniedException("Task not allowed");
         }
     }
 
     public List<CourseResponseDTO> getAllCoursesCreatedByCreatorUser() {
-        UsersEntity userLogged = this.usersService.getUserAuthenticated();
+        UsersEntity user = this.usersService.getUserAuthenticated();
 
-        return this.getAllCoursesByCreatorUserId(userLogged.getId()).stream().map(coursesEntity -> new CourseResponseDTO(
-                coursesEntity.getId(),
-                coursesEntity.getName(),
-                coursesEntity.getDescription(),
-                coursesEntity.getMaximumAttendees(),
-                coursesEntity.getCreatedAt(),
-                coursesEntity.getUsersEntity().getName()
-        )).toList();
+        return this.getAllCoursesByCreatorUserId(user.getId()).stream().map(coursesEntity -> {
+            List<SubscriptionEntity> subscriptions = this.subscriptionService.getAllSubscriptionsByCourseId(coursesEntity.getId());
+
+            int numberAvailableSpots = Math.max(0, coursesEntity.getMaximumAttendees() - subscriptions.size());
+
+            int amountSubscription = subscriptions.size();
+
+            return new CourseResponseDTO(
+                    coursesEntity.getId(),
+                    coursesEntity.getName(),
+                    coursesEntity.getDescription(),
+                    coursesEntity.getMaximumAttendees(),
+                    numberAvailableSpots,
+                    amountSubscription,
+                    coursesEntity.getCreatedAt(),
+                    coursesEntity.getUsersEntity().getName()
+            );
+        }).toList();
+    }
+
+    public void deactivateCourse(String courseId) {
+        this.verifyCreatorUserIdAuthenticatedMatchesCourseOwnerId(courseId);
+
+        this.coursesRepository.deleteById(courseId);
+
+        this.subscriptionService.deleteAllSubscriptionsForTheCourseIfExist(courseId);
+    }
+
+    public List<CourseResponseDTO> getCoursesByDescriptionKeyword(String descriptionKeyword) {
+        return this.coursesRepository.findByDescriptionContainingIgnoreCase(descriptionKeyword).stream().map(coursesEntity -> {
+            List<SubscriptionEntity> subscriptions = this.subscriptionService.getAllSubscriptionsByCourseId(coursesEntity.getId());
+
+            int numberAvailableSpots = Math.max(0, coursesEntity.getMaximumAttendees() - subscriptions.size());
+
+            int amountSubscription = subscriptions.size();
+
+            return new CourseResponseDTO(
+                    coursesEntity.getId(),
+                    coursesEntity.getName(),
+                    coursesEntity.getDescription(),
+                    coursesEntity.getMaximumAttendees(),
+                    numberAvailableSpots,
+                    amountSubscription,
+                    coursesEntity.getCreatedAt(),
+                    coursesEntity.getUsersEntity().getName()
+            );
+        }).toList();
     }
 }

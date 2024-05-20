@@ -40,6 +40,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("/courses/update-name/{courseId}").hasRole("CREATOR")
                                 .requestMatchers("/courses/update-description/{courseId}").hasRole("CREATOR")
                                 .requestMatchers("/courses/creator-owned").hasRole("CREATOR")
+                                .requestMatchers("/courses/deactivate/{courseId}").hasRole("CREATOR")
                                 .anyRequest().authenticated())
                 .httpBasic(basic -> basic.authenticationEntryPoint(authenticationEntryPoint))
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

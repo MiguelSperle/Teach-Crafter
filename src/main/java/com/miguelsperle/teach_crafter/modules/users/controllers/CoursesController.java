@@ -57,4 +57,16 @@ public class CoursesController {
     public List<CourseResponseDTO> getAllCoursesCreatedByCreatorUser(){
         return this.coursesService.getAllCoursesCreatedByCreatorUser();
     }
+
+    @DeleteMapping("/deactivate/{courseId}")
+    public ResponseEntity<Object> deactivateCourse(@PathVariable String courseId) {
+        this.coursesService.deactivateCourse(courseId);
+
+        return ResponseEntity.ok().body(new MessageResponseDTO("Course successfully deactivated", HttpStatus.OK.value()));
+    }
+
+    @GetMapping
+    public List<CourseResponseDTO> getCoursesByDescriptionKeyword(@RequestParam String descriptionKeyword){
+        return this.coursesService.getCoursesByDescriptionKeyword(descriptionKeyword);
+    }
 }

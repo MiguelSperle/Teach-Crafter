@@ -7,6 +7,8 @@ import com.miguelsperle.teach_crafter.modules.users.entities.courses.exceptions.
 import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.exceptions.ActivePasswordResetTokenException;
 import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.exceptions.ExpiredPasswordResetTokenException;
 import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.exceptions.PasswordResetTokenNotFoundException;
+import com.miguelsperle.teach_crafter.modules.users.entities.subscription.exceptions.CourseSubscriptionAlreadyExistsException;
+import com.miguelsperle.teach_crafter.modules.users.entities.subscription.exceptions.NoAvailableSpotsException;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.PasswordNotMatchUserException;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserAlreadyExistsException;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserNotFoundException;
@@ -53,7 +55,7 @@ public class ExceptionEntityHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponseDTO(exception.getMessage(), HttpStatus.FORBIDDEN.value()));
     }
 
-    @ExceptionHandler(ActivePasswordResetTokenException.class) // TESTE
+    @ExceptionHandler(ActivePasswordResetTokenException.class)
     public ResponseEntity<Object> handleActivePasswordResetTokenException(ActivePasswordResetTokenException exception){
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponseDTO(exception.getMessage(), HttpStatus.CONFLICT.value()));
     }
@@ -66,5 +68,15 @@ public class ExceptionEntityHandler {
     @ExceptionHandler(TaskDeniedException.class)
     public ResponseEntity<Object> handleTaskDeniedException(TaskDeniedException exception){
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponseDTO(exception.getMessage(), HttpStatus.UNAUTHORIZED.value()));
+    }
+
+    @ExceptionHandler(CourseSubscriptionAlreadyExistsException.class)
+    public ResponseEntity<Object> handleCourseSubscriptionExistsException(CourseSubscriptionAlreadyExistsException exception) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponseDTO(exception.getMessage(), HttpStatus.CONFLICT.value()));
+    }
+
+    @ExceptionHandler(NoAvailableSpotsException.class)
+    public ResponseEntity<Object> handleNoAvailableSpotsException(NoAvailableSpotsException exception){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponseDTO(exception.getMessage(), HttpStatus.CONFLICT.value()));
     }
 }

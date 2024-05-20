@@ -7,7 +7,7 @@ import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.Pa
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserAlreadyExistsException;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserNotFoundException;
 import com.miguelsperle.teach_crafter.modules.users.repositories.UsersRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,11 +16,13 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class UsersService {
-    private final UsersRepository usersRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final CloudinaryService cloudinaryService;
+    @Autowired
+    private UsersRepository usersRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     public UsersEntity getUserAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -35,7 +37,7 @@ public class UsersService {
     public UsersEntity createUser(CreateUserDTO createUserDTO){
         UsersEntity newUser = new UsersEntity();
 
-        this.verificationAlreadyExistsUser(createUserDTO.username(), createUserDTO.email());
+        this.verifyUserAlreadyExists(createUserDTO.username(), createUserDTO.email());
 
         final String AVATAR_URL_IMAGE = "https://res.cloudinary.com/dnsxuxnto/image/upload/v1691878181/bm6z0rap3mkstebtopol.png";
 
@@ -61,82 +63,82 @@ public class UsersService {
         return this.usersRepository.findByUsername(username);
     }
 
-    public UsersEntity getUserById(String id){
-        return this.usersRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+    public UsersEntity getUserById(String userId){
+        return this.usersRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
-    private void verificationAlreadyExistsUser(String username, String email){
+    private void verifyUserAlreadyExists(String username, String email){
         Optional<UsersEntity> user = this.getUserByUsernameOrEmail(username, email);
 
         if(user.isPresent()) throw new UserAlreadyExistsException("User already exists");
     }
 
     public void updateNameUser(UpdateNameUserDTO updateNameUserDTO){
-        UsersEntity loggedUser = this.getUserAuthenticated();
+        UsersEntity user = this.getUserAuthenticated();
 
-        loggedUser.setName(updateNameUserDTO.newName());
+        user.setName(updateNameUserDTO.newName());
 
-        this.usersRepository.save(loggedUser);
+        this.usersRepository.save(user);
     }
 
     public void updateUsernameUser(UpdateUsernameUserDTO updateUsernameUserDTO){
-        UsersEntity loggedUser = this.getUserAuthenticated();
+        UsersEntity user = this.getUserAuthenticated();
 
-        this.verificationAlreadyExistsUserByNewUsername(updateUsernameUserDTO.newUsername());
+        this.verifyUserAlreadyExistsByUsername(updateUsernameUserDTO.newUsername());
 
-        this.verificationPasswordMatch(updateUsernameUserDTO.currentPassword(), loggedUser.getPassword());
+        this.verifyPasswordMatch(updateUsernameUserDTO.currentPassword(), user.getPassword());
 
-        loggedUser.setUsername(updateUsernameUserDTO.newUsername());
+        user.setUsername(updateUsernameUserDTO.newUsername());
 
-        this.usersRepository.save(loggedUser);
+        this.usersRepository.save(user);
     }
 
-    private void verificationAlreadyExistsUserByNewUsername(String username){
+    private void verifyUserAlreadyExistsByUsername(String username){
         Optional<UsersEntity> user = this.getUserByUsername(username);
 
         if(user.isPresent()) throw new UserAlreadyExistsException("This username is already used");
     }
 
-    private void verificationPasswordMatch(String passwordSender, String currentPassword){
+    private void verifyPasswordMatch(String passwordSender, String currentPassword){
         boolean passwordMatches = this.passwordEncoder.matches(passwordSender, currentPassword);
 
         if(!passwordMatches) throw new PasswordNotMatchUserException("Incorrect password");
     }
 
     public void updateEmailUser(UpdateEmailUserDTO updateEmailUserDTO){
-        UsersEntity loggedUser = this.getUserAuthenticated();
+        UsersEntity user = this.getUserAuthenticated();
 
-        this.verificationAlreadyExistsUserByNewEmail(updateEmailUserDTO.newEmail());
+        this.verifyUserAlreadyExistsByNewEmail(updateEmailUserDTO.newEmail());
 
-        this.verificationPasswordMatch(updateEmailUserDTO.currentPassword(), loggedUser.getPassword());
+        this.verifyPasswordMatch(updateEmailUserDTO.currentPassword(), user.getPassword());
 
-        loggedUser.setEmail(updateEmailUserDTO.newEmail());
+        user.setEmail(updateEmailUserDTO.newEmail());
 
-        this.usersRepository.save(loggedUser);
+        this.usersRepository.save(user);
     }
 
-    private void verificationAlreadyExistsUserByNewEmail(String email){
+    private void verifyUserAlreadyExistsByNewEmail(String email){
         Optional<UsersEntity> user = this.getUserByEmail(email);
 
         if(user.isPresent()) throw new UserAlreadyExistsException("This email is already used");
     }
 
     public void updatePasswordUserLogged(UpdatePasswordUserLoggedDTO updatePasswordUserLoggedDTO) {
-        UsersEntity loggedUser = this.getUserAuthenticated();
+        UsersEntity user = this.getUserAuthenticated();
 
-        this.verificationPasswordMatch(updatePasswordUserLoggedDTO.currentPassword(), loggedUser.getPassword());
+        this.verifyPasswordMatch(updatePasswordUserLoggedDTO.currentPassword(), user.getPassword());
 
-        loggedUser.setPassword(this.passwordEncoder.encode(updatePasswordUserLoggedDTO.newPassword()));
+        user.setPassword(this.passwordEncoder.encode(updatePasswordUserLoggedDTO.newPassword()));
 
-        this.usersRepository.save(loggedUser);
+        this.usersRepository.save(user);
     }
 
     public void updateImageUser(UploadImageModelDTO uploadImageModelDTO) {
-        UsersEntity loggedUser = this.getUserAuthenticated();
+        UsersEntity user = this.getUserAuthenticated();
 
-        loggedUser.setAvatar(this.cloudinaryService.uploadFile(uploadImageModelDTO.file(), "profile_pics"));
+        user.setAvatar(this.cloudinaryService.uploadFile(uploadImageModelDTO.file(), "profile_pics"));
 
-        this.usersRepository.save(loggedUser);
+        this.usersRepository.save(user);
     }
 
 

@@ -9,8 +9,7 @@ import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserNotFoundException;
 import com.miguelsperle.teach_crafter.modules.users.repositories.PasswordResetTokenRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,17 +21,20 @@ import java.util.Date;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class PasswordResetTokenService {
-    private final PasswordResetTokenRepository passwordResetTokenRepository;
-    private final UsersService usersService;
-    private final PasswordEncoder passwordEncoder;
-    private final EmailSenderService emailSenderService;
+    @Autowired
+    private PasswordResetTokenRepository passwordResetTokenRepository;
+    @Autowired
+    private UsersService usersService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private EmailSenderService emailSenderService;
 
     public PasswordResetTokenEntity createPasswordResetToken(CreatePasswordResetTokenDTO createPasswordResetTokenDTO){
         PasswordResetTokenEntity newPasswordResetToken = new PasswordResetTokenEntity();
 
-        this.verificationAlreadyExistsPasswordResetToken(createPasswordResetTokenDTO.currentEmail());
+        this.verifyPasswordResetTokenAlreadyExists(createPasswordResetTokenDTO.currentEmail());
 
         Optional<UsersEntity> user = this.usersService.getUserByEmail(createPasswordResetTokenDTO.currentEmail());
 
@@ -40,14 +42,12 @@ public class PasswordResetTokenService {
         newPasswordResetToken.setExpiresIn(this.genExpirationDate());
         newPasswordResetToken.setUsersEntity(user.get());
 
-        // this.emailSenderService.sendSimpleMessage(createPasswordResetTokenDTO.currentEmail(), "Recuperação de senha", this.genToken());
-
         this.sendPasswordResetTokenEmail(user.get(), this.genToken());
 
         return this.passwordResetTokenRepository.save(newPasswordResetToken);
     }
 
-    private void verificationAlreadyExistsPasswordResetToken(String email) {
+    private void verifyPasswordResetTokenAlreadyExists(String email) {
         UsersEntity user = this.usersService.getUserByEmail(email).orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Optional<PasswordResetTokenEntity> passwordResetToken = this.passwordResetTokenRepository.findByUsersEntityId(user.getId());
@@ -62,7 +62,6 @@ public class PasswordResetTokenService {
         }
     }
 
-    // PasswordResetTokenEntity passwordResetTokenEntity.getToken()
     private void sendPasswordResetTokenEmail(UsersEntity user, String token) {
         this.emailSenderService.sendSimpleMessage(user.getEmail(), "Recuperação de senha", token);
     }
@@ -77,7 +76,7 @@ public class PasswordResetTokenService {
     }
 
     private Date genExpirationDate() {
-        long expiration = 2 * 60 * 1000;  // 15 minutes in milliseconds
+        long expiration = 15 * 60 * 1000;  // 15 minutes in milliseconds
 
         Instant now = Instant.now();
 
@@ -102,7 +101,7 @@ public class PasswordResetTokenService {
     public void resetPasswordUserNotLogged(ResetPasswordUserNotLoggedDTO resetPasswordUserNotLoggedDTO){
         PasswordResetTokenEntity passwordResetToken = this.getPasswordResetTokenByToken(resetPasswordUserNotLoggedDTO.token());
 
-        this.verificationExpiredPasswordResetToken(passwordResetToken);
+        this.verifyExpiredPasswordResetToken(passwordResetToken);
 
         UsersEntity user = this.usersService.getUserById(passwordResetToken.getUsersEntity().getId());
 
@@ -112,7 +111,7 @@ public class PasswordResetTokenService {
         this.usersService.save(user);
     }
 
-    private void verificationExpiredPasswordResetToken(PasswordResetTokenEntity passwordResetToken) {
+    private void verifyExpiredPasswordResetToken(PasswordResetTokenEntity passwordResetToken) {
         if (this.isPasswordResetTokenExpired(passwordResetToken)) {
             this.deleteExpiredPasswordResetToken(passwordResetToken);
             throw new ExpiredPasswordResetTokenException("The password reset token has already expired. Please make the process again");

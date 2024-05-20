@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface CoursesRepository extends JpaRepository<CoursesEntity, String> {
     List<CoursesEntity> findAllByUsersEntityId(String userId);
+    List<CoursesEntity> findByDescriptionContainingIgnoreCase(String filter);
 }

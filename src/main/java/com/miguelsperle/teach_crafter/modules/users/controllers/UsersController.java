@@ -3,6 +3,7 @@ package com.miguelsperle.teach_crafter.modules.users.controllers;
 import com.miguelsperle.teach_crafter.dtos.general.MessageResponseDTO;
 import com.miguelsperle.teach_crafter.modules.users.dtos.cloudinary.UploadImageModelDTO;
 import com.miguelsperle.teach_crafter.modules.users.dtos.users.*;
+import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 import com.miguelsperle.teach_crafter.modules.users.services.UsersService;
 import com.miguelsperle.teach_crafter.modules.users.services.RequestFieldValidationService;
 import jakarta.validation.Valid;
@@ -80,5 +81,12 @@ public class UsersController {
 
         return ResponseEntity.ok()
                 .body(new MessageResponseDTO("Image updated successfully", HttpStatus.OK.value()));
+    }
+
+    @GetMapping("/personal-information")
+    public UserResponseDTO personalInformation() {
+        UsersEntity user = this.usersService.getUserAuthenticated();
+
+        return new UserResponseDTO(user.getUsername(), user.getRole(), user.getName(), user.getEmail(), user.getAvatar(), user.getCreatedAt());
     }
 }
