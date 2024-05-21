@@ -148,6 +148,7 @@ public class CoursesService {
                 subscriptionEntity.getCoursesEntity().getName(),
                 subscriptionEntity.getCoursesEntity().getDescription(),
                 subscriptionEntity.getCoursesEntity().getCreatedAt(),
+                subscriptionEntity.getCreatedAt(),
                 subscriptionEntity.getCoursesEntity().getUsersEntity().getName()
         )).toList();
     }

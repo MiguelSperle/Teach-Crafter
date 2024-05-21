@@ -7,5 +7,6 @@ public record CoursesSubscribedResponseDTO(
         String name,
         String description,
         LocalDateTime createdAt,
+        LocalDateTime subscriptionCreatedAt,
         String createdBy
 ){}
