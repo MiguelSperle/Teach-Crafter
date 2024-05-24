@@ -1,4 +1,4 @@
-package com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken;
+package com.miguelsperle.teach_crafter.modules.users.entities.passwordResetTokens;
 
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 import jakarta.persistence.*;
@@ -9,13 +9,13 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-@Table(name = "password_reset_token")
-@Entity(name = "password_reset_token")
+@Table(name = "password_reset_tokens")
+@Entity(name = "password_reset_tokens")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PasswordResetTokenEntity {
+public class PasswordResetTokensEntity {
     @Id
     @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)

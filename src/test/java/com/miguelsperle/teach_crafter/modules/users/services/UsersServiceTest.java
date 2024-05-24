@@ -324,7 +324,7 @@ public class UsersServiceTest {
         // Verify if the method save was called with a specific argument
         verify(this.usersRepository).save(userCaptor.capture());
 
-        assertEquals(expectedUrl, userCaptor.getValue().getAvatar());
+        assertEquals(expectedUrl, userCaptor.getValue().getAvatarUrl());
         // First argument is what I expect
         // Second argument is the real value obtained
     }

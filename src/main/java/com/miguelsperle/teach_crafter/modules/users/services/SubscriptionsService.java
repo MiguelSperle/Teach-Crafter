@@ -2,12 +2,12 @@ package com.miguelsperle.teach_crafter.modules.users.services;
 
 import com.miguelsperle.teach_crafter.exceptions.general.TaskDeniedException;
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.CoursesEntity;
-import com.miguelsperle.teach_crafter.modules.users.entities.subscription.SubscriptionEntity;
-import com.miguelsperle.teach_crafter.modules.users.entities.subscription.exceptions.CourseSubscriptionAlreadyExistsException;
+import com.miguelsperle.teach_crafter.modules.users.entities.subscriptions.SubscriptionsEntity;
+import com.miguelsperle.teach_crafter.modules.users.entities.subscriptions.exceptions.CourseSubscriptionAlreadyExistsException;
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.exceptions.NoAvailableSpotsException;
-import com.miguelsperle.teach_crafter.modules.users.entities.subscription.exceptions.SubscriptionNotFoundException;
+import com.miguelsperle.teach_crafter.modules.users.entities.subscriptions.exceptions.SubscriptionNotFoundException;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
-import com.miguelsperle.teach_crafter.modules.users.repositories.SubscriptionRepository;
+import com.miguelsperle.teach_crafter.modules.users.repositories.SubscriptionsRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -18,26 +18,26 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class SubscriptionService {
+public class SubscriptionsService {
     @Autowired
-    private SubscriptionRepository subscriptionRepository;
+    private SubscriptionsRepository subscriptionRepository;
     @Autowired
     private UsersService usersService;
     @Autowired
     @Lazy
     private CoursesService coursesService;
 
-    public List<SubscriptionEntity> getAllSubscriptionsByCourseId(String courseId) {
+    public List<SubscriptionsEntity> getAllSubscriptionsByCourseId(String courseId) {
         return this.subscriptionRepository.findAllByCoursesEntityId(courseId);
     }
 
-    public List<SubscriptionEntity> getAllSubscriptionsByUserId(String userId) {
+    public List<SubscriptionsEntity> getAllSubscriptionsByUserId(String userId) {
         return this.subscriptionRepository.findAllByUsersEntityId(userId);
     }
 
     @Transactional
     public void deleteAllSubscriptionsForTheCourseIfExist(String courseId) {
-        List<SubscriptionEntity> subscriptions = this.getAllSubscriptionsByCourseId(courseId);
+        List<SubscriptionsEntity> subscriptions = this.getAllSubscriptionsByCourseId(courseId);
 
         if (!subscriptions.isEmpty()) this.deleteAllSubscriptionsByCourseId(courseId);
     }
@@ -47,7 +47,7 @@ public class SubscriptionService {
     }
 
     public void createCourseSubscription(String courseId) {
-        SubscriptionEntity newSubscription = new SubscriptionEntity();
+        SubscriptionsEntity newSubscription = new SubscriptionsEntity();
 
         this.verifyUserIsNotCourseOwner(courseId);
 
@@ -72,7 +72,7 @@ public class SubscriptionService {
     }
 
     private void verifyAvailableSpots(String courseId) {
-        List<SubscriptionEntity> subscriptions = this.getAllSubscriptionsByCourseId(courseId);
+        List<SubscriptionsEntity> subscriptions = this.getAllSubscriptionsByCourseId(courseId);
 
         CoursesEntity course = this.coursesService.getCourseById(courseId);
 
@@ -84,13 +84,13 @@ public class SubscriptionService {
     private void verifySubscriptionExistsForTheCourse(String courseId) {
         UsersEntity user = this.usersService.getUserAuthenticated();
 
-        Optional<SubscriptionEntity> subscription = this.getSubscriptionByUserIdAndCourseId(user.getId(), courseId);
+        Optional<SubscriptionsEntity> subscription = this.getSubscriptionByUserIdAndCourseId(user.getId(), courseId);
 
         if (subscription.isPresent())
             throw new CourseSubscriptionAlreadyExistsException("You have already subscribed in this course");
     }
 
-    private Optional<SubscriptionEntity> getSubscriptionByUserIdAndCourseId(String userId, String courseId) {
+    private Optional<SubscriptionsEntity> getSubscriptionByUserIdAndCourseId(String userId, String courseId) {
         return this.subscriptionRepository.findByUsersEntityIdAndCoursesEntityId(userId, courseId);
     }
 
@@ -104,7 +104,7 @@ public class SubscriptionService {
     }
 
     private void verifyUserIsNotSubscribed(String userId, String courseId) {
-        Optional<SubscriptionEntity> subscription = this.getSubscriptionByUserIdAndCourseId(userId, courseId);
+        Optional<SubscriptionsEntity> subscription = this.getSubscriptionByUserIdAndCourseId(userId, courseId);
 
         if (subscription.isEmpty()) throw new SubscriptionNotFoundException("Subscription does not exist");
     }

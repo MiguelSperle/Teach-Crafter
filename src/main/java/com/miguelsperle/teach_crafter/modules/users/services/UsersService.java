@@ -46,7 +46,7 @@ public class UsersService {
         newUser.setName(createUserDTO.name());
         newUser.setEmail(createUserDTO.email());
         newUser.setPassword(passwordEncoder.encode(createUserDTO.password()));
-        newUser.setAvatar(AVATAR_URL_IMAGE);
+        newUser.setAvatarUrl(AVATAR_URL_IMAGE);
 
         return this.usersRepository.save(newUser);
     }
@@ -136,7 +136,7 @@ public class UsersService {
     public void updateImageUser(UploadImageModelDTO uploadImageModelDTO) {
         UsersEntity user = this.getUserAuthenticated();
 
-        user.setAvatar(this.cloudinaryService.uploadFile(uploadImageModelDTO.file(), "profile_pics"));
+        user.setAvatarUrl(this.cloudinaryService.uploadFile(uploadImageModelDTO.imageFile(), "profile_pics"));
 
         this.usersRepository.save(user);
     }

@@ -4,14 +4,13 @@ import com.miguelsperle.teach_crafter.exceptions.general.TaskDeniedException;
 import com.miguelsperle.teach_crafter.modules.users.dtos.courses.*;
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.CoursesEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.exceptions.CourseNotFoundException;
-import com.miguelsperle.teach_crafter.modules.users.entities.subscription.SubscriptionEntity;
+import com.miguelsperle.teach_crafter.modules.users.entities.subscriptions.SubscriptionsEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 import com.miguelsperle.teach_crafter.modules.users.repositories.CoursesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,7 +22,7 @@ public class CoursesService {
     private UsersService usersService;
     @Autowired
     @Lazy
-    private SubscriptionService subscriptionService;
+    private SubscriptionsService subscriptionService;
 
     public void createCourse(CreateCourseDTO createCourseDTO) {
         CoursesEntity newCourse = new CoursesEntity();
@@ -92,7 +91,7 @@ public class CoursesService {
         UsersEntity user = this.usersService.getUserAuthenticated();
 
         return this.getAllCoursesByCreatorUserId(user.getId()).stream().map(coursesEntity -> {
-            List<SubscriptionEntity> subscriptions = this.subscriptionService.getAllSubscriptionsByCourseId(coursesEntity.getId());
+            List<SubscriptionsEntity> subscriptions = this.subscriptionService.getAllSubscriptionsByCourseId(coursesEntity.getId());
 
             int numberAvailableSpots = Math.max(0, coursesEntity.getMaximumAttendees() - subscriptions.size());
 
@@ -119,9 +118,9 @@ public class CoursesService {
         this.subscriptionService.deleteAllSubscriptionsForTheCourseIfExist(courseId);
     }
 
-    public List<CourseResponseDTO> getCoursesByDescriptionKeyword(String descriptionKeyword) {
-        return this.coursesRepository.findByDescriptionContainingIgnoreCase(descriptionKeyword).stream().map(coursesEntity -> {
-            List<SubscriptionEntity> subscriptions = this.subscriptionService.getAllSubscriptionsByCourseId(coursesEntity.getId());
+    public List<CourseResponseDTO> getCoursesByDescriptionKeyword(String description_keyword) {
+        return this.coursesRepository.findByDescriptionContainingIgnoreCase(description_keyword).stream().map(coursesEntity -> {
+            List<SubscriptionsEntity> subscriptions = this.subscriptionService.getAllSubscriptionsByCourseId(coursesEntity.getId());
 
             int numberAvailableSpots = Math.max(0, coursesEntity.getMaximumAttendees() - subscriptions.size());
 

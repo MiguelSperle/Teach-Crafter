@@ -8,6 +8,7 @@ import com.miguelsperle.teach_crafter.modules.users.services.UsersService;
 import com.miguelsperle.teach_crafter.modules.users.services.RequestFieldValidationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -16,10 +17,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
-@RequiredArgsConstructor
 public class UsersController {
-    private final UsersService usersService;
-    private final RequestFieldValidationService requestFieldValidationService;
+    @Autowired
+    private UsersService usersService;
+    @Autowired
+    private RequestFieldValidationService requestFieldValidationService;
 
     @PostMapping("/register")
     public ResponseEntity<Object> registerUser(@RequestBody @Valid CreateUserDTO createUserDTO, BindingResult bindingResult){
@@ -87,6 +89,6 @@ public class UsersController {
     public UserResponseDTO personalInformation() {
         UsersEntity user = this.usersService.getUserAuthenticated();
 
-        return new UserResponseDTO(user.getUsername(), user.getRole(), user.getName(), user.getEmail(), user.getAvatar(), user.getCreatedAt());
+        return new UserResponseDTO(user.getUsername(), user.getRole(), user.getName(), user.getEmail(), user.getAvatarUrl(), user.getCreatedAt());
     }
 }

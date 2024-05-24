@@ -7,6 +7,7 @@ import com.miguelsperle.teach_crafter.modules.users.services.AuthorizationUsersS
 import com.miguelsperle.teach_crafter.modules.users.services.RequestFieldValidationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -17,10 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
-@RequiredArgsConstructor
 public class AuthorizationUsersController {
-    private final AuthorizationUsersService authorizationUsersService;
-    private final RequestFieldValidationService requestFieldValidationService;
+    @Autowired
+    private AuthorizationUsersService authorizationUsersService;
+
+    @Autowired
+    private RequestFieldValidationService requestFieldValidationService;
     @PostMapping("/login")
     public ResponseEntity<Object> authorizationUsers(@RequestBody @Valid AuthorizationUsersDTO authorizationUsersDTO, BindingResult bindingResult){
         this.requestFieldValidationService.validationErrors(bindingResult);

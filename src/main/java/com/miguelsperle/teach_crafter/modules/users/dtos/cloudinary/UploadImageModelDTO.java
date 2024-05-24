@@ -5,6 +5,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 public record UploadImageModelDTO(
         @NotNull(message = "An image is required")
-        MultipartFile file
+        MultipartFile imageFile
 ) {
 }

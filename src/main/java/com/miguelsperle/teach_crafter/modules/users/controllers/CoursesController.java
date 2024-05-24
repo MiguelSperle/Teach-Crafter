@@ -2,11 +2,12 @@ package com.miguelsperle.teach_crafter.modules.users.controllers;
 
 import com.miguelsperle.teach_crafter.dtos.general.MessageResponseDTO;
 import com.miguelsperle.teach_crafter.modules.users.dtos.courses.*;
-import com.miguelsperle.teach_crafter.modules.users.entities.courses.CoursesEntity;
+import com.miguelsperle.teach_crafter.modules.users.dtos.coursesContents.CreateCourseContentDTO;
+import com.miguelsperle.teach_crafter.modules.users.services.CoursesContentsService;
 import com.miguelsperle.teach_crafter.modules.users.services.CoursesService;
 import com.miguelsperle.teach_crafter.modules.users.services.RequestFieldValidationService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -16,10 +17,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/courses")
-@RequiredArgsConstructor
 public class CoursesController {
-    private final CoursesService coursesService;
-    private final RequestFieldValidationService requestFieldValidationService;
+    @Autowired
+    private CoursesService coursesService;
+
+    @Autowired
+    private RequestFieldValidationService requestFieldValidationService;
+    @Autowired
+    private CoursesContentsService coursesContentsService;
 
     @PostMapping("/create")
     public ResponseEntity<Object> createCourse(@RequestBody @Valid CreateCourseDTO createCourseDTO, BindingResult bindingResult) {
@@ -56,7 +61,7 @@ public class CoursesController {
         return this.coursesService.getAllCoursesCreatedByCreatorUser();
     }
 
-    @DeleteMapping("/deactivate/{courseId}")
+    @DeleteMapping("/{courseId}/deactivate")
     public ResponseEntity<Object> deactivateCourse(@PathVariable String courseId) {
         this.coursesService.deactivateCourse(courseId);
 
@@ -64,12 +69,22 @@ public class CoursesController {
     }
 
     @GetMapping
-    public List<CourseResponseDTO> getCoursesByDescriptionKeyword(@RequestParam String descriptionKeyword) {
-        return this.coursesService.getCoursesByDescriptionKeyword(descriptionKeyword);
+    public List<CourseResponseDTO> getCoursesByDescriptionKeyword(@RequestParam String description_keyword) {
+        return this.coursesService.getCoursesByDescriptionKeyword(description_keyword);
     }
 
     @GetMapping("/subscribed")
     public List<CoursesSubscribedResponseDTO> getCoursesByUserSubscriptions() {
         return this.coursesService.getCoursesByUserSubscriptions();
+    }
+
+    @PostMapping("/{courseId}/content")
+    public ResponseEntity<Object> createCourseContent(@PathVariable String courseId, @RequestBody @Valid CreateCourseContentDTO createCourseContentDTO, BindingResult bindingResult) {
+        this.requestFieldValidationService.validationErrors(bindingResult);
+
+        this.coursesContentsService.createCourseContent(courseId, createCourseContentDTO);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new MessageResponseDTO("Course content created successfully", HttpStatus.CREATED.value()));
     }
 }

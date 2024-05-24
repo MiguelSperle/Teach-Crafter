@@ -1,4 +1,4 @@
-CREATE TABLE password_reset_token (
+CREATE TABLE password_reset_tokens (
     id VARCHAR(255) NOT NULL PRIMARY KEY,
     token VARCHAR(255) NOT NULL,
     expires_in Date NOT NULL,

@@ -1,4 +1,4 @@
-package com.miguelsperle.teach_crafter.modules.users.entities.subscription;
+package com.miguelsperle.teach_crafter.modules.users.entities.subscriptions;
 
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.CoursesEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
@@ -11,13 +11,13 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
-@Table(name = "subscription")
-@Entity(name = "subscription")
+@Table(name = "subscriptions")
+@Entity(name = "subscriptions")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SubscriptionEntity {
+public class SubscriptionsEntity {
     @Id
     @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -1,13 +1,13 @@
 package com.miguelsperle.teach_crafter.utils.mocks;
 
-import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.PasswordResetTokenEntity;
+import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetTokens.PasswordResetTokensEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 
 import java.util.Date;
 
-public class PasswordResetTokenEntityCreator {
-    public static PasswordResetTokenEntity createValidPasswordResetToken(){
-        return PasswordResetTokenEntity
+public class PasswordResetTokensEntityCreator {
+    public static PasswordResetTokensEntity createValidPasswordResetToken(){
+        return PasswordResetTokensEntity
                 .builder()
                 .id("1")
                 .token("bT6zR8yQpD4xN7cE9vW2uM5sF1gH3jKl")
@@ -16,8 +16,8 @@ public class PasswordResetTokenEntityCreator {
                 .build();
     }
 
-    public static PasswordResetTokenEntity createPasswordResetTokenToBeSaved(){
-        return PasswordResetTokenEntity
+    public static PasswordResetTokensEntity createPasswordResetTokenToBeSaved(){
+        return PasswordResetTokensEntity
                 .builder()
                 .id("1")
                 .build();

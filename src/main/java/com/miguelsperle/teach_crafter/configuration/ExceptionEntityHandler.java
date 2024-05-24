@@ -4,12 +4,13 @@ import com.miguelsperle.teach_crafter.dtos.general.MessageResponseDTO;
 import com.miguelsperle.teach_crafter.exceptions.general.MissingFieldException;
 import com.miguelsperle.teach_crafter.exceptions.general.TaskDeniedException;
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.exceptions.CourseNotFoundException;
-import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.exceptions.ActivePasswordResetTokenException;
-import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.exceptions.ExpiredPasswordResetTokenException;
-import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetToken.exceptions.PasswordResetTokenNotFoundException;
-import com.miguelsperle.teach_crafter.modules.users.entities.subscription.exceptions.CourseSubscriptionAlreadyExistsException;
+import com.miguelsperle.teach_crafter.modules.users.entities.coursesContents.exceptions.InvalidReleaseDateException;
+import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetTokens.exceptions.ActivePasswordResetTokenException;
+import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetTokens.exceptions.ExpiredPasswordResetTokenException;
+import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetTokens.exceptions.PasswordResetTokenNotFoundException;
+import com.miguelsperle.teach_crafter.modules.users.entities.subscriptions.exceptions.CourseSubscriptionAlreadyExistsException;
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.exceptions.NoAvailableSpotsException;
-import com.miguelsperle.teach_crafter.modules.users.entities.subscription.exceptions.SubscriptionNotFoundException;
+import com.miguelsperle.teach_crafter.modules.users.entities.subscriptions.exceptions.SubscriptionNotFoundException;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserPasswordMismatchException;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserAlreadyExistsException;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserNotFoundException;
@@ -84,5 +85,10 @@ public class ExceptionEntityHandler {
     @ExceptionHandler(SubscriptionNotFoundException.class)
     public ResponseEntity<Object> handleSubscriptionNotFoundException(SubscriptionNotFoundException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponseDTO(exception.getMessage(), HttpStatus.NOT_FOUND.value()));
+    }
+
+    @ExceptionHandler(InvalidReleaseDateException.class)
+    public ResponseEntity<Object> handleInvalidReleaseDateException(InvalidReleaseDateException exception) {
+        return ResponseEntity.badRequest().body(new MessageResponseDTO(exception.getMessage(), HttpStatus.BAD_REQUEST.value()));
     }
 }

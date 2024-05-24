@@ -1,4 +1,4 @@
-package com.miguelsperle.teach_crafter.modules.users.dtos.passwordResetToken;
+package com.miguelsperle.teach_crafter.modules.users.dtos.passwordResetTokens;
 
 import jakarta.validation.constraints.NotBlank;
 

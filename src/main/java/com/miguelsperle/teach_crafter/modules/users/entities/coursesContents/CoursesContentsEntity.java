@@ -1,5 +1,7 @@
-package com.miguelsperle.teach_crafter.modules.users.entities.users;
+package com.miguelsperle.teach_crafter.modules.users.entities.coursesContents;
 
+
+import com.miguelsperle.teach_crafter.modules.users.entities.courses.CoursesEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,37 +10,40 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
-@Table(name = "users")
-@Entity(name = "users")
+@Table(name = "courses_contents")
+@Entity(name = "courses_contents")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UsersEntity {
+public class CoursesContentsEntity {
     @Id
     @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(nullable = false, unique = true)
-    private String username;
+    @Column(nullable = false)
+    private String description;
+
+    @Column(name = "video_url")
+    private String videoUrl;
 
     @Column(nullable = false)
-    private String role;
+    private String status;
 
-    @Column(nullable = false)
-    private String name;
+    @Column(name = "release_date", nullable = false)
+    private LocalDate releaseDate;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    @ManyToOne
+    @JoinColumn(name = "course_id", nullable = false)
+    private CoursesEntity coursesEntity;
 
-    @Column(name = "password_hash", nullable = false)
-    private String password;
-
-    @Column(name = "avatar_url", nullable = false)
-    private String avatarUrl;
+    @Column(name = "course_module", nullable = false)
+    private String courseModule;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
