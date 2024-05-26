@@ -10,11 +10,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class CloudinaryService {
+public class CloudinaryImageService {
     @Resource
     private Cloudinary cloudinary;
 
-    public String uploadFile(MultipartFile file, String folderName) {
+    public String uploadImageFile(MultipartFile file, String folderName) {
         try {
             HashMap<Object, Object> options = new HashMap<>();
             options.put("folder", folderName);
@@ -23,9 +23,9 @@ public class CloudinaryService {
             Map uploadedFile = this.cloudinary.uploader().upload(fileBytes, options);
 
             String publicId = (String) uploadedFile.get("public_id");
-            return this.cloudinary.url().secure(true).generate(publicId);
+            return this.cloudinary.url().resourceType("image").secure(true).generate(publicId);
         } catch (IOException exception) {
-            throw new RuntimeException("Error while uploading a file", exception);
+            throw new RuntimeException("Error while uploading an image file", exception);
         }
     }
 }

@@ -40,7 +40,7 @@ public class UsersServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @Mock
-    private CloudinaryService cloudinaryService;
+    private CloudinaryImageService cloudinaryImageService;
 
     @Test
     @DisplayName("Should be able to create an user account")
@@ -314,7 +314,7 @@ public class UsersServiceTest {
         UploadImageModelDTO uploadImageModelDTO = new UploadImageModelDTO(mockFile);
 
         String expectedUrl = "new_profile_picture_url_when_the_user_updates_their_profile_picture";
-        when(this.cloudinaryService.uploadFile(mockFile, "profile_pics")).thenReturn(expectedUrl);
+        when(this.cloudinaryImageService.uploadImageFile(mockFile, "profile_pics")).thenReturn(expectedUrl);
 
         this.usersService.updateImageUser(uploadImageModelDTO);
 

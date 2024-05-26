@@ -13,7 +13,7 @@ public class SubscriptionsController {
     @Autowired
     private SubscriptionsService subscriptionsService;
 
-    @PostMapping("/create/{courseId}")
+    @PostMapping("/{courseId}/create")
     public ResponseEntity<Object> createCourseSubscription(@PathVariable String courseId) {
         this.subscriptionsService.createCourseSubscription(courseId);
 
@@ -21,7 +21,7 @@ public class SubscriptionsController {
                 .body(new MessageResponseDTO("Subscription created successfully", HttpStatus.CREATED.value()));
     }
 
-    @DeleteMapping("/delete/{courseId}")
+    @DeleteMapping("/{courseId}/delete")
     public ResponseEntity<Object> deleteCourseSubscription(@PathVariable String courseId) {
         this.subscriptionsService.deleteCourseSubscription(courseId);
 

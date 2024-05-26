@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class CloudinaryServiceTest {
     @InjectMocks
-    private CloudinaryService cloudinaryService;
+    private CloudinaryImageService cloudinaryImageService;
 
     @Mock
     private Cloudinary cloudinary;
@@ -58,7 +58,7 @@ public class CloudinaryServiceTest {
         String expectedUrl = "https://test-url/profile_pics/8Bs90kDnE3vz2X1rWj4T";
         when(this.cloudinary.url().generate("8Bs90kDnE3vz2X1rWj4T")).thenReturn(expectedUrl);
 
-        String resultUrl = this.cloudinaryService.uploadFile(this.mockFile, "profile_pics");
+        String resultUrl = this.cloudinaryImageService.uploadImageFile(this.mockFile, "profile_pics");
 
         assertNotNull(resultUrl);
         assertEquals(expectedUrl, resultUrl);
@@ -75,7 +75,7 @@ public class CloudinaryServiceTest {
         when(this.mockFile.getBytes()).thenThrow(IOException.class);
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            this.cloudinaryService.uploadFile(this.mockFile, "profile_pics");
+            this.cloudinaryImageService.uploadImageFile(this.mockFile, "profile_pics");
         });
 
         String expectedErrorMessage = "Error while uploading a file";

@@ -1,6 +1,7 @@
 package com.miguelsperle.teach_crafter.modules.users.controllers;
 
 import com.miguelsperle.teach_crafter.dtos.general.MessageResponseDTO;
+import com.miguelsperle.teach_crafter.modules.users.dtos.cloudinary.UploadVideoModelDTO;
 import com.miguelsperle.teach_crafter.modules.users.dtos.courses.*;
 import com.miguelsperle.teach_crafter.modules.users.dtos.coursesContents.CreateCourseContentDTO;
 import com.miguelsperle.teach_crafter.modules.users.services.CoursesContentsService;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -36,7 +38,7 @@ public class CoursesController {
                 .body(new MessageResponseDTO("Course created successfully", HttpStatus.CREATED.value()));
     }
 
-    @PutMapping("/update-name/{courseId}")
+    @PutMapping("/{courseId}/update-name")
     public ResponseEntity<Object> updateCourseName(@PathVariable String courseId, @RequestBody @Valid UpdateCourseNameDTO updateCourseNameDTO, BindingResult bindingResult) {
         this.requestFieldValidationService.validationErrors(bindingResult);
 
@@ -46,7 +48,7 @@ public class CoursesController {
                 .body(new MessageResponseDTO("Course name updated successfully", HttpStatus.OK.value()));
     }
 
-    @PutMapping("/update-description/{courseId}")
+    @PutMapping("/{courseId}/update-description")
     public ResponseEntity<Object> updateCourseDescription(@PathVariable String courseId, @RequestBody @Valid UpdateCourseDescriptionDTO updateCourseDescriptionDTO, BindingResult bindingResult) {
         this.requestFieldValidationService.validationErrors(bindingResult);
 
@@ -86,5 +88,15 @@ public class CoursesController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new MessageResponseDTO("Course content created successfully", HttpStatus.CREATED.value()));
+    }
+
+    @PostMapping("/{courseContentId}/upload-video")
+    public ResponseEntity<Object> uploadCourseVideoContent(@PathVariable String courseContentId, @Valid UploadVideoModelDTO uploadVideoModelDTO, BindingResult bindingResult) {
+        this.requestFieldValidationService.validationErrors(bindingResult);
+
+        this.coursesContentsService.uploadCourseVideoContent(courseContentId, uploadVideoModelDTO);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new MessageResponseDTO("Course content video uploaded successfully ", HttpStatus.CREATED.value()));
     }
 }

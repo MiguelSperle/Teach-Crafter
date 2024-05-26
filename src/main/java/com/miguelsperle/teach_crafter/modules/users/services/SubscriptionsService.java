@@ -35,17 +35,6 @@ public class SubscriptionsService {
         return this.subscriptionRepository.findAllByUsersEntityId(userId);
     }
 
-    @Transactional
-    public void deleteAllSubscriptionsForTheCourseIfExist(String courseId) {
-        List<SubscriptionsEntity> subscriptions = this.getAllSubscriptionsByCourseId(courseId);
-
-        if (!subscriptions.isEmpty()) this.deleteAllSubscriptionsByCourseId(courseId);
-    }
-
-    private void deleteAllSubscriptionsByCourseId(String courseId) {
-        this.subscriptionRepository.deleteAllByCoursesEntityId(courseId);
-    }
-
     public void createCourseSubscription(String courseId) {
         SubscriptionsEntity newSubscription = new SubscriptionsEntity();
 

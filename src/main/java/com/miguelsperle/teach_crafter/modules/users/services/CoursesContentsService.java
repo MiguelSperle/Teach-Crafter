@@ -1,9 +1,12 @@
 package com.miguelsperle.teach_crafter.modules.users.services;
 
 import com.miguelsperle.teach_crafter.exceptions.general.TaskDeniedException;
+import com.miguelsperle.teach_crafter.modules.users.dtos.cloudinary.UploadImageModelDTO;
+import com.miguelsperle.teach_crafter.modules.users.dtos.cloudinary.UploadVideoModelDTO;
 import com.miguelsperle.teach_crafter.modules.users.dtos.coursesContents.CreateCourseContentDTO;
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.CoursesEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.coursesContents.CoursesContentsEntity;
+import com.miguelsperle.teach_crafter.modules.users.entities.coursesContents.exceptions.CourseContentNotFoundException;
 import com.miguelsperle.teach_crafter.modules.users.entities.coursesContents.exceptions.InvalidReleaseDateException;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 import com.miguelsperle.teach_crafter.modules.users.repositories.CoursesContentsRepository;
@@ -22,10 +25,10 @@ public class CoursesContentsService {
     private CoursesService coursesService;
 
     @Autowired
-    private CloudinaryService cloudinaryService;
+    private UsersService usersService;
 
     @Autowired
-    private UsersService usersService;
+    private CloudinaryVideoService cloudinaryVideoService;
 
     public void createCourseContent(String courseId, CreateCourseContentDTO createCourseContentDTO) {
         CoursesContentsEntity newCourseContent = new CoursesContentsEntity();
@@ -62,5 +65,14 @@ public class CoursesContentsService {
         if (!Objects.equals(course.getUsersEntity().getId(), user.getId())) {
             throw new TaskDeniedException("Task not allowed");
         }
+    }
+
+    public void uploadCourseVideoContent(String courseContentId, UploadVideoModelDTO uploadVideoModelDTO) {
+        CoursesContentsEntity courseContent = this.coursesContentsRepository.findById(courseContentId)
+                .orElseThrow(() -> new CourseContentNotFoundException("Course content not found"));
+
+        courseContent.setVideoUrl(this.cloudinaryVideoService.uploadVideoFile(uploadVideoModelDTO.videoFile(), "course_videos"));
+
+        this.coursesContentsRepository.save(courseContent);
     }
 }

@@ -22,7 +22,7 @@ public class UsersService {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private CloudinaryService cloudinaryService;
+    private CloudinaryImageService cloudinaryImageService;
 
     public UsersEntity getUserAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -34,7 +34,7 @@ public class UsersService {
         return null;
     }
 
-    public UsersEntity createUser(CreateUserDTO createUserDTO){
+    public UsersEntity createUser(CreateUserDTO createUserDTO) {
         UsersEntity newUser = new UsersEntity();
 
         this.verifyUserAlreadyExists(createUserDTO.username(), createUserDTO.email());
@@ -51,29 +51,29 @@ public class UsersService {
         return this.usersRepository.save(newUser);
     }
 
-    private Optional<UsersEntity> getUserByUsernameOrEmail(String username, String email){
-        return this.usersRepository.findByUsernameOrEmail(username,email);
+    private Optional<UsersEntity> getUserByUsernameOrEmail(String username, String email) {
+        return this.usersRepository.findByUsernameOrEmail(username, email);
     }
 
-    public Optional<UsersEntity> getUserByEmail(String email){
+    public Optional<UsersEntity> getUserByEmail(String email) {
         return this.usersRepository.findByEmail(email);
     }
 
-    private Optional<UsersEntity> getUserByUsername(String username){
+    private Optional<UsersEntity> getUserByUsername(String username) {
         return this.usersRepository.findByUsername(username);
     }
 
-    public UsersEntity getUserById(String userId){
+    public UsersEntity getUserById(String userId) {
         return this.usersRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
-    private void verifyUserAlreadyExists(String username, String email){
+    private void verifyUserAlreadyExists(String username, String email) {
         Optional<UsersEntity> user = this.getUserByUsernameOrEmail(username, email);
 
-        if(user.isPresent()) throw new UserAlreadyExistsException("User already exists");
+        if (user.isPresent()) throw new UserAlreadyExistsException("User already exists");
     }
 
-    public void updateNameUser(UpdateNameUserDTO updateNameUserDTO){
+    public void updateNameUser(UpdateNameUserDTO updateNameUserDTO) {
         UsersEntity user = this.getUserAuthenticated();
 
         user.setName(updateNameUserDTO.newName());
@@ -81,7 +81,7 @@ public class UsersService {
         this.usersRepository.save(user);
     }
 
-    public void updateUsernameUser(UpdateUsernameUserDTO updateUsernameUserDTO){
+    public void updateUsernameUser(UpdateUsernameUserDTO updateUsernameUserDTO) {
         UsersEntity user = this.getUserAuthenticated();
 
         this.verifyUserAlreadyExistsByUsername(updateUsernameUserDTO.newUsername());
@@ -93,19 +93,19 @@ public class UsersService {
         this.usersRepository.save(user);
     }
 
-    private void verifyUserAlreadyExistsByUsername(String username){
+    private void verifyUserAlreadyExistsByUsername(String username) {
         Optional<UsersEntity> user = this.getUserByUsername(username);
 
-        if(user.isPresent()) throw new UserAlreadyExistsException("This username is already used");
+        if (user.isPresent()) throw new UserAlreadyExistsException("This username is already used");
     }
 
-    private void verifyPasswordMatch(String passwordSender, String currentPassword){
+    private void verifyPasswordMatch(String passwordSender, String currentPassword) {
         boolean passwordMatches = this.passwordEncoder.matches(passwordSender, currentPassword);
 
-        if(!passwordMatches) throw new UserPasswordMismatchException("Incorrect password");
+        if (!passwordMatches) throw new UserPasswordMismatchException("Incorrect password");
     }
 
-    public void updateEmailUser(UpdateEmailUserDTO updateEmailUserDTO){
+    public void updateEmailUser(UpdateEmailUserDTO updateEmailUserDTO) {
         UsersEntity user = this.getUserAuthenticated();
 
         this.verifyUserAlreadyExistsByNewEmail(updateEmailUserDTO.newEmail());
@@ -117,10 +117,10 @@ public class UsersService {
         this.usersRepository.save(user);
     }
 
-    private void verifyUserAlreadyExistsByNewEmail(String email){
+    private void verifyUserAlreadyExistsByNewEmail(String email) {
         Optional<UsersEntity> user = this.getUserByEmail(email);
 
-        if(user.isPresent()) throw new UserAlreadyExistsException("This email is already used");
+        if (user.isPresent()) throw new UserAlreadyExistsException("This email is already used");
     }
 
     public void updatePasswordUserLogged(UpdatePasswordUserLoggedDTO updatePasswordUserLoggedDTO) {
@@ -136,13 +136,13 @@ public class UsersService {
     public void updateImageUser(UploadImageModelDTO uploadImageModelDTO) {
         UsersEntity user = this.getUserAuthenticated();
 
-        user.setAvatarUrl(this.cloudinaryService.uploadFile(uploadImageModelDTO.imageFile(), "profile_pics"));
+        user.setAvatarUrl(this.cloudinaryImageService.uploadImageFile(uploadImageModelDTO.imageFile(), "profile_pics"));
 
         this.usersRepository.save(user);
     }
 
 
-    public void save(UsersEntity user){
+    public void save(UsersEntity user) {
         this.usersRepository.save(user);
     }
 }

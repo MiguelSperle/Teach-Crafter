@@ -114,8 +114,6 @@ public class CoursesService {
         this.verifyCreatorUserIdAuthenticatedMatchesCourseOwnerId(courseId);
 
         this.coursesRepository.deleteById(courseId);
-
-        this.subscriptionService.deleteAllSubscriptionsForTheCourseIfExist(courseId);
     }
 
     public List<CourseResponseDTO> getCoursesByDescriptionKeyword(String description_keyword) {
