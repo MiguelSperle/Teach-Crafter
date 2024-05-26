@@ -4,6 +4,7 @@ import com.miguelsperle.teach_crafter.dtos.general.MessageResponseDTO;
 import com.miguelsperle.teach_crafter.modules.users.dtos.cloudinary.UploadVideoModelDTO;
 import com.miguelsperle.teach_crafter.modules.users.dtos.courses.*;
 import com.miguelsperle.teach_crafter.modules.users.dtos.coursesContents.CreateCourseContentDTO;
+import com.miguelsperle.teach_crafter.modules.users.dtos.coursesContents.UpdateCourseContentDescription;
 import com.miguelsperle.teach_crafter.modules.users.services.CoursesContentsService;
 import com.miguelsperle.teach_crafter.modules.users.services.CoursesService;
 import com.miguelsperle.teach_crafter.modules.users.services.RequestFieldValidationService;
@@ -80,6 +81,8 @@ public class CoursesController {
         return this.coursesService.getCoursesByUserSubscriptions();
     }
 
+    // BELOW IS EVERYTHING RELATED ABOUT COURSE CONTENT
+
     @PostMapping("/{courseId}/content")
     public ResponseEntity<Object> createCourseContent(@PathVariable String courseId, @RequestBody @Valid CreateCourseContentDTO createCourseContentDTO, BindingResult bindingResult) {
         this.requestFieldValidationService.validationErrors(bindingResult);
@@ -90,13 +93,33 @@ public class CoursesController {
                 .body(new MessageResponseDTO("Course content created successfully", HttpStatus.CREATED.value()));
     }
 
-    @PostMapping("/{courseContentId}/upload-video")
-    public ResponseEntity<Object> uploadCourseVideoContent(@PathVariable String courseContentId, @Valid UploadVideoModelDTO uploadVideoModelDTO, BindingResult bindingResult) {
+    @PostMapping("/{courseContentId}/content/upload-video")
+    public ResponseEntity<Object> uploadCourseContentVideo(@PathVariable String courseContentId, @Valid UploadVideoModelDTO uploadVideoModelDTO, BindingResult bindingResult) {
         this.requestFieldValidationService.validationErrors(bindingResult);
 
-        this.coursesContentsService.uploadCourseVideoContent(courseContentId, uploadVideoModelDTO);
+        this.coursesContentsService.uploadCourseContentVideo(courseContentId, uploadVideoModelDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new MessageResponseDTO("Course content video uploaded successfully ", HttpStatus.CREATED.value()));
+    }
+
+    @PutMapping("/{courseContentId}/content/update-description")
+    public ResponseEntity<Object> updateCourseContentDescription(@PathVariable String courseContentId, @RequestBody @Valid UpdateCourseContentDescription updateCourseContentDescription, BindingResult bindingResult) {
+        this.requestFieldValidationService.validationErrors(bindingResult);
+
+        this.coursesContentsService.updateCourseContentDescription(courseContentId, updateCourseContentDescription);
+
+        return ResponseEntity.ok()
+                .body(new MessageResponseDTO("Course content description updated successfully ", HttpStatus.OK.value()));
+    }
+
+    @PutMapping("/{courseContentId}/content/update-video")
+    public ResponseEntity<Object> updateCourseContentVideo(@PathVariable String courseContentId, @Valid UploadVideoModelDTO uploadVideoModelDTO, BindingResult bindingResult) {
+        this.requestFieldValidationService.validationErrors(bindingResult);
+
+        this.coursesContentsService.uploadCourseContentVideo(courseContentId, uploadVideoModelDTO);
+
+        return ResponseEntity.ok()
+                .body(new MessageResponseDTO("Course content video updated successfully ", HttpStatus.OK.value()));
     }
 }

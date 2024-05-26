@@ -4,6 +4,7 @@ import com.miguelsperle.teach_crafter.exceptions.general.TaskDeniedException;
 import com.miguelsperle.teach_crafter.modules.users.dtos.cloudinary.UploadImageModelDTO;
 import com.miguelsperle.teach_crafter.modules.users.dtos.cloudinary.UploadVideoModelDTO;
 import com.miguelsperle.teach_crafter.modules.users.dtos.coursesContents.CreateCourseContentDTO;
+import com.miguelsperle.teach_crafter.modules.users.dtos.coursesContents.UpdateCourseContentDescription;
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.CoursesEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.coursesContents.CoursesContentsEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.coursesContents.exceptions.CourseContentNotFoundException;
@@ -67,11 +68,27 @@ public class CoursesContentsService {
         }
     }
 
-    public void uploadCourseVideoContent(String courseContentId, UploadVideoModelDTO uploadVideoModelDTO) {
-        CoursesContentsEntity courseContent = this.coursesContentsRepository.findById(courseContentId)
+    private CoursesContentsEntity getCourseContentById(String courseContentId) {
+        return this.coursesContentsRepository.findById(courseContentId)
                 .orElseThrow(() -> new CourseContentNotFoundException("Course content not found"));
+    }
+
+    public void uploadCourseContentVideo(String courseContentId, UploadVideoModelDTO uploadVideoModelDTO) {
+        CoursesContentsEntity courseContent = this.getCourseContentById(courseContentId);
+
+        this.verifyCreatorUserIdAuthenticatedMatchesCourseOwnerId(courseContent.getCoursesEntity().getId());
 
         courseContent.setVideoUrl(this.cloudinaryVideoService.uploadVideoFile(uploadVideoModelDTO.videoFile(), "course_videos"));
+
+        this.coursesContentsRepository.save(courseContent);
+    }
+
+    public void updateCourseContentDescription(String courseContentId, UpdateCourseContentDescription updateCourseContentDescription){
+        CoursesContentsEntity courseContent = this.getCourseContentById(courseContentId);
+
+        this.verifyCreatorUserIdAuthenticatedMatchesCourseOwnerId(courseContent.getCoursesEntity().getId());
+
+        courseContent.setDescription(updateCourseContentDescription.newDescription());
 
         this.coursesContentsRepository.save(courseContent);
     }
