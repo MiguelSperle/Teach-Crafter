@@ -116,8 +116,12 @@ public class CoursesService {
         this.coursesRepository.deleteById(courseId);
     }
 
-    public List<CourseResponseDTO> getCoursesByDescriptionKeyword(String description_keyword) {
-        return this.coursesRepository.findByDescriptionContainingIgnoreCase(description_keyword).stream().map(coursesEntity -> {
+    private List<CoursesEntity> getAllCoursesByDescriptionKeyword(String description_keyword){
+        return this.coursesRepository.findByDescriptionContainingIgnoreCase(description_keyword);
+    }
+
+    public List<CourseResponseDTO> getCourses(String description_keyword) {
+        return this.getAllCoursesByDescriptionKeyword(description_keyword).stream().map(coursesEntity -> {
             List<SubscriptionsEntity> subscriptions = this.subscriptionService.getAllSubscriptionsByCourseId(coursesEntity.getId());
 
             int numberAvailableSpots = Math.max(0, coursesEntity.getMaximumAttendees() - subscriptions.size());

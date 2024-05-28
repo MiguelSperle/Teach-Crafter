@@ -92,7 +92,7 @@ public class SubscriptionsService {
         this.subscriptionRepository.deleteByUsersEntityIdAndCoursesEntityId(user.getId(), courseId);
     }
 
-    private void verifyUserIsNotSubscribed(String userId, String courseId) {
+    public void verifyUserIsNotSubscribed(String userId, String courseId) {
         Optional<SubscriptionsEntity> subscription = this.getSubscriptionByUserIdAndCourseId(userId, courseId);
 
         if (subscription.isEmpty()) throw new SubscriptionNotFoundException("Subscription does not exist");

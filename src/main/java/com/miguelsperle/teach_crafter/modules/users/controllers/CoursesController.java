@@ -3,8 +3,7 @@ package com.miguelsperle.teach_crafter.modules.users.controllers;
 import com.miguelsperle.teach_crafter.dtos.general.MessageResponseDTO;
 import com.miguelsperle.teach_crafter.modules.users.dtos.cloudinary.UploadVideoModelDTO;
 import com.miguelsperle.teach_crafter.modules.users.dtos.courses.*;
-import com.miguelsperle.teach_crafter.modules.users.dtos.coursesContents.CreateCourseContentDTO;
-import com.miguelsperle.teach_crafter.modules.users.dtos.coursesContents.UpdateCourseContentDescription;
+import com.miguelsperle.teach_crafter.modules.users.dtos.coursesContents.*;
 import com.miguelsperle.teach_crafter.modules.users.services.CoursesContentsService;
 import com.miguelsperle.teach_crafter.modules.users.services.CoursesService;
 import com.miguelsperle.teach_crafter.modules.users.services.RequestFieldValidationService;
@@ -15,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -72,8 +70,8 @@ public class CoursesController {
     }
 
     @GetMapping
-    public List<CourseResponseDTO> getCoursesByDescriptionKeyword(@RequestParam String description_keyword) {
-        return this.coursesService.getCoursesByDescriptionKeyword(description_keyword);
+    public List<CourseResponseDTO> getCourses(@RequestParam String description_keyword) {
+        return this.coursesService.getCourses(description_keyword);
     }
 
     @GetMapping("/subscribed")
@@ -104,10 +102,10 @@ public class CoursesController {
     }
 
     @PutMapping("/{courseContentId}/content/update-description")
-    public ResponseEntity<Object> updateCourseContentDescription(@PathVariable String courseContentId, @RequestBody @Valid UpdateCourseContentDescription updateCourseContentDescription, BindingResult bindingResult) {
+    public ResponseEntity<Object> updateCourseContentDescription(@PathVariable String courseContentId, @RequestBody @Valid UpdateCourseContentDescriptionDTO updateCourseContentDescriptionDTO, BindingResult bindingResult) {
         this.requestFieldValidationService.validationErrors(bindingResult);
 
-        this.coursesContentsService.updateCourseContentDescription(courseContentId, updateCourseContentDescription);
+        this.coursesContentsService.updateCourseContentDescription(courseContentId, updateCourseContentDescriptionDTO);
 
         return ResponseEntity.ok()
                 .body(new MessageResponseDTO("Course content description updated successfully ", HttpStatus.OK.value()));
@@ -121,5 +119,35 @@ public class CoursesController {
 
         return ResponseEntity.ok()
                 .body(new MessageResponseDTO("Course content video updated successfully ", HttpStatus.OK.value()));
+    }
+
+    @PutMapping("/{courseContentId}/content/update-release-date")
+    public ResponseEntity<Object> updateCourseContentReleaseDate(@PathVariable String courseContentId, @RequestBody @Valid UpdateCourseContentReleaseDateDTO updateCourseContentReleaseDateDTO, BindingResult bindingResult) {
+        this.requestFieldValidationService.validationErrors(bindingResult);
+
+        this.coursesContentsService.updateCourseContentReleaseDate(courseContentId, updateCourseContentReleaseDateDTO);
+
+        return ResponseEntity.ok()
+                .body(new MessageResponseDTO("Course content release date updated successfully", HttpStatus.OK.value()));
+    }
+
+    @PutMapping("/{courseContentId}/content/update-course-module")
+    public ResponseEntity<Object> updateCourseContentModule(@PathVariable String courseContentId, @RequestBody @Valid UpdateCourseContentModuleDTO updateCourseContentModuleDTO, BindingResult bindingResult) {
+        this.requestFieldValidationService.validationErrors(bindingResult);
+
+        this.coursesContentsService.updateCourseContentModule(courseContentId, updateCourseContentModuleDTO);
+
+        return ResponseEntity.ok()
+                .body(new MessageResponseDTO("Course content module updated successfully", HttpStatus.OK.value()));
+    }
+
+    @GetMapping("/{courseId}/contents/creator-owned")
+    public List<CourseContentResponseDTO> getCourseContentsCreatedByCreatorUser(@PathVariable String courseId) {
+        return this.coursesContentsService.getCourseContentsCreatedByCreatorUser(courseId);
+    }
+
+    @GetMapping("/{courseId}/contents/subscribed")
+    public List<CourseContentResponseDTO> getCourseContentsWhetherUserIsSubscribedInTheCourse(@PathVariable String courseId){
+        return this.coursesContentsService.getCourseContentsWhetherUserIsSubscribedInTheCourse(courseId);
     }
 }
