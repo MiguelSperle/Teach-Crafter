@@ -8,4 +8,5 @@ import java.util.List;
 public interface CoursesContentsRepository extends JpaRepository<CoursesContentsEntity, String> {
     List<CoursesContentsEntity> findAllByCoursesEntityId(String courseId);
     List<CoursesContentsEntity> findAllByCoursesEntityIdAndStatus(String courseId, String status);
+    List<CoursesContentsEntity> findAllByStatus(String status);
 }

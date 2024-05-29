@@ -50,7 +50,7 @@ public class CoursesContentsService {
         this.coursesContentsRepository.save(newCourseContent);
     }
 
-    private String isReleaseDateValid(LocalDate releaseDate) {
+    public String isReleaseDateValid(LocalDate releaseDate) {
         LocalDate currentDate = LocalDate.now();
 
         if (releaseDate.isBefore(currentDate)) {
