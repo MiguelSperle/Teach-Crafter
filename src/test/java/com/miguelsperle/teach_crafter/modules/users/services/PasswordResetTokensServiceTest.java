@@ -55,7 +55,7 @@ public class PasswordResetTokensServiceTest {
     public void user_not_logged_should_be_able_to_create_a_password_reset_token_to_reset_their_password(){
        this.configureValidAuthenticatedUserMockForTest();
 
-        when(this.passwordResetTokensRepository.save(any(PasswordResetTokensEntity.class))).thenReturn(PasswordResetTokensEntityCreator.createPasswordResetTokenToBeSaved());
+        when(this.passwordResetTokensRepository.save(any(PasswordResetTokensEntity.class))).thenReturn(PasswordResetTokensEntityCreator.createPasswordResetTokensEntityToBeSaved());
 
         CreatePasswordResetTokenDTO convertedToCreatePasswordResetTokenDTO = PasswordResetTokensMapper.toConvertCreatePasswordResetTokenDTO(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
@@ -72,7 +72,7 @@ public class PasswordResetTokensServiceTest {
     public void user_not_logged_should_be_able_to_create_a_password_reset_token_to_reset_their_password_if_one_already_exists(){
        this.configureValidAuthenticatedUserMockForTest();
 
-        PasswordResetTokensEntity passwordResetToken = PasswordResetTokensEntityCreator.createValidPasswordResetToken();
+        PasswordResetTokensEntity passwordResetToken = PasswordResetTokensEntityCreator.createValidPasswordResetTokensEntity();
         passwordResetToken.setUsersEntity(UsersEntityCreator.createValidAuthenticatedUsersEntity());
         passwordResetToken.setExpiresIn(this.genExpirationDate());
 
@@ -99,7 +99,7 @@ public class PasswordResetTokensServiceTest {
     public void should_be_able_to_delete_expired_password_reset_token(){
         this.configureValidAuthenticatedUserMockForTest();
 
-        PasswordResetTokensEntity expiredPasswordResetToken = PasswordResetTokensEntityCreator.createValidPasswordResetToken();
+        PasswordResetTokensEntity expiredPasswordResetToken = PasswordResetTokensEntityCreator.createValidPasswordResetTokensEntity();
         expiredPasswordResetToken.setUsersEntity(UsersEntityCreator.createValidAuthenticatedUsersEntity());
         expiredPasswordResetToken.setExpiresIn(new Date(System.currentTimeMillis() - 1000));
         // We are ensuring that the token will expire 1 second before the current moment.
@@ -116,7 +116,7 @@ public class PasswordResetTokensServiceTest {
     @Test
     @DisplayName("User not logged should be able to reset their password")
     public void user_not_logged_should_be_able_to_reset_their_password(){
-        PasswordResetTokensEntity passwordResetToken = PasswordResetTokensEntityCreator.createValidPasswordResetToken();
+        PasswordResetTokensEntity passwordResetToken = PasswordResetTokensEntityCreator.createValidPasswordResetTokensEntity();
         passwordResetToken.setUsersEntity(UsersEntityCreator.createValidAuthenticatedUsersEntity());
         passwordResetToken.setExpiresIn(this.genExpirationDate());
 
@@ -149,7 +149,7 @@ public class PasswordResetTokensServiceTest {
     @Test
     @DisplayName("User not logged should not be able to reset their password if the token is expired")
     public void user_not_logged_should_not_be_able_to_reset_their_password_if_the_token_is_expired(){
-        PasswordResetTokensEntity passwordResetToken = PasswordResetTokensEntityCreator.createValidPasswordResetToken();
+        PasswordResetTokensEntity passwordResetToken = PasswordResetTokensEntityCreator.createValidPasswordResetTokensEntity();
         passwordResetToken.setUsersEntity(UsersEntityCreator.createValidAuthenticatedUsersEntity());
         passwordResetToken.setExpiresIn(new Date(System.currentTimeMillis() - 1000));
         // We are ensuring that the token will expire 1 second before the current moment.

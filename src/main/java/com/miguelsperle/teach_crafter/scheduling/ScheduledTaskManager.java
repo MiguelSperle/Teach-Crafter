@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class ScheduledTaskManager  {
+public class ScheduledTaskManager {
     @Autowired
     private CoursesContentsService coursesContentsService;
     @Autowired

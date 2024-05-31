@@ -24,7 +24,7 @@ public class CoursesService {
     @Lazy
     private SubscriptionsService subscriptionService;
 
-    public void createCourse(CreateCourseDTO createCourseDTO) {
+    public CoursesEntity createCourse(CreateCourseDTO createCourseDTO) {
         CoursesEntity newCourse = new CoursesEntity();
 
         this.verifyCreatorUserReachedCourseCreationLimit();
@@ -34,7 +34,7 @@ public class CoursesService {
         newCourse.setMaximumAttendees(createCourseDTO.maximumAttendees());
         newCourse.setUsersEntity(this.usersService.getUserAuthenticated());
 
-        this.coursesRepository.save(newCourse);
+        return this.coursesRepository.save(newCourse);
     }
 
     private void verifyCreatorUserReachedCourseCreationLimit() {
