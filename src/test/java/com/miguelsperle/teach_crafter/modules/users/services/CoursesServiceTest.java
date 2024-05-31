@@ -19,7 +19,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,7 +55,7 @@ public class CoursesServiceTest {
     public void should_be_able_to_create_a_new_course() {
         when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
-        when(this.coursesRepository.findAllByUsersEntityId(any())).thenReturn(Collections.emptyList());
+       // when(this.coursesRepository.findAllByUsersEntityId(any())).thenReturn(Collections.emptyList());
 
         when(this.coursesRepository.save(any(CoursesEntity.class))).thenReturn(CoursesEntityCreator.createCoursesEntityToBeSaved());
 

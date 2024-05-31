@@ -17,4 +17,11 @@ public class SubscriptionsEntityCreator {
                 .build();
 
     }
+
+    public static SubscriptionsEntity createSubscriptionsEntityToBeSaved() {
+        return SubscriptionsEntity
+                .builder()
+                .id("1")
+                .build();
+    }
 }

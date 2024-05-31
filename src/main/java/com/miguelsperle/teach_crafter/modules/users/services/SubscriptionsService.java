@@ -35,7 +35,7 @@ public class SubscriptionsService {
         return this.subscriptionRepository.findAllByUsersEntityId(userId);
     }
 
-    public void createCourseSubscription(String courseId) {
+    public SubscriptionsEntity createCourseSubscription(String courseId) {
         SubscriptionsEntity newSubscription = new SubscriptionsEntity();
 
         this.verifyUserIsNotCourseOwner(courseId);
@@ -47,7 +47,7 @@ public class SubscriptionsService {
         newSubscription.setUsersEntity(this.usersService.getUserAuthenticated());
         newSubscription.setCoursesEntity(this.coursesService.getCourseById(courseId));
 
-        this.subscriptionRepository.save(newSubscription);
+        return this.subscriptionRepository.save(newSubscription);
     }
 
     private void verifyUserIsNotCourseOwner(String courseId) {
