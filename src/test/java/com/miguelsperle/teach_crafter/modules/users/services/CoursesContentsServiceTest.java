@@ -420,7 +420,7 @@ public class CoursesContentsServiceTest {
         courseContent.setReleaseDate(LocalDate.now());
         courseContent.setCoursesEntity(course);
 
-        doNothing().when(this.subscriptionsService).verifyUserIsNotSubscribed(any(), any());
+        doNothing().when(this.subscriptionsService).ensureUserIsNotSubscribed(any(), any());
 
         when(this.coursesContentsRepository.findAllByCoursesEntityIdAndStatus(any(), any())).thenReturn(List.of(courseContent));
 
@@ -443,7 +443,7 @@ public class CoursesContentsServiceTest {
         when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
         doThrow(new SubscriptionNotFoundException("Subscription does not exist"))
-                .when(this.subscriptionsService).verifyUserIsNotSubscribed(any(), any());
+                .when(this.subscriptionsService).ensureUserIsNotSubscribed(any(), any());
 
         CoursesEntity course = CoursesEntityCreator.createValidCoursesEntity();
         course.setUsersEntity(UsersEntityCreator.createSecondValidUsersEntity());

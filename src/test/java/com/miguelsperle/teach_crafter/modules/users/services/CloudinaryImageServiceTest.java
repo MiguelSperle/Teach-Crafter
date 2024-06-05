@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CloudinaryServiceTest {
+public class CloudinaryImageServiceTest {
     @InjectMocks
     private CloudinaryImageService cloudinaryImageService;
 
@@ -31,8 +31,8 @@ public class CloudinaryServiceTest {
     private MultipartFile mockFile;
 
     @BeforeEach
-    public void setUp(){
-       this.mockFile = mock(MultipartFile.class);
+    public void setUp() {
+        this.mockFile = mock(MultipartFile.class);
     }
 
     @Test
@@ -41,19 +41,21 @@ public class CloudinaryServiceTest {
         Uploader mockUploader = mock(Uploader.class);
         Url mockUrl = mock(Url.class);
 
+        when(this.mockFile.getBytes()).thenReturn("test-image-file-content".getBytes());
+
         when(this.cloudinary.uploader()).thenReturn(mockUploader);
-
-        when(this.cloudinary.url()).thenReturn(mockUrl);
-
-        when(this.cloudinary.url().secure(true)).thenReturn(mockUrl);
-
-        when(this.mockFile.getBytes()).thenReturn("test-file-content".getBytes());
 
         Map<String, Object> uploadedFileResponse = new HashMap<>();
         uploadedFileResponse.put("public_id", "8Bs90kDnE3vz2X1rWj4T");
         // We generate a random public_id
 
         when(this.cloudinary.uploader().upload(any(), any())).thenReturn(uploadedFileResponse);
+
+        when(this.cloudinary.url()).thenReturn(mockUrl);
+
+        when(this.cloudinary.url().resourceType("image")).thenReturn(mockUrl);
+
+        when(this.cloudinary.url().secure(true)).thenReturn(mockUrl);
 
         String expectedUrl = "https://test-url/profile_pics/8Bs90kDnE3vz2X1rWj4T";
         when(this.cloudinary.url().generate("8Bs90kDnE3vz2X1rWj4T")).thenReturn(expectedUrl);
@@ -65,20 +67,20 @@ public class CloudinaryServiceTest {
         // First argument is what I expect
         // Second argument is the real value obtained
 
-        verify(this.cloudinary.uploader()).upload(eq("test-file-content".getBytes()), argThat(map -> "profile_pics".equals(map.get("folder"))));
+        verify(this.cloudinary.uploader()).upload(eq("test-image-file-content".getBytes()), argThat(map -> "profile_pics".equals(map.get("folder"))));
         // Verify if the method upload was called with specifics arguments ( if it has a key = folder with value = profile_pics )
     }
 
     @Test
-    @DisplayName("Should be able to throw an exception when occurs an error to upload an image")
-    public void should_be_able_to_throw_an_exception() throws IOException {
+    @DisplayName("Should throw an exception when a byte retrieval error occurs during image upload")
+    public void should_throw_an_exception_when_a_byte_retrieval_error_occurs_during_image_upload() throws IOException {
         when(this.mockFile.getBytes()).thenThrow(IOException.class);
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
             this.cloudinaryImageService.uploadImageFile(this.mockFile, "profile_pics");
         });
 
-        String expectedErrorMessage = "Error while uploading a file";
+        String expectedErrorMessage = "Error while retrieving bytes for image upload";
 
         // Verify if the cause is kind of IOException.class
         assertInstanceOf(IOException.class, exception.getCause());

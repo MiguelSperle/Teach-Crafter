@@ -7,7 +7,6 @@ import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetTokens
 import com.miguelsperle.teach_crafter.modules.users.services.PasswordResetTokensService;
 import com.miguelsperle.teach_crafter.modules.users.services.RequestFieldValidationService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -16,10 +15,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/reset-password")
 public class PasswordResetTokensController {
-    @Autowired
-    private PasswordResetTokensService passwordResetTokensService;
-    @Autowired
-    private RequestFieldValidationService requestFieldValidationService;
+    private final PasswordResetTokensService passwordResetTokensService;
+    private final RequestFieldValidationService requestFieldValidationService;
+
+    public PasswordResetTokensController(final PasswordResetTokensService passwordResetTokensService, final RequestFieldValidationService requestFieldValidationService) {
+        this.passwordResetTokensService = passwordResetTokensService;
+        this.requestFieldValidationService = requestFieldValidationService;
+    }
 
     @PostMapping("/send-email")
     public ResponseEntity<Object> sendResetPasswordEmail(@RequestBody @Valid CreatePasswordResetTokenDTO createPasswordResetTokenDTO, BindingResult bindingResult) {

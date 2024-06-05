@@ -25,7 +25,7 @@ public class CloudinaryImageService {
             String publicId = (String) uploadedFile.get("public_id");
             return this.cloudinary.url().resourceType("image").secure(true).generate(publicId);
         } catch (IOException exception) {
-            throw new RuntimeException("Error while uploading an image file", exception);
+            throw new RuntimeException("Error while retrieving bytes for image upload", exception);
         }
     }
 }

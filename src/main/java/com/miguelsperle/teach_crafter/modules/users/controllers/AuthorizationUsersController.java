@@ -6,8 +6,6 @@ import com.miguelsperle.teach_crafter.modules.users.dtos.authorization.Authoriza
 import com.miguelsperle.teach_crafter.modules.users.services.AuthorizationUsersService;
 import com.miguelsperle.teach_crafter.modules.users.services.RequestFieldValidationService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -19,13 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 public class AuthorizationUsersController {
-    @Autowired
-    private AuthorizationUsersService authorizationUsersService;
+    private final AuthorizationUsersService authorizationUsersService;
+    private final RequestFieldValidationService requestFieldValidationService;
 
-    @Autowired
-    private RequestFieldValidationService requestFieldValidationService;
+    public AuthorizationUsersController(final AuthorizationUsersService authorizationUsersService, final RequestFieldValidationService requestFieldValidationService) {
+        this.authorizationUsersService = authorizationUsersService;
+        this.requestFieldValidationService = requestFieldValidationService;
+    }
+
     @PostMapping("/login")
-    public ResponseEntity<Object> authorizationUsers(@RequestBody @Valid AuthorizationUsersDTO authorizationUsersDTO, BindingResult bindingResult){
+    public ResponseEntity<Object> authorizationUsers(@RequestBody @Valid AuthorizationUsersDTO authorizationUsersDTO, BindingResult bindingResult) {
         this.requestFieldValidationService.validationErrors(bindingResult);
 
         String token = this.authorizationUsersService.authorizationUsers(authorizationUsersDTO);

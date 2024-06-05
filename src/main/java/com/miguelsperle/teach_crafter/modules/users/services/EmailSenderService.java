@@ -1,7 +1,6 @@
 package com.miguelsperle.teach_crafter.modules.users.services;
 
 import jakarta.mail.internet.MimeMessage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -12,11 +11,16 @@ import org.thymeleaf.context.Context;
 
 @Service
 public class EmailSenderService {
-    @Autowired
-    private JavaMailSender javaMailSender;
+    private final JavaMailSender javaMailSender;
+    private final SpringTemplateEngine springTemplateEngine;
 
-    @Autowired
-    private SpringTemplateEngine springTemplateEngine;
+    public EmailSenderService(
+            final JavaMailSender javaMailSender,
+            final SpringTemplateEngine springTemplateEngine
+    ) {
+        this.javaMailSender = javaMailSender;
+        this.springTemplateEngine = springTemplateEngine;
+    }
 
     @Value("${spring.mail.username}")
     private String mailUsername;

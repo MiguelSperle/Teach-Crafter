@@ -56,7 +56,7 @@ public class CloudinaryVideoService {
 
             return urlsString.toString();
         } catch (IOException exception) {
-            throw new RuntimeException("Error while uploading a video file", exception);
+            throw new RuntimeException("Error while retrieving bytes for video upload", exception);
         }
     }
 }

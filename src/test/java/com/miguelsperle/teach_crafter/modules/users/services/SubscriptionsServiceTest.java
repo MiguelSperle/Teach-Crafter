@@ -10,6 +10,7 @@ import com.miguelsperle.teach_crafter.modules.users.repositories.SubscriptionsRe
 import com.miguelsperle.teach_crafter.utils.mocks.CoursesEntityCreator;
 import com.miguelsperle.teach_crafter.utils.mocks.SubscriptionsEntityCreator;
 import com.miguelsperle.teach_crafter.utils.mocks.UsersEntityCreator;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,17 +41,20 @@ public class SubscriptionsServiceTest {
     private UsersService usersService;
 
     @Mock
-    private CoursesService coursesService;
+    private SubscriptionsCoursesManager subscriptionsCoursesManager;
+
+    @BeforeEach
+    public void setUp() {
+        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+    }
 
     @Test
     @DisplayName("User should be able to create a subscription in some course")
     public void user_should_be_able_to_create_a_subscription() {
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
-
         CoursesEntity course = CoursesEntityCreator.createValidCoursesEntity();
         course.setUsersEntity(UsersEntityCreator.createSecondValidUsersEntity());
 
-        when(this.coursesService.getCourseById(any())).thenReturn(course);
+        when(this.subscriptionsCoursesManager.getCourseById(any())).thenReturn(course);
 
         when(this.subscriptionsRepository.findAllByCoursesEntityId(any())).thenReturn(Collections.emptyList());
 
@@ -67,12 +71,10 @@ public class SubscriptionsServiceTest {
     @Test
     @DisplayName("User should not be able to create a subscription if the same individual is the course owner")
     public void user_should_not_be_able_to_create_a_subscription_if_the_same_individual_is_the_course_owner() {
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
-
         CoursesEntity course = CoursesEntityCreator.createValidCoursesEntity();
         course.setUsersEntity(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
-        when(this.coursesService.getCourseById(any())).thenReturn(course);
+        when(this.subscriptionsCoursesManager.getCourseById(any())).thenReturn(course);
 
         TaskDeniedException exception = assertThrows(TaskDeniedException.class, () -> {
             this.subscriptionsService.createCourseSubscription(course.getId());
@@ -86,8 +88,6 @@ public class SubscriptionsServiceTest {
     @Test
     @DisplayName("User should not be able to create a subscription if the course does not have available spots")
     public void user_should_not_be_able_to_create_a_subscription_if_the_course_does_not_have_available_spots() {
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
-
         CoursesEntity course = CoursesEntityCreator.createValidCoursesEntity();
         course.setUsersEntity(UsersEntityCreator.createSecondValidUsersEntity());
 
@@ -103,7 +103,7 @@ public class SubscriptionsServiceTest {
 
         when(this.subscriptionsRepository.findAllByCoursesEntityId(any())).thenReturn(existingSubscription);
 
-        when(this.coursesService.getCourseById(any())).thenReturn(course);
+        when(this.subscriptionsCoursesManager.getCourseById(any())).thenReturn(course);
 
         NoAvailableSpotsException exception = assertThrows(NoAvailableSpotsException.class, () -> {
             this.subscriptionsService.createCourseSubscription(course.getId());
@@ -117,12 +117,10 @@ public class SubscriptionsServiceTest {
     @Test
     @DisplayName("User should not be able to create a subscription if the same individual is already subscribed in the course")
     public void user_should_not_be_able_to_create_a_subscription_if_the_same_individual_is_already_subscribed_in_the_course() {
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
-
         CoursesEntity course = CoursesEntityCreator.createValidCoursesEntity();
         course.setUsersEntity(UsersEntityCreator.createSecondValidUsersEntity());
 
-        when(this.coursesService.getCourseById(any())).thenReturn(course);
+        when(this.subscriptionsCoursesManager.getCourseById(any())).thenReturn(course);
 
         SubscriptionsEntity subscription = SubscriptionsEntityCreator.createValidSubscriptionsEntity();
         subscription.setUsersEntity(UsersEntityCreator.createValidAuthenticatedUsersEntity());
@@ -142,8 +140,6 @@ public class SubscriptionsServiceTest {
     @Test
     @DisplayName("User should be able to delete a subscription of a course")
     public void user_should_be_able_to_delete_a_subscription_of_a_course() {
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
-
         CoursesEntity course = CoursesEntityCreator.createValidCoursesEntity();
         course.setUsersEntity(UsersEntityCreator.createSecondValidUsersEntity());
 
@@ -162,8 +158,6 @@ public class SubscriptionsServiceTest {
     @Test
     @DisplayName("User should not be able to delete a subscription of a course if the same individual is not subscribed in the course")
     public void user_should_not_be_able_to_delete_a_subscription_of_a_course_if_the_same_individual_is_not_subscribed_in_the_course() {
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
-
         CoursesEntity course = CoursesEntityCreator.createValidCoursesEntity();
         course.setUsersEntity(UsersEntityCreator.createSecondValidUsersEntity());
 

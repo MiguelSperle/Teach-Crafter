@@ -5,19 +5,25 @@ import com.miguelsperle.teach_crafter.modules.users.dtos.authorization.Authoriza
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserPasswordMismatchException;
 import com.miguelsperle.teach_crafter.modules.users.repositories.UsersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthorizationUsersService {
-    @Autowired
-    private UsersRepository usersRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private TokenService tokenService;
+    private final UsersRepository usersRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final TokenService tokenService;
+
+    public AuthorizationUsersService(
+            final UsersRepository usersRepository,
+            final PasswordEncoder passwordEncoder,
+            final TokenService tokenService
+    ) {
+        this.usersRepository = usersRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.tokenService = tokenService;
+    }
 
     public String authorizationUsers(AuthorizationUsersDTO authorizationUsersDTO) {
         UsersEntity user = this.usersRepository.findByEmail(authorizationUsersDTO.email())

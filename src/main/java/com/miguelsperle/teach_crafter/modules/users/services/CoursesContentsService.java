@@ -9,7 +9,6 @@ import com.miguelsperle.teach_crafter.modules.users.entities.coursesContents.exc
 import com.miguelsperle.teach_crafter.modules.users.entities.coursesContents.exceptions.InvalidReleaseDateException;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 import com.miguelsperle.teach_crafter.modules.users.repositories.CoursesContentsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,16 +18,25 @@ import java.util.Objects;
 
 @Service
 public class CoursesContentsService {
-    @Autowired
-    private CoursesContentsRepository coursesContentsRepository;
-    @Autowired
-    private CoursesService coursesService;
-    @Autowired
-    private UsersService usersService;
-    @Autowired
-    private SubscriptionsService subscriptionsService;
-    @Autowired
-    private CloudinaryVideoService cloudinaryVideoService;
+    private final CoursesContentsRepository coursesContentsRepository;
+    private final CoursesService coursesService;
+    private final UsersService usersService;
+    private final SubscriptionsService subscriptionsService;
+    private final CloudinaryVideoService cloudinaryVideoService;
+
+    public CoursesContentsService(
+            final CoursesContentsRepository coursesContentsRepository,
+            final CoursesService coursesService,
+            final UsersService usersService,
+            final SubscriptionsService subscriptionsService,
+            final CloudinaryVideoService cloudinaryVideoService
+    ) {
+        this.coursesContentsRepository = coursesContentsRepository;
+        this.coursesService = coursesService;
+        this.usersService = usersService;
+        this.subscriptionsService = subscriptionsService;
+        this.cloudinaryVideoService = cloudinaryVideoService;
+    }
 
     public CoursesContentsEntity createCourseContent(String courseId, CreateCourseContentDTO createCourseContentDTO) {
         CoursesContentsEntity newCourseContent = new CoursesContentsEntity();
@@ -137,7 +145,7 @@ public class CoursesContentsService {
     public List<CourseContentResponseDTO> getCourseContentsWhetherUserIsSubscribedInTheCourse(String courseId) {
         UsersEntity user = this.usersService.getUserAuthenticated();
 
-        this.subscriptionsService.verifyUserIsNotSubscribed(user.getId(), courseId);
+        this.subscriptionsService.ensureUserIsNotSubscribed(user.getId(), courseId);
 
         return this.getAllPublishedCourseContentsByCourseIdAndStatus(courseId).stream().map(coursesContentsEntity ->
                 new CourseContentResponseDTO(
@@ -151,7 +159,15 @@ public class CoursesContentsService {
                 )).toList();
     }
 
-    private List<CoursesContentsEntity> getAllPublishedCourseContentsByCourseIdAndStatus(String courseId){
+    private List<CoursesContentsEntity> getAllPublishedCourseContentsByCourseIdAndStatus(String courseId) {
         return this.coursesContentsRepository.findAllByCoursesEntityIdAndStatus(courseId, "PUBLISHED");
+    }
+
+    public void saveAllCoursesContents(List<CoursesContentsEntity> coursesContents) {
+        this.coursesContentsRepository.saveAll(coursesContents);
+    }
+
+    public List<CoursesContentsEntity> getAllCoursesContentsByPendingStatus(String pendingStatus) {
+        return this.coursesContentsRepository.findAllByStatus(pendingStatus);
     }
 }

@@ -9,7 +9,7 @@ import com.miguelsperle.teach_crafter.modules.users.entities.coursesContents.exc
 import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetTokens.exceptions.ActivePasswordResetTokenException;
 import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetTokens.exceptions.ExpiredPasswordResetTokenException;
 import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetTokens.exceptions.PasswordResetTokenNotFoundException;
-import com.miguelsperle.teach_crafter.modules.users.entities.subscriptions.exceptions.CourseSubscriptionAlreadyExistsException;
+import com.miguelsperle.teach_crafter.modules.users.entities.subscriptions.exceptions.SubscriptionAlreadyExistsException;
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.exceptions.NoAvailableSpotsException;
 import com.miguelsperle.teach_crafter.modules.users.entities.subscriptions.exceptions.SubscriptionNotFoundException;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserPasswordMismatchException;
@@ -73,8 +73,8 @@ public class ExceptionEntityHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponseDTO(exception.getMessage(), HttpStatus.UNAUTHORIZED.value()));
     }
 
-    @ExceptionHandler(CourseSubscriptionAlreadyExistsException.class)
-    public ResponseEntity<Object> handleCourseSubscriptionExistsException(CourseSubscriptionAlreadyExistsException exception) {
+    @ExceptionHandler(SubscriptionAlreadyExistsException.class)
+    public ResponseEntity<Object> handleSubscriptionAlreadyExistsException(SubscriptionAlreadyExistsException exception) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponseDTO(exception.getMessage(), HttpStatus.CONFLICT.value()));
     }
 

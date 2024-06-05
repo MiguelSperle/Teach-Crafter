@@ -7,7 +7,6 @@ import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.Us
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserAlreadyExistsException;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserNotFoundException;
 import com.miguelsperle.teach_crafter.modules.users.repositories.UsersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,12 +16,19 @@ import java.util.Optional;
 
 @Service
 public class UsersService {
-    @Autowired
-    private UsersRepository usersRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private CloudinaryImageService cloudinaryImageService;
+    private final UsersRepository usersRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final CloudinaryImageService cloudinaryImageService;
+
+    public UsersService(
+            final UsersRepository usersRepository,
+            final PasswordEncoder passwordEncoder,
+            final CloudinaryImageService cloudinaryImageService
+    ) {
+        this.usersRepository = usersRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.cloudinaryImageService = cloudinaryImageService;
+    }
 
     public UsersEntity getUserAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -45,7 +51,7 @@ public class UsersService {
         newUser.setRole(createUserDTO.role());
         newUser.setName(createUserDTO.name());
         newUser.setEmail(createUserDTO.email());
-        newUser.setPassword(passwordEncoder.encode(createUserDTO.password()));
+        newUser.setPassword(this.passwordEncoder.encode(createUserDTO.password()));
         newUser.setAvatarUrl(AVATAR_URL_IMAGE);
 
         return this.usersRepository.save(newUser);

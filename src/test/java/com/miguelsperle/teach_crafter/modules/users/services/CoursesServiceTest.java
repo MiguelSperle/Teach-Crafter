@@ -41,7 +41,7 @@ public class CoursesServiceTest {
     private UsersService usersService;
 
     @Mock
-    private SubscriptionsService subscriptionsService;
+    private SubscriptionsCoursesManager subscriptionsCoursesManager;
 
     private CoursesEntity course;
 
@@ -213,7 +213,7 @@ public class CoursesServiceTest {
         subscription.setUsersEntity(UsersEntityCreator.createValidAuthenticatedUsersEntity());
         subscription.setCoursesEntity(this.course);
 
-        when(this.subscriptionsService.getAllSubscriptionsByCourseId(any())).thenReturn(List.of(subscription));
+        when(this.subscriptionsCoursesManager.getAllSubscriptionsByCourseId(any())).thenReturn(List.of(subscription));
 
         List<CourseResponseDTO> result = this.coursesService.getAllCoursesCreatedByCreatorUser();
 
@@ -238,7 +238,7 @@ public class CoursesServiceTest {
         subscription.setUsersEntity(UsersEntityCreator.createValidAuthenticatedUsersEntity());
         subscription.setCoursesEntity(this.course);
 
-        when(this.subscriptionsService.getAllSubscriptionsByUserId(any())).thenReturn(List.of(subscription));
+        when(this.subscriptionsCoursesManager.getAllSubscriptionsByUserId(any())).thenReturn(List.of(subscription));
 
         List<CoursesSubscribedResponseDTO> result = this.coursesService.getCoursesByUserSubscriptions();
 
@@ -261,7 +261,7 @@ public class CoursesServiceTest {
         subscription.setUsersEntity(UsersEntityCreator.createValidAuthenticatedUsersEntity());
         subscription.setCoursesEntity(this.course);
 
-        when(this.subscriptionsService.getAllSubscriptionsByCourseId(any())).thenReturn(List.of(subscription));
+        when(this.subscriptionsCoursesManager.getAllSubscriptionsByCourseId(any())).thenReturn(List.of(subscription));
 
         List<CourseResponseDTO> result = this.coursesService.getCourses(any());
 

@@ -7,8 +7,6 @@ import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 import com.miguelsperle.teach_crafter.modules.users.services.UsersService;
 import com.miguelsperle.teach_crafter.modules.users.services.RequestFieldValidationService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -18,25 +16,27 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/users")
 public class UsersController {
-    @Autowired
-    private UsersService usersService;
-    @Autowired
-    private RequestFieldValidationService requestFieldValidationService;
+    private final UsersService usersService;
+    private final RequestFieldValidationService requestFieldValidationService;
+
+    public UsersController(final UsersService usersService, final RequestFieldValidationService requestFieldValidationService) {
+        this.usersService = usersService;
+        this.requestFieldValidationService = requestFieldValidationService;
+    }
 
     @PostMapping("/register")
-    public ResponseEntity<Object> registerUser(@RequestBody @Valid CreateUserDTO createUserDTO, BindingResult bindingResult){
+    public ResponseEntity<Object> registerUser(@RequestBody @Valid CreateUserDTO createUserDTO, BindingResult bindingResult) {
         this.requestFieldValidationService.validationErrors(bindingResult);
 
         this.usersService.createUser(createUserDTO);
 
-       return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new MessageResponseDTO("Account created successfully", HttpStatus.CREATED.value()));
     }
 
 
-
     @PutMapping("/update-name")
-    public ResponseEntity<Object> updateNameUser(@RequestBody @Valid UpdateNameUserDTO updateNameUserDTO, BindingResult bindingResult){
+    public ResponseEntity<Object> updateNameUser(@RequestBody @Valid UpdateNameUserDTO updateNameUserDTO, BindingResult bindingResult) {
         this.requestFieldValidationService.validationErrors(bindingResult);
 
         this.usersService.updateNameUser(updateNameUserDTO);
@@ -46,7 +46,7 @@ public class UsersController {
     }
 
     @PutMapping("/update-username")
-    public ResponseEntity<Object> updateUsernameUser(@RequestBody @Valid UpdateUsernameUserDTO updateUsernameUserDTO, BindingResult bindingResult){
+    public ResponseEntity<Object> updateUsernameUser(@RequestBody @Valid UpdateUsernameUserDTO updateUsernameUserDTO, BindingResult bindingResult) {
         this.requestFieldValidationService.validationErrors(bindingResult);
 
         this.usersService.updateUsernameUser(updateUsernameUserDTO);
@@ -56,7 +56,7 @@ public class UsersController {
     }
 
     @PutMapping("/update-email")
-    public ResponseEntity<Object> updateEmailUser(@RequestBody @Valid UpdateEmailUserDTO updateEmailUserDTO, BindingResult bindingResult){
+    public ResponseEntity<Object> updateEmailUser(@RequestBody @Valid UpdateEmailUserDTO updateEmailUserDTO, BindingResult bindingResult) {
         this.requestFieldValidationService.validationErrors(bindingResult);
 
         this.usersService.updateEmailUser(updateEmailUserDTO);
@@ -66,7 +66,7 @@ public class UsersController {
     }
 
     @PutMapping("/update-password")
-    public ResponseEntity<Object> updatePasswordUserLogged(@RequestBody @Valid UpdatePasswordUserLoggedDTO updatePasswordUserLoggedDTO, BindingResult bindingResult){
+    public ResponseEntity<Object> updatePasswordUserLogged(@RequestBody @Valid UpdatePasswordUserLoggedDTO updatePasswordUserLoggedDTO, BindingResult bindingResult) {
         this.requestFieldValidationService.validationErrors(bindingResult);
 
         this.usersService.updatePasswordUserLogged(updatePasswordUserLoggedDTO);

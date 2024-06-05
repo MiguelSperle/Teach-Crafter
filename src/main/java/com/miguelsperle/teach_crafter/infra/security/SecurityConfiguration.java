@@ -1,6 +1,5 @@
 package com.miguelsperle.teach_crafter.infra.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,12 +18,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
-    @Autowired
-    private SecurityFilter securityFilter;
-
-    @Autowired
+    private final SecurityFilter securityFilter;
     @Qualifier("customAuthenticationEntryPoint")
-    private AuthenticationEntryPoint authenticationEntryPoint;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
+
+    public SecurityConfiguration(final SecurityFilter securityFilter, final AuthenticationEntryPoint authenticationEntryPoint) {
+        this.securityFilter = securityFilter;
+        this.authenticationEntryPoint = authenticationEntryPoint;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {

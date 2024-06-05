@@ -8,7 +8,6 @@ import com.miguelsperle.teach_crafter.modules.users.services.CoursesContentsServ
 import com.miguelsperle.teach_crafter.modules.users.services.CoursesService;
 import com.miguelsperle.teach_crafter.modules.users.services.RequestFieldValidationService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -19,13 +18,19 @@ import java.util.List;
 @RestController
 @RequestMapping("/courses")
 public class CoursesController {
-    @Autowired
-    private CoursesService coursesService;
+    private final CoursesService coursesService;
+    private final RequestFieldValidationService requestFieldValidationService;
+    private final CoursesContentsService coursesContentsService;
 
-    @Autowired
-    private RequestFieldValidationService requestFieldValidationService;
-    @Autowired
-    private CoursesContentsService coursesContentsService;
+    public CoursesController(
+            final CoursesService coursesService,
+            final RequestFieldValidationService requestFieldValidationService,
+            final CoursesContentsService coursesContentsService
+    ) {
+        this.coursesService = coursesService;
+        this.requestFieldValidationService = requestFieldValidationService;
+        this.coursesContentsService = coursesContentsService;
+    }
 
     @PostMapping("/create")
     public ResponseEntity<Object> createCourse(@RequestBody @Valid CreateCourseDTO createCourseDTO, BindingResult bindingResult) {
@@ -147,7 +152,7 @@ public class CoursesController {
     }
 
     @GetMapping("/{courseId}/contents/subscribed")
-    public List<CourseContentResponseDTO> getCourseContentsWhetherUserIsSubscribedInTheCourse(@PathVariable String courseId){
+    public List<CourseContentResponseDTO> getCourseContentsWhetherUserIsSubscribedInTheCourse(@PathVariable String courseId) {
         return this.coursesContentsService.getCourseContentsWhetherUserIsSubscribedInTheCourse(courseId);
     }
 }
