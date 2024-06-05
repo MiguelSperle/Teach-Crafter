@@ -14,7 +14,7 @@ public class CoursesMapper {
         return new UpdateCourseNameDTO(coursesEntity.getName());
     }
 
-    public static UpdateCourseDescriptionDTO toConvertUpdateCourseDescriptionDTO(CoursesEntity coursesEntity){
+    public static UpdateCourseDescriptionDTO toConvertUpdateCourseDescriptionDTO(CoursesEntity coursesEntity) {
         return new UpdateCourseDescriptionDTO(coursesEntity.getDescription());
     }
 }

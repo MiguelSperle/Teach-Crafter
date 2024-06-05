@@ -2,7 +2,6 @@ package com.miguelsperle.teach_crafter.modules.users.services;
 
 import com.miguelsperle.teach_crafter.exceptions.general.TaskDeniedException;
 import com.miguelsperle.teach_crafter.modules.users.dtos.cloudinary.UploadVideoModelDTO;
-import com.miguelsperle.teach_crafter.modules.users.dtos.courses.CoursesSubscribedResponseDTO;
 import com.miguelsperle.teach_crafter.modules.users.dtos.coursesContents.*;
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.CoursesEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.coursesContents.CoursesContentsEntity;
@@ -24,17 +23,14 @@ public class CoursesContentsService {
     private CoursesContentsRepository coursesContentsRepository;
     @Autowired
     private CoursesService coursesService;
-
     @Autowired
     private UsersService usersService;
-
     @Autowired
     private SubscriptionsService subscriptionsService;
-
     @Autowired
     private CloudinaryVideoService cloudinaryVideoService;
 
-    public void createCourseContent(String courseId, CreateCourseContentDTO createCourseContentDTO) {
+    public CoursesContentsEntity createCourseContent(String courseId, CreateCourseContentDTO createCourseContentDTO) {
         CoursesContentsEntity newCourseContent = new CoursesContentsEntity();
 
         this.verifyCreatorUserIdAuthenticatedMatchesCourseOwnerId(courseId);
@@ -47,7 +43,7 @@ public class CoursesContentsService {
         newCourseContent.setCoursesEntity(this.coursesService.getCourseById(courseId));
         newCourseContent.setCourseModule(createCourseContentDTO.courseModule());
 
-        this.coursesContentsRepository.save(newCourseContent);
+        return this.coursesContentsRepository.save(newCourseContent);
     }
 
     public String isReleaseDateValid(LocalDate releaseDate) {

@@ -6,7 +6,7 @@ import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 import java.util.Date;
 
 public class PasswordResetTokensEntityCreator {
-    public static PasswordResetTokensEntity createValidPasswordResetTokensEntity(){
+    public static PasswordResetTokensEntity createValidPasswordResetTokensEntity() {
         return PasswordResetTokensEntity
                 .builder()
                 .id("1")
@@ -16,7 +16,7 @@ public class PasswordResetTokensEntityCreator {
                 .build();
     }
 
-    public static PasswordResetTokensEntity createPasswordResetTokensEntityToBeSaved(){
+    public static PasswordResetTokensEntity createPasswordResetTokensEntityToBeSaved() {
         return PasswordResetTokensEntity
                 .builder()
                 .id("1")

@@ -10,7 +10,6 @@ import com.miguelsperle.teach_crafter.modules.users.repositories.SubscriptionsRe
 import com.miguelsperle.teach_crafter.utils.mocks.CoursesEntityCreator;
 import com.miguelsperle.teach_crafter.utils.mocks.SubscriptionsEntityCreator;
 import com.miguelsperle.teach_crafter.utils.mocks.UsersEntityCreator;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,6 +51,10 @@ public class SubscriptionsServiceTest {
         course.setUsersEntity(UsersEntityCreator.createSecondValidUsersEntity());
 
         when(this.coursesService.getCourseById(any())).thenReturn(course);
+
+        when(this.subscriptionsRepository.findAllByCoursesEntityId(any())).thenReturn(Collections.emptyList());
+
+        when(this.subscriptionsRepository.findByUsersEntityIdAndCoursesEntityId(any(), any())).thenReturn(Optional.empty());
 
         when(this.subscriptionsRepository.save(any(SubscriptionsEntity.class))).thenReturn(SubscriptionsEntityCreator.createSubscriptionsEntityToBeSaved());
 

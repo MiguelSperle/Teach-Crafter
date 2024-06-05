@@ -5,11 +5,11 @@ import com.miguelsperle.teach_crafter.modules.users.dtos.passwordResetTokens.Res
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 
 public class PasswordResetTokensMapper {
-    public static CreatePasswordResetTokenDTO toConvertCreatePasswordResetTokenDTO(UsersEntity usersEntity){
+    public static CreatePasswordResetTokenDTO toConvertCreatePasswordResetTokenDTO(UsersEntity usersEntity) {
         return new CreatePasswordResetTokenDTO(usersEntity.getEmail());
     }
 
-    public static ResetPasswordUserNotLoggedDTO toConvertResetPasswordUserNotLoggedDTO(UsersEntity usersEntity, String token){
+    public static ResetPasswordUserNotLoggedDTO toConvertResetPasswordUserNotLoggedDTO(UsersEntity usersEntity, String token) {
         return new ResetPasswordUserNotLoggedDTO(usersEntity.getPassword(), token);
     }
 }

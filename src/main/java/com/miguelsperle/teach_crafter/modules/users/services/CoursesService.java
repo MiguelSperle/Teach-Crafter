@@ -116,7 +116,7 @@ public class CoursesService {
         this.coursesRepository.deleteById(courseId);
     }
 
-    private List<CoursesEntity> getAllCoursesByDescriptionKeyword(String description_keyword){
+    private List<CoursesEntity> getAllCoursesByDescriptionKeyword(String description_keyword) {
         return this.coursesRepository.findByDescriptionContainingIgnoreCase(description_keyword);
     }
 

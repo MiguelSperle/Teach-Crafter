@@ -313,7 +313,7 @@ public class UsersServiceTest {
         MultipartFile mockFile = mock(MultipartFile.class);
         UploadImageModelDTO uploadImageModelDTO = new UploadImageModelDTO(mockFile);
 
-        String expectedUrl = "new_profile_picture_url_when_the_user_updates_their_profile_picture";
+        String expectedUrl = "NEW_IMAGE_URL";
         when(this.cloudinaryImageService.uploadImageFile(mockFile, "profile_pics")).thenReturn(expectedUrl);
 
         this.usersService.updateImageUser(uploadImageModelDTO);

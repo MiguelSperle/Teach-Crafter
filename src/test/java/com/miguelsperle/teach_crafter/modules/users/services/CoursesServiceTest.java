@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,7 +56,7 @@ public class CoursesServiceTest {
     public void should_be_able_to_create_a_new_course() {
         when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
-       // when(this.coursesRepository.findAllByUsersEntityId(any())).thenReturn(Collections.emptyList());
+        when(this.coursesRepository.findAllByUsersEntityId(any())).thenReturn(Collections.emptyList());
 
         when(this.coursesRepository.save(any(CoursesEntity.class))).thenReturn(CoursesEntityCreator.createCoursesEntityToBeSaved());
 
@@ -100,7 +101,7 @@ public class CoursesServiceTest {
 
         UpdateCourseNameDTO convertedToUpdateCourseNameDTO = CoursesMapper.toConvertUpdateCourseNameDTO(CoursesEntityCreator.createCoursesEntityToUpdateName());
 
-        this.coursesService.updateCourseName(convertedToUpdateCourseNameDTO, any());
+        this.coursesService.updateCourseName(convertedToUpdateCourseNameDTO, this.course.getId());
 
         // capture the value after of the method called ( save() )
         ArgumentCaptor<CoursesEntity> userCaptor = ArgumentCaptor.forClass(CoursesEntity.class);
@@ -123,7 +124,7 @@ public class CoursesServiceTest {
         UpdateCourseNameDTO convertedToUpdateCourseNameDTO = CoursesMapper.toConvertUpdateCourseNameDTO(CoursesEntityCreator.createCoursesEntityToUpdateName());
 
         TaskDeniedException exception = assertThrows(TaskDeniedException.class, () -> {
-            this.coursesService.updateCourseName(convertedToUpdateCourseNameDTO, any());
+            this.coursesService.updateCourseName(convertedToUpdateCourseNameDTO, this.course.getId());
         });
 
         String expectedErrorMessage = "Task not allowed";
@@ -140,7 +141,7 @@ public class CoursesServiceTest {
 
         UpdateCourseDescriptionDTO convertedToUpdateCourseDescriptionDTO = CoursesMapper.toConvertUpdateCourseDescriptionDTO(CoursesEntityCreator.createCoursesEntityToUpdateDescription());
 
-        this.coursesService.updateCourseDescription(convertedToUpdateCourseDescriptionDTO, any());
+        this.coursesService.updateCourseDescription(convertedToUpdateCourseDescriptionDTO, this.course.getId());
 
         // capture the value after of the method called ( save() )
         ArgumentCaptor<CoursesEntity> userCaptor = ArgumentCaptor.forClass(CoursesEntity.class);
@@ -163,7 +164,7 @@ public class CoursesServiceTest {
         UpdateCourseDescriptionDTO convertedToUpdateCourseDescriptionDTO = CoursesMapper.toConvertUpdateCourseDescriptionDTO(CoursesEntityCreator.createCoursesEntityToUpdateDescription());
 
         TaskDeniedException exception = assertThrows(TaskDeniedException.class, () -> {
-            this.coursesService.updateCourseDescription(convertedToUpdateCourseDescriptionDTO, any());
+            this.coursesService.updateCourseDescription(convertedToUpdateCourseDescriptionDTO, this.course.getId());
         });
 
         String expectedErrorMessage = "Task not allowed";

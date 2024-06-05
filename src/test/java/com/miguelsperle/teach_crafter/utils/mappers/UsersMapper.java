@@ -15,23 +15,23 @@ public class UsersMapper {
         );
     }
 
-    public static AuthorizationUsersDTO toConvertAuthorizationUsersDTO(UsersEntity usersEntity){
+    public static AuthorizationUsersDTO toConvertAuthorizationUsersDTO(UsersEntity usersEntity) {
         return new AuthorizationUsersDTO(usersEntity.getEmail(), usersEntity.getPassword());
     }
 
-    public static UpdateNameUserDTO toConvertUpdateNameUserDTO(UsersEntity usersEntity){
+    public static UpdateNameUserDTO toConvertUpdateNameUserDTO(UsersEntity usersEntity) {
         return new UpdateNameUserDTO(usersEntity.getName());
     }
 
-    public static UpdateUsernameUserDTO toConvertUpdateUsernameUserDTO(UsersEntity usersEntity, String currentPassword){
+    public static UpdateUsernameUserDTO toConvertUpdateUsernameUserDTO(UsersEntity usersEntity, String currentPassword) {
         return new UpdateUsernameUserDTO(usersEntity.getUsername(), currentPassword);
     }
 
-    public static UpdateEmailUserDTO toConvertUpdateEmailUserDTO(UsersEntity usersEntity, String currentPassword){
+    public static UpdateEmailUserDTO toConvertUpdateEmailUserDTO(UsersEntity usersEntity, String currentPassword) {
         return new UpdateEmailUserDTO(usersEntity.getEmail(), currentPassword);
     }
 
-    public static UpdatePasswordUserLoggedDTO toConvertUpdatePasswordUserLoggedDTO(UsersEntity usersEntity, String currentPassword){
+    public static UpdatePasswordUserLoggedDTO toConvertUpdatePasswordUserLoggedDTO(UsersEntity usersEntity, String currentPassword) {
         return new UpdatePasswordUserLoggedDTO(usersEntity.getPassword(), currentPassword);
     }
 }
