@@ -33,19 +33,19 @@
 
 <h3>Cloning</h3>
 
-```⌨ Clone the repository```
+⌨ Clone the repository
 
 ```
 git clone https://github.com/MiguelSperle/Teach-Crafter.git
 ```
 
-```📂 Access at folder```
+📂 Access at folder
 
 ```
 cd Teach-Crafter
 ```
 
-```📡 Install dependencies```
+📡 Install dependencies
 
 ```
 mvn install
@@ -70,6 +70,7 @@ CLOUDINARY_API_SECRET=YOUR_CLOUDINARY_API_SECRET
 ```
 
 <h3>Command to run the container in docker in the background and consequently the database too</h3>
+
 ```
 docker-compose up -d
 ```
