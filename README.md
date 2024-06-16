@@ -1,21 +1,20 @@
-<h1 style="text-align: center; font-weight: bold;">Teach Crafter 💻</h1>
+<h1 style="font-weight: bold;">Teach Crafter 💻</h1>
 
-
-<p style="text-align: center;">
-  <img src="https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white" alt="java badge"/>
-  <img src="https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white" alt="spring badge"/>
-  <img src="https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white" alt="postgres badge"/>
-  <img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white" alt="docker badge"/>
-  <img src="https://img.shields.io/badge/Apache%20Maven-C71A36?style=for-the-badge&logo=Apache%20Maven&logoColor=white" alt="maven badge"/>
+<p>
+    <img src="https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white" alt="java badge"/>
+    <img src="https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white" alt="spring badge"/>
+    <img src="https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white" alt="postgres badge"/>
+    <img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white" alt="docker badge"/>
+    <img src="https://img.shields.io/badge/Apache%20Maven-C71A36?style=for-the-badge&logo=Apache%20Maven&logoColor=white" alt="maven badge"/>
 </p>
 
-<p style="text-align: center;">
- <a href="#started">Getting Started</a> • 
-  <a href="#routes">API Endpoints</a> •
- <a href="#colab">Collaborators</a>
+<p>
+    <a href="#started">Getting Started</a> • 
+    <a href="#routes">API Endpoints</a> •
+    <a href="#colab">Collaborators</a>
 </p>
 
-<p style="text-align: center;">
+<p>
     <b>
         Summarizing, The Teach Crafter is a back-end application designed to manage online courses efficiently.
         It provides features for creating and managing courses, enrolling students, handling user authentication and more.
