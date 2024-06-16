@@ -9,7 +9,6 @@ import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetTokens
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserNotFoundException;
 import com.miguelsperle.teach_crafter.modules.users.repositories.PasswordResetTokensRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -64,7 +63,7 @@ public class PasswordResetTokensService {
                 this.deleteExpiredPasswordResetToken(passwordResetToken.get());
             } else {
                 this.sendPasswordResetTokenEmail(user, passwordResetToken.get().getToken());
-                throw new ActivePasswordResetTokenException("You have an active password reset token. Please check your email to continue with password recovery.");
+                throw new ActivePasswordResetTokenException("You have an active password reset token. Please check your email to continue with password recovery");
             }
         }
     }

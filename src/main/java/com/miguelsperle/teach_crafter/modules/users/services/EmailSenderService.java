@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.context.Context;
 
-
 @Service
 public class EmailSenderService {
     private final JavaMailSender javaMailSender;

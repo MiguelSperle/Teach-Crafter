@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -22,10 +23,20 @@ public class SecurityConfiguration {
     @Qualifier("customAuthenticationEntryPoint")
     private final AuthenticationEntryPoint authenticationEntryPoint;
 
-    public SecurityConfiguration(final SecurityFilter securityFilter, final AuthenticationEntryPoint authenticationEntryPoint) {
+    @Qualifier("customAccessDeniedHandler")
+    private final AccessDeniedHandler accessDeniedHandler;
+
+    public SecurityConfiguration(final SecurityFilter securityFilter, final AuthenticationEntryPoint authenticationEntryPoint, final AccessDeniedHandler accessDeniedHandler) {
         this.securityFilter = securityFilter;
         this.authenticationEntryPoint = authenticationEntryPoint;
+        this.accessDeniedHandler = accessDeniedHandler;
     }
+
+    private static final String[] SWAGGER_LIST = {
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/swagger-resources/**"
+    };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -33,6 +44,7 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize ->
                         authorize
+                                .requestMatchers(SWAGGER_LIST).permitAll()
                                 .requestMatchers("/users/register").permitAll()
                                 .requestMatchers("/auth/login").permitAll()
                                 .requestMatchers("/reset-password/send-email").permitAll()
@@ -50,7 +62,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("/courses/{courseContentId}/content/update-course-module").hasRole("CREATOR")
                                 .requestMatchers("/courses/{courseId}/contents/creator-owned").hasRole("CREATOR")
                                 .anyRequest().authenticated())
-                .httpBasic(basic -> basic.authenticationEntryPoint(authenticationEntryPoint))
+                .exceptionHandling((exceptions) -> exceptions.authenticationEntryPoint(authenticationEntryPoint).accessDeniedHandler(accessDeniedHandler))
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

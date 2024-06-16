@@ -1,6 +1,5 @@
 package com.miguelsperle.teach_crafter.modules.users.services;
 
-import com.miguelsperle.teach_crafter.modules.users.dtos.cloudinary.UploadImageModelDTO;
 import com.miguelsperle.teach_crafter.modules.users.dtos.users.*;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserAlreadyExistsException;
@@ -92,11 +91,11 @@ public class UsersServiceTest {
     public void user_should_be_able_to_update_their_name(){
         this.configureAuthenticationSecurityMockForTest();
 
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+        when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
-        UpdateNameUserDTO convertedToUpdateNameUserDTO = UsersMapper.toConvertUpdateNameUserDTO(UsersEntityCreator.createUsersEntityToUpdateName());
+        UpdateUserNameDTO convertedToUpdateUserNameDTO = UsersMapper.toConvertUpdateUserNameDTO(UsersEntityCreator.createUsersEntityToUpdateName());
 
-        this.usersService.updateNameUser(convertedToUpdateNameUserDTO);
+        this.usersService.updateUserName(convertedToUpdateUserNameDTO);
 
         // capture the value after of the method called ( save() )
         ArgumentCaptor<UsersEntity> userCaptor = ArgumentCaptor.forClass(UsersEntity.class);
@@ -104,7 +103,7 @@ public class UsersServiceTest {
         // Verify if the method save was called with a specific argument
         verify(this.usersRepository).save(userCaptor.capture());
 
-        assertEquals(convertedToUpdateNameUserDTO.newName(), userCaptor.getValue().getName());
+        assertEquals(convertedToUpdateUserNameDTO.newName(), userCaptor.getValue().getName());
         // First argument is what I expect
         // Second argument is the real value obtained
     }
@@ -114,15 +113,15 @@ public class UsersServiceTest {
     public void user_should_be_able_to_update_their_username(){
         this.configureAuthenticationSecurityMockForTest();
 
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+        when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
         when(this.usersRepository.findByUsername(any())).thenReturn(Optional.empty());
 
         when(this.passwordEncoder.matches(any(), any())).thenReturn(true);
 
-        UpdateUsernameUserDTO convertedToUpdateUsernameUserDTO = UsersMapper.toConvertUpdateUsernameUserDTO(UsersEntityCreator.createUsersEntityToUpdateUsername(), UsersEntityCreator.createValidCurrentPasswordAuthenticatedUsersEntity().getPassword());
+        UpdateUserUsernameDTO convertedToUpdateUserUsernameDTO = UsersMapper.toConvertUpdateUserUsernameDTO(UsersEntityCreator.createUsersEntityToUpdateUsername(), UsersEntityCreator.createValidCurrentPasswordAuthenticatedUsersEntity().getPassword());
 
-        this.usersService.updateUsernameUser(convertedToUpdateUsernameUserDTO);
+        this.usersService.updateUserUsername(convertedToUpdateUserUsernameDTO);
 
         // capture the value after of the method called ( save() )
         ArgumentCaptor<UsersEntity> userCaptor = ArgumentCaptor.forClass(UsersEntity.class);
@@ -130,7 +129,7 @@ public class UsersServiceTest {
         // Verify if the method save was called with a specific argument
         verify(this.usersRepository).save(userCaptor.capture());
 
-        assertEquals(convertedToUpdateUsernameUserDTO.newUsername(), userCaptor.getValue().getUsername());
+        assertEquals(convertedToUpdateUserUsernameDTO.newUsername(), userCaptor.getValue().getUsername());
         // First argument is what I expect
         // Second argument is the real value obtained
     }
@@ -140,14 +139,14 @@ public class UsersServiceTest {
     public void user_should_not_be_able_to_update_their_username_if_another_user_already_has_the_same_username(){
         this.configureAuthenticationSecurityMockForTest();
 
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+        when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
         when(this.usersRepository.findByUsername(any())).thenReturn(Optional.of(UsersEntityCreator.createSecondValidUsersEntity()));
 
-        UpdateUsernameUserDTO convertedToUpdateUsernameUserDTO = UsersMapper.toConvertUpdateUsernameUserDTO(UsersEntityCreator.createUsersEntityToUpdateUsername(), UsersEntityCreator.createValidCurrentPasswordAuthenticatedUsersEntity().getPassword());
+        UpdateUserUsernameDTO convertedToUpdateUserUsernameDTO = UsersMapper.toConvertUpdateUserUsernameDTO(UsersEntityCreator.createUsersEntityToUpdateUsername(), UsersEntityCreator.createValidCurrentPasswordAuthenticatedUsersEntity().getPassword());
 
         UserAlreadyExistsException exception = assertThrows(UserAlreadyExistsException.class, () -> {
-            this.usersService.updateUsernameUser(convertedToUpdateUsernameUserDTO);
+            this.usersService.updateUserUsername(convertedToUpdateUserUsernameDTO);
         });
 
         String expectedErrorMessage = "This username is already used";
@@ -162,16 +161,16 @@ public class UsersServiceTest {
     public void user_should_not_be_able_to_update_their_username_with_an_invalid_password(){
         this.configureAuthenticationSecurityMockForTest();
 
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+        when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
         when(this.usersRepository.findByUsername(any())).thenReturn(Optional.empty());
 
         when(this.passwordEncoder.matches(any(), any())).thenReturn(false);
 
-        UpdateUsernameUserDTO convertedToUpdateUsernameUserDTO = UsersMapper.toConvertUpdateUsernameUserDTO(UsersEntityCreator.createUsersEntityToUpdateUsername(), UsersEntityCreator.createValidCurrentPasswordAuthenticatedUsersEntity().getPassword());
+        UpdateUserUsernameDTO convertedToUpdateUserUsernameDTO = UsersMapper.toConvertUpdateUserUsernameDTO(UsersEntityCreator.createUsersEntityToUpdateUsername(), UsersEntityCreator.createValidCurrentPasswordAuthenticatedUsersEntity().getPassword());
 
         UserPasswordMismatchException exception = assertThrows(UserPasswordMismatchException.class, () -> {
-            this.usersService.updateUsernameUser(convertedToUpdateUsernameUserDTO);
+            this.usersService.updateUserUsername(convertedToUpdateUserUsernameDTO);
         });
 
         String expectedErrorMessage = "Incorrect password";
@@ -186,15 +185,15 @@ public class UsersServiceTest {
     public void user_should_be_able_to_update_their_email(){
         this.configureAuthenticationSecurityMockForTest();
 
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+        when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
         when(this.usersRepository.findByEmail(any())).thenReturn(Optional.empty());
 
         when(this.passwordEncoder.matches(any(), any())).thenReturn(true);
 
-        UpdateEmailUserDTO convertedToUpdateEmailUserDTO = UsersMapper.toConvertUpdateEmailUserDTO(UsersEntityCreator.createUsersEntityToUpdateEmail(), UsersEntityCreator.createValidCurrentPasswordAuthenticatedUsersEntity().getPassword());
+        UpdateUserEmailDTO convertedToUpdateUserEmailDTO = UsersMapper.toConvertUpdateUserEmailDTO(UsersEntityCreator.createUsersEntityToUpdateEmail(), UsersEntityCreator.createValidCurrentPasswordAuthenticatedUsersEntity().getPassword());
 
-        this.usersService.updateEmailUser(convertedToUpdateEmailUserDTO);
+        this.usersService.updateUserEmail(convertedToUpdateUserEmailDTO);
 
         // capture the value after of the method called ( save() )
         ArgumentCaptor<UsersEntity> userCaptor = ArgumentCaptor.forClass(UsersEntity.class);
@@ -202,7 +201,7 @@ public class UsersServiceTest {
         // Verify if the method save was called with a specific argument
         verify(this.usersRepository).save(userCaptor.capture());
 
-        assertEquals(convertedToUpdateEmailUserDTO.newEmail(), userCaptor.getValue().getEmail());
+        assertEquals(convertedToUpdateUserEmailDTO.newEmail(), userCaptor.getValue().getEmail());
         // First argument is what I expect
         // Second argument is the real value obtained
     }
@@ -212,14 +211,14 @@ public class UsersServiceTest {
     public void user_should_not_be_able_to_update_their_email_if_another_user_already_has_the_same_email(){
         this.configureAuthenticationSecurityMockForTest();
 
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+        when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
         when(this.usersRepository.findByEmail(any())).thenReturn(Optional.of(UsersEntityCreator.createSecondValidUsersEntity()));
 
-        UpdateEmailUserDTO convertedToUpdateEmailUserDTO = UsersMapper.toConvertUpdateEmailUserDTO(UsersEntityCreator.createUsersEntityToUpdateEmail(), UsersEntityCreator.createValidCurrentPasswordAuthenticatedUsersEntity().getPassword());
+        UpdateUserEmailDTO convertedToUpdateUserEmailDTO = UsersMapper.toConvertUpdateUserEmailDTO(UsersEntityCreator.createUsersEntityToUpdateEmail(), UsersEntityCreator.createValidCurrentPasswordAuthenticatedUsersEntity().getPassword());
 
         UserAlreadyExistsException exception = assertThrows(UserAlreadyExistsException.class, () -> {
-            this.usersService.updateEmailUser(convertedToUpdateEmailUserDTO);
+            this.usersService.updateUserEmail(convertedToUpdateUserEmailDTO);
         });
 
         String expectedErrorMessage = "This email is already used";
@@ -234,16 +233,16 @@ public class UsersServiceTest {
     public void user_should_not_be_able_to_update_their_email_with_an_invalid_password(){
         this.configureAuthenticationSecurityMockForTest();
 
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+        when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
         when(this.usersRepository.findByEmail(any())).thenReturn(Optional.empty());
 
         when(this.passwordEncoder.matches(any(), any())).thenReturn(false);
 
-        UpdateEmailUserDTO convertedToUpdateEmailUserDTO = UsersMapper.toConvertUpdateEmailUserDTO(UsersEntityCreator.createUsersEntityToUpdateEmail(), UsersEntityCreator.createValidCurrentPasswordAuthenticatedUsersEntity().getPassword());
+        UpdateUserEmailDTO convertedToUpdateUserEmailDTO = UsersMapper.toConvertUpdateUserEmailDTO(UsersEntityCreator.createUsersEntityToUpdateEmail(), UsersEntityCreator.createValidCurrentPasswordAuthenticatedUsersEntity().getPassword());
 
         UserPasswordMismatchException exception = assertThrows(UserPasswordMismatchException.class, () -> {
-            this.usersService.updateEmailUser(convertedToUpdateEmailUserDTO);
+            this.usersService.updateUserEmail(convertedToUpdateUserEmailDTO);
         });
 
         String expectedErrorMessage = "Incorrect password";
@@ -258,7 +257,7 @@ public class UsersServiceTest {
     public void user_should_be_able_to_update_their_password(){
         this.configureAuthenticationSecurityMockForTest();
 
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+        when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
         when(this.passwordEncoder.matches(any(), any())).thenReturn(true);
 
@@ -266,9 +265,9 @@ public class UsersServiceTest {
 
         when(this.passwordEncoder.encode(any())).thenReturn(mockHashPassword);
 
-        UpdatePasswordUserLoggedDTO convertedToUpdatePasswordUserLoggedDTO = UsersMapper.toConvertUpdatePasswordUserLoggedDTO(UsersEntityCreator.createUsersEntityToUpdatePassword(), UsersEntityCreator.createValidCurrentPasswordAuthenticatedUsersEntity().getPassword());
+        UpdateLoggedUserPasswordDTO convertedToUpdatePasswordUserLoggedDTO = UsersMapper.toConvertUpdateLoggedUserPasswordDTO(UsersEntityCreator.createUsersEntityToUpdatePassword(), UsersEntityCreator.createValidCurrentPasswordAuthenticatedUsersEntity().getPassword());
 
-        this.usersService.updatePasswordUserLogged(convertedToUpdatePasswordUserLoggedDTO);
+        this.usersService.updateLoggedUserPassword(convertedToUpdatePasswordUserLoggedDTO);
 
         // capture the value after of the method called ( save() )
         ArgumentCaptor<UsersEntity> userCaptor = ArgumentCaptor.forClass(UsersEntity.class);
@@ -286,14 +285,14 @@ public class UsersServiceTest {
     public void user_should_not_be_able_to_update_their_password_with_an_invalid_password(){
         this.configureAuthenticationSecurityMockForTest();
 
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+        when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
         when(this.passwordEncoder.matches(any(), any())).thenReturn(false);
 
-        UpdatePasswordUserLoggedDTO convertedToUpdatePasswordUserLoggedDTO = UsersMapper.toConvertUpdatePasswordUserLoggedDTO(UsersEntityCreator.createUsersEntityToUpdatePassword(), UsersEntityCreator.createValidCurrentPasswordAuthenticatedUsersEntity().getPassword());
+        UpdateLoggedUserPasswordDTO convertedToUpdatePasswordUserLoggedDTO = UsersMapper.toConvertUpdateLoggedUserPasswordDTO(UsersEntityCreator.createUsersEntityToUpdatePassword(), UsersEntityCreator.createValidCurrentPasswordAuthenticatedUsersEntity().getPassword());
 
         UserPasswordMismatchException exception = assertThrows(UserPasswordMismatchException.class, () -> {
-            this.usersService.updatePasswordUserLogged(convertedToUpdatePasswordUserLoggedDTO);
+            this.usersService.updateLoggedUserPassword(convertedToUpdatePasswordUserLoggedDTO);
         });
 
         String expectedErrorMessage = "Incorrect password";
@@ -308,15 +307,14 @@ public class UsersServiceTest {
     public void user_should_be_able_to_update_their_image(){
         this.configureAuthenticationSecurityMockForTest();
 
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+        when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
-        MultipartFile mockFile = mock(MultipartFile.class);
-        UploadImageModelDTO uploadImageModelDTO = new UploadImageModelDTO(mockFile);
+        MultipartFile mockImageFile = mock(MultipartFile.class);
 
         String expectedUrl = "NEW_IMAGE_URL";
-        when(this.cloudinaryImageService.uploadImageFile(mockFile, "profile_pics")).thenReturn(expectedUrl);
+        when(this.cloudinaryImageService.uploadImageFile(mockImageFile, "profile_pics")).thenReturn(expectedUrl);
 
-        this.usersService.updateImageUser(uploadImageModelDTO);
+        this.usersService.updateUserImage(mockImageFile);
 
         // capture the value after of the method called ( save() )
         ArgumentCaptor<UsersEntity> userCaptor = ArgumentCaptor.forClass(UsersEntity.class);

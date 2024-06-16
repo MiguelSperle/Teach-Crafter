@@ -1,14 +1,14 @@
 package com.miguelsperle.teach_crafter.utils.mocks;
 
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.CoursesEntity;
-import com.miguelsperle.teach_crafter.modules.users.entities.subscriptions.SubscriptionsEntity;
+import com.miguelsperle.teach_crafter.modules.users.entities.enrollments.EnrollmentsEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 
 import java.time.LocalDateTime;
 
-public class SubscriptionsEntityCreator {
-    public static SubscriptionsEntity createValidSubscriptionsEntity() {
-        return SubscriptionsEntity
+public class EnrollmentsEntityCreator {
+    public static EnrollmentsEntity createValidEnrollmentsEntity() {
+        return EnrollmentsEntity
                 .builder()
                 .id("1")
                 .usersEntity(new UsersEntity())
@@ -18,8 +18,8 @@ public class SubscriptionsEntityCreator {
 
     }
 
-    public static SubscriptionsEntity createSubscriptionsEntityToBeSaved() {
-        return SubscriptionsEntity
+    public static EnrollmentsEntity createEnrollmentsEntityToBeSaved() {
+        return EnrollmentsEntity
                 .builder()
                 .id("1")
                 .build();

@@ -1,6 +1,5 @@
 package com.miguelsperle.teach_crafter.modules.users.services;
 
-import com.miguelsperle.teach_crafter.modules.users.dtos.cloudinary.UploadImageModelDTO;
 import com.miguelsperle.teach_crafter.modules.users.dtos.users.*;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserPasswordMismatchException;
@@ -11,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -30,7 +30,7 @@ public class UsersService {
         this.cloudinaryImageService = cloudinaryImageService;
     }
 
-    public UsersEntity getUserAuthenticated() {
+    public UsersEntity getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null && authentication.isAuthenticated()) {
@@ -47,7 +47,7 @@ public class UsersService {
 
         final String AVATAR_URL_IMAGE = "https://res.cloudinary.com/dnsxuxnto/image/upload/v1691878181/bm6z0rap3mkstebtopol.png";
 
-        newUser.setUsername(createUserDTO.username());
+        newUser.setUsername(createUserDTO.username().toLowerCase());
         newUser.setRole(createUserDTO.role());
         newUser.setName(createUserDTO.name());
         newUser.setEmail(createUserDTO.email());
@@ -79,22 +79,22 @@ public class UsersService {
         if (user.isPresent()) throw new UserAlreadyExistsException("User already exists");
     }
 
-    public void updateNameUser(UpdateNameUserDTO updateNameUserDTO) {
-        UsersEntity user = this.getUserAuthenticated();
+    public void updateUserName(UpdateUserNameDTO updateUserNameDTO) {
+        UsersEntity user = this.getAuthenticatedUser();
 
-        user.setName(updateNameUserDTO.newName());
+        user.setName(updateUserNameDTO.newName());
 
         this.usersRepository.save(user);
     }
 
-    public void updateUsernameUser(UpdateUsernameUserDTO updateUsernameUserDTO) {
-        UsersEntity user = this.getUserAuthenticated();
+    public void updateUserUsername(UpdateUserUsernameDTO updateUserUsernameDTO) {
+        UsersEntity user = this.getAuthenticatedUser();
 
-        this.verifyUserAlreadyExistsByUsername(updateUsernameUserDTO.newUsername());
+        this.verifyUserAlreadyExistsByUsername(updateUserUsernameDTO.newUsername());
 
-        this.verifyPasswordMatch(updateUsernameUserDTO.currentPassword(), user.getPassword());
+        this.verifyPasswordMatch(updateUserUsernameDTO.currentPassword(), user.getPassword());
 
-        user.setUsername(updateUsernameUserDTO.newUsername());
+        user.setUsername(updateUserUsernameDTO.newUsername());
 
         this.usersRepository.save(user);
     }
@@ -105,20 +105,20 @@ public class UsersService {
         if (user.isPresent()) throw new UserAlreadyExistsException("This username is already used");
     }
 
-    private void verifyPasswordMatch(String passwordSender, String currentPassword) {
-        boolean passwordMatches = this.passwordEncoder.matches(passwordSender, currentPassword);
+    private void verifyPasswordMatch(String passwordSent, String currentPassword) {
+        boolean passwordMatches = this.passwordEncoder.matches(passwordSent, currentPassword);
 
-        if (!passwordMatches) throw new UserPasswordMismatchException("Incorrect password");
+        if (!passwordMatches) throw new UserPasswordMismatchException("Incorrect current password");
     }
 
-    public void updateEmailUser(UpdateEmailUserDTO updateEmailUserDTO) {
-        UsersEntity user = this.getUserAuthenticated();
+    public void updateUserEmail(UpdateUserEmailDTO updateUserEmailDTO) {
+        UsersEntity user = this.getAuthenticatedUser();
 
-        this.verifyUserAlreadyExistsByNewEmail(updateEmailUserDTO.newEmail());
+        this.verifyUserAlreadyExistsByNewEmail(updateUserEmailDTO.newEmail());
 
-        this.verifyPasswordMatch(updateEmailUserDTO.currentPassword(), user.getPassword());
+        this.verifyPasswordMatch(updateUserEmailDTO.currentPassword(), user.getPassword());
 
-        user.setEmail(updateEmailUserDTO.newEmail());
+        user.setEmail(updateUserEmailDTO.newEmail());
 
         this.usersRepository.save(user);
     }
@@ -129,20 +129,20 @@ public class UsersService {
         if (user.isPresent()) throw new UserAlreadyExistsException("This email is already used");
     }
 
-    public void updatePasswordUserLogged(UpdatePasswordUserLoggedDTO updatePasswordUserLoggedDTO) {
-        UsersEntity user = this.getUserAuthenticated();
+    public void updateLoggedUserPassword(UpdateLoggedUserPasswordDTO updateLoggedUserPasswordDTO) {
+        UsersEntity user = this.getAuthenticatedUser();
 
-        this.verifyPasswordMatch(updatePasswordUserLoggedDTO.currentPassword(), user.getPassword());
+        this.verifyPasswordMatch(updateLoggedUserPasswordDTO.currentPassword(), user.getPassword());
 
-        user.setPassword(this.passwordEncoder.encode(updatePasswordUserLoggedDTO.newPassword()));
+        user.setPassword(this.passwordEncoder.encode(updateLoggedUserPasswordDTO.newPassword()));
 
         this.usersRepository.save(user);
     }
 
-    public void updateImageUser(UploadImageModelDTO uploadImageModelDTO) {
-        UsersEntity user = this.getUserAuthenticated();
+    public void updateUserImage(MultipartFile imageFile) {
+        UsersEntity user = this.getAuthenticatedUser();
 
-        user.setAvatarUrl(this.cloudinaryImageService.uploadImageFile(uploadImageModelDTO.imageFile(), "profile_pics"));
+        user.setAvatarUrl(this.cloudinaryImageService.uploadImageFile(imageFile, "profile_pics"));
 
         this.usersRepository.save(user);
     }

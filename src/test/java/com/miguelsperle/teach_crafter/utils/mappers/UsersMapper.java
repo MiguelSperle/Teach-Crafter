@@ -1,6 +1,6 @@
 package com.miguelsperle.teach_crafter.utils.mappers;
 
-import com.miguelsperle.teach_crafter.modules.users.dtos.authorization.AuthorizationUsersDTO;
+import com.miguelsperle.teach_crafter.modules.users.dtos.authorization.UsersAuthorizationDTO;
 import com.miguelsperle.teach_crafter.modules.users.dtos.users.*;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 
@@ -15,23 +15,23 @@ public class UsersMapper {
         );
     }
 
-    public static AuthorizationUsersDTO toConvertAuthorizationUsersDTO(UsersEntity usersEntity) {
-        return new AuthorizationUsersDTO(usersEntity.getEmail(), usersEntity.getPassword());
+    public static UsersAuthorizationDTO toConvertAuthorizationUsersDTO(UsersEntity usersEntity) {
+        return new UsersAuthorizationDTO(usersEntity.getEmail(), usersEntity.getPassword());
     }
 
-    public static UpdateNameUserDTO toConvertUpdateNameUserDTO(UsersEntity usersEntity) {
-        return new UpdateNameUserDTO(usersEntity.getName());
+    public static UpdateUserNameDTO toConvertUpdateUserNameDTO(UsersEntity usersEntity) {
+        return new UpdateUserNameDTO(usersEntity.getName());
     }
 
-    public static UpdateUsernameUserDTO toConvertUpdateUsernameUserDTO(UsersEntity usersEntity, String currentPassword) {
-        return new UpdateUsernameUserDTO(usersEntity.getUsername(), currentPassword);
+    public static UpdateUserUsernameDTO toConvertUpdateUserUsernameDTO(UsersEntity usersEntity, String currentPassword) {
+        return new UpdateUserUsernameDTO(usersEntity.getUsername(), currentPassword);
     }
 
-    public static UpdateEmailUserDTO toConvertUpdateEmailUserDTO(UsersEntity usersEntity, String currentPassword) {
-        return new UpdateEmailUserDTO(usersEntity.getEmail(), currentPassword);
+    public static UpdateUserEmailDTO toConvertUpdateUserEmailDTO(UsersEntity usersEntity, String currentPassword) {
+        return new UpdateUserEmailDTO(usersEntity.getEmail(), currentPassword);
     }
 
-    public static UpdatePasswordUserLoggedDTO toConvertUpdatePasswordUserLoggedDTO(UsersEntity usersEntity, String currentPassword) {
-        return new UpdatePasswordUserLoggedDTO(usersEntity.getPassword(), currentPassword);
+    public static UpdateLoggedUserPasswordDTO toConvertUpdateLoggedUserPasswordDTO(UsersEntity usersEntity, String currentPassword) {
+        return new UpdateLoggedUserPasswordDTO(usersEntity.getPassword(), currentPassword);
     }
 }

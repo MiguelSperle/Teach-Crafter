@@ -1,7 +1,6 @@
 package com.miguelsperle.teach_crafter.modules.users.services;
 
 import com.miguelsperle.teach_crafter.exceptions.general.TaskDeniedException;
-import com.miguelsperle.teach_crafter.modules.users.dtos.cloudinary.UploadVideoModelDTO;
 import com.miguelsperle.teach_crafter.modules.users.dtos.coursesContents.*;
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.CoursesEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.coursesContents.CoursesContentsEntity;
@@ -10,6 +9,7 @@ import com.miguelsperle.teach_crafter.modules.users.entities.coursesContents.exc
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 import com.miguelsperle.teach_crafter.modules.users.repositories.CoursesContentsRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,20 +21,20 @@ public class CoursesContentsService {
     private final CoursesContentsRepository coursesContentsRepository;
     private final CoursesService coursesService;
     private final UsersService usersService;
-    private final SubscriptionsService subscriptionsService;
+    private final EnrollmentsService enrollmentsService;
     private final CloudinaryVideoService cloudinaryVideoService;
 
     public CoursesContentsService(
             final CoursesContentsRepository coursesContentsRepository,
             final CoursesService coursesService,
             final UsersService usersService,
-            final SubscriptionsService subscriptionsService,
+            final EnrollmentsService enrollmentsService,
             final CloudinaryVideoService cloudinaryVideoService
     ) {
         this.coursesContentsRepository = coursesContentsRepository;
         this.coursesService = coursesService;
         this.usersService = usersService;
-        this.subscriptionsService = subscriptionsService;
+        this.enrollmentsService = enrollmentsService;
         this.cloudinaryVideoService = cloudinaryVideoService;
     }
 
@@ -49,7 +49,7 @@ public class CoursesContentsService {
         newCourseContent.setStatus(courseStatus);
         newCourseContent.setReleaseDate(createCourseContentDTO.releaseDate());
         newCourseContent.setCoursesEntity(this.coursesService.getCourseById(courseId));
-        newCourseContent.setCourseModule(createCourseContentDTO.courseModule());
+        newCourseContent.setContentModule(createCourseContentDTO.courseModule());
 
         return this.coursesContentsRepository.save(newCourseContent);
     }
@@ -68,7 +68,7 @@ public class CoursesContentsService {
     private void verifyCreatorUserIdAuthenticatedMatchesCourseOwnerId(String courseId) {
         CoursesEntity course = this.coursesService.getCourseById(courseId);
 
-        UsersEntity user = this.usersService.getUserAuthenticated();
+        UsersEntity user = this.usersService.getAuthenticatedUser();
 
         if (!Objects.equals(course.getUsersEntity().getId(), user.getId())) {
             throw new TaskDeniedException("Task not allowed");
@@ -80,12 +80,12 @@ public class CoursesContentsService {
                 .orElseThrow(() -> new CourseContentNotFoundException("Course content not found"));
     }
 
-    public void uploadCourseContentVideo(String courseContentId, UploadVideoModelDTO uploadVideoModelDTO) {
+    public void uploadCourseContentVideo(String courseContentId, MultipartFile videoFile) {
         CoursesContentsEntity courseContent = this.getCourseContentById(courseContentId);
 
         this.verifyCreatorUserIdAuthenticatedMatchesCourseOwnerId(courseContent.getCoursesEntity().getId());
 
-        courseContent.setVideoUrl(this.cloudinaryVideoService.uploadVideoFile(uploadVideoModelDTO.videoFile(), "course_videos"));
+        courseContent.setVideoUrl(this.cloudinaryVideoService.uploadVideoFile(videoFile, "course_videos"));
 
         this.coursesContentsRepository.save(courseContent);
     }
@@ -95,7 +95,7 @@ public class CoursesContentsService {
 
         this.verifyCreatorUserIdAuthenticatedMatchesCourseOwnerId(courseContent.getCoursesEntity().getId());
 
-        courseContent.setDescription(updateCourseContentDescriptionDTO.newDescription());
+        courseContent.setDescription(updateCourseContentDescriptionDTO.newContentDescription());
 
         this.coursesContentsRepository.save(courseContent);
     }
@@ -105,10 +105,10 @@ public class CoursesContentsService {
 
         this.verifyCreatorUserIdAuthenticatedMatchesCourseOwnerId(courseContent.getCoursesEntity().getId());
 
-        String courseStatus = this.isReleaseDateValid(updateCourseContentReleaseDateDTO.newReleaseDate());
+        String courseStatus = this.isReleaseDateValid(updateCourseContentReleaseDateDTO.newContentReleaseDate());
 
         courseContent.setStatus(courseStatus);
-        courseContent.setReleaseDate(updateCourseContentReleaseDateDTO.newReleaseDate());
+        courseContent.setReleaseDate(updateCourseContentReleaseDateDTO.newContentReleaseDate());
 
         this.coursesContentsRepository.save(courseContent);
     }
@@ -118,7 +118,7 @@ public class CoursesContentsService {
 
         this.verifyCreatorUserIdAuthenticatedMatchesCourseOwnerId(courseContent.getCoursesEntity().getId());
 
-        courseContent.setCourseModule(updateCourseContentModuleDTO.newCourseModule());
+        courseContent.setContentModule(updateCourseContentModuleDTO.newContentModule());
 
         this.coursesContentsRepository.save(courseContent);
     }
@@ -133,7 +133,7 @@ public class CoursesContentsService {
                         coursesContentsEntity.getVideoUrl(),
                         coursesContentsEntity.getStatus(),
                         coursesContentsEntity.getReleaseDate(),
-                        coursesContentsEntity.getCourseModule(),
+                        coursesContentsEntity.getContentModule(),
                         coursesContentsEntity.getCreatedAt()
                 )).toList();
     }
@@ -142,10 +142,10 @@ public class CoursesContentsService {
         return this.coursesContentsRepository.findAllByCoursesEntityId(courseId);
     }
 
-    public List<CourseContentResponseDTO> getCourseContentsWhetherUserIsSubscribedInTheCourse(String courseId) {
-        UsersEntity user = this.usersService.getUserAuthenticated();
+    public List<CourseContentResponseDTO> getPublishedCourseContentsForSubscribedUser(String courseId) {
+        UsersEntity user = this.usersService.getAuthenticatedUser();
 
-        this.subscriptionsService.ensureUserIsNotSubscribed(user.getId(), courseId);
+        this.enrollmentsService.ensureUserIsNotSubscribed(user.getId(), courseId);
 
         return this.getAllPublishedCourseContentsByCourseIdAndStatus(courseId).stream().map(coursesContentsEntity ->
                 new CourseContentResponseDTO(
@@ -154,7 +154,7 @@ public class CoursesContentsService {
                         coursesContentsEntity.getVideoUrl(),
                         coursesContentsEntity.getStatus(),
                         coursesContentsEntity.getReleaseDate(),
-                        coursesContentsEntity.getCourseModule(),
+                        coursesContentsEntity.getContentModule(),
                         coursesContentsEntity.getCreatedAt()
                 )).toList();
     }

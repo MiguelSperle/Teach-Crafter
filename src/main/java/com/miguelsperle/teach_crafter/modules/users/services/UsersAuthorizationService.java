@@ -1,7 +1,7 @@
 package com.miguelsperle.teach_crafter.modules.users.services;
 
 import com.miguelsperle.teach_crafter.infra.security.TokenService;
-import com.miguelsperle.teach_crafter.modules.users.dtos.authorization.AuthorizationUsersDTO;
+import com.miguelsperle.teach_crafter.modules.users.dtos.authorization.UsersAuthorizationDTO;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserPasswordMismatchException;
 import com.miguelsperle.teach_crafter.modules.users.repositories.UsersRepository;
@@ -10,12 +10,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthorizationUsersService {
+public class UsersAuthorizationService {
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
 
-    public AuthorizationUsersService(
+    public UsersAuthorizationService(
             final UsersRepository usersRepository,
             final PasswordEncoder passwordEncoder,
             final TokenService tokenService
@@ -25,11 +25,11 @@ public class AuthorizationUsersService {
         this.tokenService = tokenService;
     }
 
-    public String authorizationUsers(AuthorizationUsersDTO authorizationUsersDTO) {
-        UsersEntity user = this.usersRepository.findByEmail(authorizationUsersDTO.email())
-                .orElseThrow(() -> new UsernameNotFoundException("Email/password incorrect"));
+    public String usersAuthorization(UsersAuthorizationDTO usersAuthorizationDTO) {
+        UsersEntity user = this.usersRepository.findByEmail(usersAuthorizationDTO.email())
+                .orElseThrow(() -> new UsernameNotFoundException("Email and/or password incorrect"));
 
-        this.verifyPasswordMatch(authorizationUsersDTO.password(), user.getPassword());
+        this.verifyPasswordMatch(usersAuthorizationDTO.password(), user.getPassword());
 
         return this.tokenService.generateToken(user);
     }
@@ -37,6 +37,6 @@ public class AuthorizationUsersService {
     private void verifyPasswordMatch(String passwordSender, String currentPassword) {
         boolean passwordMatches = this.passwordEncoder.matches(passwordSender, currentPassword);
 
-        if (!passwordMatches) throw new UserPasswordMismatchException("Email/password incorrect");
+        if (!passwordMatches) throw new UserPasswordMismatchException("Email and/or password incorrect");
     }
 }

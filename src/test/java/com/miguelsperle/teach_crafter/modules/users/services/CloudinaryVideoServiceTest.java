@@ -1,11 +1,8 @@
 package com.miguelsperle.teach_crafter.modules.users.services;
 
 import com.cloudinary.Cloudinary;
-import com.cloudinary.Transformation;
 import com.cloudinary.Uploader;
 import com.cloudinary.Url;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -51,7 +47,7 @@ public class CloudinaryVideoServiceTest {
 
         when(this.cloudinary.uploader()).thenReturn(mockUploader);
 
-        Map<String, Object> uploadedFileResponse = new HashMap<>();
+        HashMap<String, Object> uploadedFileResponse = new HashMap<>();
         uploadedFileResponse.put("public_id", "m7Nq5Ls2VcH9A4X8BwK1");
         // We generate a random public_id
 
@@ -59,16 +55,16 @@ public class CloudinaryVideoServiceTest {
 
         when(this.cloudinary.url()).thenReturn(mockUrl);
 
-        when(this.cloudinary.url().transformation(any(Transformation.class))).thenReturn(mockUrl);
+        when(this.cloudinary.url().transformation(any())).thenReturn(mockUrl);
 
-        when(this.cloudinary.url().resourceType("video")).thenReturn(mockUrl);
+        when(this.cloudinary.url().resourceType(any())).thenReturn(mockUrl);
 
-        when(this.cloudinary.url().format("m3u8")).thenReturn(mockUrl);
+        when(this.cloudinary.url().format(any())).thenReturn(mockUrl);
 
-        when(this.cloudinary.url().secure(true)).thenReturn(mockUrl);
+        when(this.cloudinary.url().secure(anyBoolean())).thenReturn(mockUrl);
 
         String expectedUrl = "https://test-url/course_videos/m7Nq5Ls2VcH9A4X8BwK1";
-        when(this.cloudinary.url().generate("m7Nq5Ls2VcH9A4X8BwK1")).thenReturn(expectedUrl);
+        when(this.cloudinary.url().generate((String) uploadedFileResponse.get("public_id"))).thenReturn(expectedUrl);
 
         String expectedJson = "{" +
                 "\"1080p\": \"https://test-url/course_videos/m7Nq5Ls2VcH9A4X8BwK1\", " +

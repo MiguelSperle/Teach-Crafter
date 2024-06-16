@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -45,7 +44,7 @@ public class CloudinaryImageServiceTest {
 
         when(this.cloudinary.uploader()).thenReturn(mockUploader);
 
-        Map<String, Object> uploadedFileResponse = new HashMap<>();
+        HashMap<String, Object> uploadedFileResponse = new HashMap<>();
         uploadedFileResponse.put("public_id", "8Bs90kDnE3vz2X1rWj4T");
         // We generate a random public_id
 
@@ -53,12 +52,12 @@ public class CloudinaryImageServiceTest {
 
         when(this.cloudinary.url()).thenReturn(mockUrl);
 
-        when(this.cloudinary.url().resourceType("image")).thenReturn(mockUrl);
+        when(this.cloudinary.url().resourceType(any())).thenReturn(mockUrl);
 
-        when(this.cloudinary.url().secure(true)).thenReturn(mockUrl);
+        when(this.cloudinary.url().secure(anyBoolean())).thenReturn(mockUrl);
 
         String expectedUrl = "https://test-url/profile_pics/8Bs90kDnE3vz2X1rWj4T";
-        when(this.cloudinary.url().generate("8Bs90kDnE3vz2X1rWj4T")).thenReturn(expectedUrl);
+        when(this.cloudinary.url().generate((String) uploadedFileResponse.get("public_id"))).thenReturn(expectedUrl);
 
         String resultUrl = this.cloudinaryImageService.uploadImageFile(this.mockFile, "profile_pics");
 

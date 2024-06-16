@@ -9,9 +9,9 @@ import com.miguelsperle.teach_crafter.modules.users.entities.coursesContents.exc
 import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetTokens.exceptions.ActivePasswordResetTokenException;
 import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetTokens.exceptions.ExpiredPasswordResetTokenException;
 import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetTokens.exceptions.PasswordResetTokenNotFoundException;
-import com.miguelsperle.teach_crafter.modules.users.entities.subscriptions.exceptions.SubscriptionAlreadyExistsException;
+import com.miguelsperle.teach_crafter.modules.users.entities.enrollments.exceptions.EnrollmentAlreadyExistsException;
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.exceptions.NoAvailableSpotsException;
-import com.miguelsperle.teach_crafter.modules.users.entities.subscriptions.exceptions.SubscriptionNotFoundException;
+import com.miguelsperle.teach_crafter.modules.users.entities.enrollments.exceptions.EnrollmentNotFoundException;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserPasswordMismatchException;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserAlreadyExistsException;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.exceptions.UserNotFoundException;
@@ -44,7 +44,7 @@ public class ExceptionEntityHandler {
     }
 
     @ExceptionHandler(UserPasswordMismatchException.class)
-    public ResponseEntity<Object> handlePasswordNotMatchUsersException(UserPasswordMismatchException exception) {
+    public ResponseEntity<Object> handleUserPasswordMismatchException(UserPasswordMismatchException exception) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponseDTO(exception.getMessage(), HttpStatus.UNAUTHORIZED.value()));
     }
 
@@ -70,11 +70,11 @@ public class ExceptionEntityHandler {
 
     @ExceptionHandler(TaskDeniedException.class)
     public ResponseEntity<Object> handleTaskDeniedException(TaskDeniedException exception) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponseDTO(exception.getMessage(), HttpStatus.UNAUTHORIZED.value()));
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponseDTO(exception.getMessage(), HttpStatus.FORBIDDEN.value()));
     }
 
-    @ExceptionHandler(SubscriptionAlreadyExistsException.class)
-    public ResponseEntity<Object> handleSubscriptionAlreadyExistsException(SubscriptionAlreadyExistsException exception) {
+    @ExceptionHandler(EnrollmentAlreadyExistsException.class)
+    public ResponseEntity<Object> handleEnrollmentAlreadyExistsException(EnrollmentAlreadyExistsException exception) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponseDTO(exception.getMessage(), HttpStatus.CONFLICT.value()));
     }
 
@@ -83,8 +83,8 @@ public class ExceptionEntityHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponseDTO(exception.getMessage(), HttpStatus.CONFLICT.value()));
     }
 
-    @ExceptionHandler(SubscriptionNotFoundException.class)
-    public ResponseEntity<Object> handleSubscriptionNotFoundException(SubscriptionNotFoundException exception) {
+    @ExceptionHandler(EnrollmentNotFoundException.class)
+    public ResponseEntity<Object> handleEnrollmentNotFoundException(EnrollmentNotFoundException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponseDTO(exception.getMessage(), HttpStatus.NOT_FOUND.value()));
     }
 

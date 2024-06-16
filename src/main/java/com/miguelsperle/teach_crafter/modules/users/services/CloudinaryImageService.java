@@ -7,7 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class CloudinaryImageService {
@@ -18,9 +17,10 @@ public class CloudinaryImageService {
         try {
             HashMap<Object, Object> options = new HashMap<>();
             options.put("folder", folderName);
+            options.put("resource_type", "image");
 
             byte[] fileBytes = file.getBytes();
-            Map uploadedFile = this.cloudinary.uploader().upload(fileBytes, options);
+            var uploadedFile = this.cloudinary.uploader().upload(fileBytes, options);
 
             String publicId = (String) uploadedFile.get("public_id");
             return this.cloudinary.url().resourceType("image").secure(true).generate(publicId);

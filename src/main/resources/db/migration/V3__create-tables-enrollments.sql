@@ -1,4 +1,4 @@
-CREATE TABLE subscriptions (
+CREATE TABLE enrollments (
     id VARCHAR(255) NOT NULL PRIMARY KEY,
     user_id VARCHAR(255) NOT NULL,
     course_id VARCHAR(255) NOT NULL,

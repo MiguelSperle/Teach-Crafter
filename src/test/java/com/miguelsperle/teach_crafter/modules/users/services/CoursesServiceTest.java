@@ -3,11 +3,11 @@ package com.miguelsperle.teach_crafter.modules.users.services;
 import com.miguelsperle.teach_crafter.exceptions.general.TaskDeniedException;
 import com.miguelsperle.teach_crafter.modules.users.dtos.courses.*;
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.CoursesEntity;
-import com.miguelsperle.teach_crafter.modules.users.entities.subscriptions.SubscriptionsEntity;
+import com.miguelsperle.teach_crafter.modules.users.entities.enrollments.EnrollmentsEntity;
 import com.miguelsperle.teach_crafter.modules.users.repositories.CoursesRepository;
 import com.miguelsperle.teach_crafter.utils.mappers.CoursesMapper;
 import com.miguelsperle.teach_crafter.utils.mocks.CoursesEntityCreator;
-import com.miguelsperle.teach_crafter.utils.mocks.SubscriptionsEntityCreator;
+import com.miguelsperle.teach_crafter.utils.mocks.EnrollmentsEntityCreator;
 import com.miguelsperle.teach_crafter.utils.mocks.UsersEntityCreator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ public class CoursesServiceTest {
     private UsersService usersService;
 
     @Mock
-    private SubscriptionsCoursesManager subscriptionsCoursesManager;
+    private EnrollmentsCoursesManager enrollmentsCoursesManager;
 
     private CoursesEntity course;
 
@@ -54,7 +54,7 @@ public class CoursesServiceTest {
     @Test
     @DisplayName("Should be able to create a new course")
     public void should_be_able_to_create_a_new_course() {
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+        when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
         when(this.coursesRepository.findAllByUsersEntityId(any())).thenReturn(Collections.emptyList());
 
@@ -71,7 +71,7 @@ public class CoursesServiceTest {
     @Test
     @DisplayName("Should not be able to create a new course if you had reached creation limit")
     public void should_not_be_able_to_create_a_new_course_if_you_had_reached_creation_limit() {
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+        when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
         List<CoursesEntity> existingCourses = new ArrayList<>();
 
@@ -97,7 +97,7 @@ public class CoursesServiceTest {
     public void should_be_able_to_update_the_course_name() {
         when(this.coursesRepository.findById(any())).thenReturn(Optional.of(this.course));
 
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+        when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
         UpdateCourseNameDTO convertedToUpdateCourseNameDTO = CoursesMapper.toConvertUpdateCourseNameDTO(CoursesEntityCreator.createCoursesEntityToUpdateName());
 
@@ -109,7 +109,7 @@ public class CoursesServiceTest {
         // Verify if the method save was called with a specific argument
         verify(this.coursesRepository).save(userCaptor.capture());
 
-        assertEquals(convertedToUpdateCourseNameDTO.newName(), userCaptor.getValue().getName());
+        assertEquals(convertedToUpdateCourseNameDTO.newCourseName(), userCaptor.getValue().getName());
         // First argument is what I expect
         // Second argument is the real value obtained
     }
@@ -119,7 +119,7 @@ public class CoursesServiceTest {
     public void should_not_be_able_to_update_course_name_if_user_is_not_the_owner() {
         when(this.coursesRepository.findById(any())).thenReturn(Optional.of(this.course));
 
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createSecondValidUsersEntity());
+        when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createSecondValidUsersEntity());
 
         UpdateCourseNameDTO convertedToUpdateCourseNameDTO = CoursesMapper.toConvertUpdateCourseNameDTO(CoursesEntityCreator.createCoursesEntityToUpdateName());
 
@@ -137,7 +137,7 @@ public class CoursesServiceTest {
     public void should_be_able_to_update_the_course_description() {
         when(this.coursesRepository.findById(any())).thenReturn(Optional.of(this.course));
 
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+        when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
         UpdateCourseDescriptionDTO convertedToUpdateCourseDescriptionDTO = CoursesMapper.toConvertUpdateCourseDescriptionDTO(CoursesEntityCreator.createCoursesEntityToUpdateDescription());
 
@@ -149,7 +149,7 @@ public class CoursesServiceTest {
         // Verify if the method save was called with a specific argument
         verify(this.coursesRepository).save(userCaptor.capture());
 
-        assertEquals(convertedToUpdateCourseDescriptionDTO.newDescription(), userCaptor.getValue().getDescription());
+        assertEquals(convertedToUpdateCourseDescriptionDTO.newCourseDescription(), userCaptor.getValue().getDescription());
         // First argument is what I expect
         // Second argument is the real value obtained
     }
@@ -159,7 +159,7 @@ public class CoursesServiceTest {
     public void should_not_be_able_to_update_course_description_if_user_is_not_the_owner() {
         when(this.coursesRepository.findById(any())).thenReturn(Optional.of(this.course));
 
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createSecondValidUsersEntity());
+        when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createSecondValidUsersEntity());
 
         UpdateCourseDescriptionDTO convertedToUpdateCourseDescriptionDTO = CoursesMapper.toConvertUpdateCourseDescriptionDTO(CoursesEntityCreator.createCoursesEntityToUpdateDescription());
 
@@ -177,7 +177,7 @@ public class CoursesServiceTest {
     public void should_be_able_to_deactivate_course() {
         when(this.coursesRepository.findById(any())).thenReturn(Optional.of(this.course));
 
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+        when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
         this.coursesService.deactivateCourse(this.course.getId());
 
@@ -190,7 +190,7 @@ public class CoursesServiceTest {
     public void should_not_be_able_to_deactivate_course_if_user_is_not_the_owner() {
         when(this.coursesRepository.findById(any())).thenReturn(Optional.of(this.course));
 
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createSecondValidUsersEntity());
+        when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createSecondValidUsersEntity());
 
         TaskDeniedException exception = assertThrows(TaskDeniedException.class, () -> {
             this.coursesService.deactivateCourse(this.course.getId());
@@ -205,15 +205,15 @@ public class CoursesServiceTest {
     @Test
     @DisplayName("Should be able to return all courses created by authenticated user")
     public void should_be_able_to_return_all_courses_created_by_authenticated_user() {
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+        when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
         when(this.coursesRepository.findAllByUsersEntityId(any())).thenReturn(List.of(this.course));
 
-        SubscriptionsEntity subscription = SubscriptionsEntityCreator.createValidSubscriptionsEntity();
-        subscription.setUsersEntity(UsersEntityCreator.createValidAuthenticatedUsersEntity());
-        subscription.setCoursesEntity(this.course);
+        EnrollmentsEntity enrollment = EnrollmentsEntityCreator.createValidEnrollmentsEntity();
+        enrollment.setUsersEntity(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+        enrollment.setCoursesEntity(this.course);
 
-        when(this.subscriptionsCoursesManager.getAllSubscriptionsByCourseId(any())).thenReturn(List.of(subscription));
+        when(this.enrollmentsCoursesManager.getAllEnrollmentsByCourseId(any())).thenReturn(List.of(enrollment));
 
         List<CourseResponseDTO> result = this.coursesService.getAllCoursesCreatedByCreatorUser();
 
@@ -223,33 +223,33 @@ public class CoursesServiceTest {
         assertEquals(this.course.getName(), result.get(0).name());
         assertEquals(this.course.getDescription(), result.get(0).description());
         assertEquals(this.course.getMaximumAttendees(), result.get(0).maximumAttendees());
-        assertEquals(this.course.getMaximumAttendees() - List.of(subscription).size(), result.get(0).numberAvailableSpots());
-        assertEquals(List.of(subscription).size(), result.get(0).amountSubscription());
+        assertEquals(this.course.getMaximumAttendees() - List.of(enrollment).size(), result.get(0).numberAvailableSpots());
+        assertEquals(List.of(enrollment).size(), result.get(0).amountEnrollment());
         assertEquals(this.course.getCreatedAt(), result.get(0).createdAt());
         assertEquals(this.course.getUsersEntity().getName(), result.get(0).createdBy());
     }
 
     @Test
-    @DisplayName("Should be able to return all courses by user subscriptions")
-    public void should_be_able_to_return_all_courses_by_user_subscriptions() {
-        when(this.usersService.getUserAuthenticated()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+    @DisplayName("Should be able to return all courses by user enrollments")
+    public void should_be_able_to_return_all_courses_by_user_enrollments() {
+        when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
-        SubscriptionsEntity subscription = SubscriptionsEntityCreator.createValidSubscriptionsEntity();
-        subscription.setUsersEntity(UsersEntityCreator.createValidAuthenticatedUsersEntity());
-        subscription.setCoursesEntity(this.course);
+        EnrollmentsEntity enrollment = EnrollmentsEntityCreator.createValidEnrollmentsEntity();
+        enrollment.setUsersEntity(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+        enrollment.setCoursesEntity(this.course);
 
-        when(this.subscriptionsCoursesManager.getAllSubscriptionsByUserId(any())).thenReturn(List.of(subscription));
+        when(this.enrollmentsCoursesManager.getAllEnrollmentsByUserId(any())).thenReturn(List.of(enrollment));
 
-        List<CoursesSubscribedResponseDTO> result = this.coursesService.getCoursesByUserSubscriptions();
+        List<CoursesSubscribedResponseDTO> result = this.coursesService.getCoursesByUserEnrollments();
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(subscription.getCoursesEntity().getId(), result.get(0).id());
-        assertEquals(subscription.getCoursesEntity().getName(), result.get(0).name());
-        assertEquals(subscription.getCoursesEntity().getDescription(), result.get(0).description());
-        assertEquals(subscription.getCoursesEntity().getCreatedAt(), result.get(0).createdAt());
-        assertEquals(subscription.getCreatedAt(), result.get(0).subscriptionCreatedAt());
-        assertEquals(subscription.getCoursesEntity().getUsersEntity().getName(), result.get(0).createdBy());
+        assertEquals(enrollment.getCoursesEntity().getId(), result.get(0).id());
+        assertEquals(enrollment.getCoursesEntity().getName(), result.get(0).name());
+        assertEquals(enrollment.getCoursesEntity().getDescription(), result.get(0).description());
+        assertEquals(enrollment.getCoursesEntity().getCreatedAt(), result.get(0).createdAt());
+        assertEquals(enrollment.getCreatedAt(), result.get(0).enrollmentCreatedAt());
+        assertEquals(enrollment.getCoursesEntity().getUsersEntity().getName(), result.get(0).createdBy());
     }
 
     @Test
@@ -257,11 +257,11 @@ public class CoursesServiceTest {
     public void should_be_able_to_return_all_courses_by_description_keyword() {
         when(this.coursesRepository.findByDescriptionContainingIgnoreCase(any())).thenReturn(List.of(this.course));
 
-        SubscriptionsEntity subscription = SubscriptionsEntityCreator.createValidSubscriptionsEntity();
-        subscription.setUsersEntity(UsersEntityCreator.createValidAuthenticatedUsersEntity());
-        subscription.setCoursesEntity(this.course);
+        EnrollmentsEntity enrollment = EnrollmentsEntityCreator.createValidEnrollmentsEntity();
+        enrollment.setUsersEntity(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+        enrollment.setCoursesEntity(this.course);
 
-        when(this.subscriptionsCoursesManager.getAllSubscriptionsByCourseId(any())).thenReturn(List.of(subscription));
+        when(this.enrollmentsCoursesManager.getAllEnrollmentsByCourseId(any())).thenReturn(List.of(enrollment));
 
         List<CourseResponseDTO> result = this.coursesService.getCourses(any());
 
@@ -270,8 +270,8 @@ public class CoursesServiceTest {
         assertEquals(this.course.getId(), result.get(0).id());
         assertEquals(this.course.getName(), result.get(0).name());
         assertEquals(this.course.getDescription(), result.get(0).description());
-        assertEquals(this.course.getMaximumAttendees() - List.of(subscription).size(), result.get(0).numberAvailableSpots());
-        assertEquals(List.of(subscription).size(), result.get(0).amountSubscription());
+        assertEquals(this.course.getMaximumAttendees() - List.of(enrollment).size(), result.get(0).numberAvailableSpots());
+        assertEquals(List.of(enrollment).size(), result.get(0).amountEnrollment());
         assertEquals(this.course.getCreatedAt(), result.get(0).createdAt());
         assertEquals(this.course.getUsersEntity().getName(), result.get(0).createdBy());
     }

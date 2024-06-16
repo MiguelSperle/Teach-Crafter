@@ -1,4 +1,4 @@
-package com.miguelsperle.teach_crafter.modules.users.entities.subscriptions;
+package com.miguelsperle.teach_crafter.modules.users.entities.enrollments;
 
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.CoursesEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
@@ -11,13 +11,13 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
-@Table(name = "subscriptions")
-@Entity(name = "subscriptions")
+@Table(name = "enrollments")
+@Entity(name = "enrollments")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SubscriptionsEntity {
+public class EnrollmentsEntity {
     @Id
     @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -30,7 +30,6 @@ public class SubscriptionsEntity {
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
     private CoursesEntity coursesEntity;
-
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)

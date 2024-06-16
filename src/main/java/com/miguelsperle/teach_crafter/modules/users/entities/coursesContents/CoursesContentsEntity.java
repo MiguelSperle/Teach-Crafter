@@ -1,6 +1,5 @@
 package com.miguelsperle.teach_crafter.modules.users.entities.coursesContents;
 
-
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.CoursesEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -41,8 +40,8 @@ public class CoursesContentsEntity {
     @JoinColumn(name = "course_id", nullable = false)
     private CoursesEntity coursesEntity;
 
-    @Column(name = "course_module", nullable = false)
-    private String courseModule;
+    @Column(name = "content_module", nullable = false)
+    private String contentModule;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)

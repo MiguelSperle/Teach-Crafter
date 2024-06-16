@@ -22,7 +22,7 @@ public class CloudinaryVideoService {
             options.put("resource_type", "video");
 
             byte[] fileBytes = file.getBytes();
-            Map uploadedFile = this.cloudinary.uploader().upload(fileBytes, options);
+            var uploadedFile = this.cloudinary.uploader().upload(fileBytes, options);
 
             String publicId = (String) uploadedFile.get("public_id");
 

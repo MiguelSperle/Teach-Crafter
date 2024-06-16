@@ -16,7 +16,7 @@ public class CoursesContentsEntityCreator {
                 .status("PENDING")
                 .releaseDate(LocalDate.now().plusDays(2))
                 .coursesEntity(new CoursesEntity())
-                .courseModule("Introduction to Java")
+                .contentModule("Introduction to Java")
                 .createdAt(LocalDateTime.now().minusHours(2))
                 .updatedAt(LocalDateTime.now().minusHours(2))
                 .build();
@@ -47,7 +47,7 @@ public class CoursesContentsEntityCreator {
     public static CoursesContentsEntity createCoursesContentsEntityToUpdateModule() {
         return CoursesContentsEntity
                 .builder()
-                .courseModule("Introduction to Python")
+                .contentModule("Introduction to Python")
                 .build();
     }
 }

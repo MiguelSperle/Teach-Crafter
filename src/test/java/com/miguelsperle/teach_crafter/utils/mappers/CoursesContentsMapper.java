@@ -8,7 +8,7 @@ import com.miguelsperle.teach_crafter.modules.users.entities.coursesContents.Cou
 
 public class CoursesContentsMapper {
     public static CreateCourseContentDTO toConvertCreateCourseContentDTO(CoursesContentsEntity coursesContentsEntity) {
-        return new CreateCourseContentDTO(coursesContentsEntity.getDescription(), coursesContentsEntity.getReleaseDate(), coursesContentsEntity.getCourseModule());
+        return new CreateCourseContentDTO(coursesContentsEntity.getDescription(), coursesContentsEntity.getReleaseDate(), coursesContentsEntity.getContentModule());
     }
 
     public static UpdateCourseContentDescriptionDTO toConvertUpdateCourseContentDescriptionDTO(CoursesContentsEntity coursesContentsEntity) {
@@ -20,6 +20,6 @@ public class CoursesContentsMapper {
     }
 
     public static UpdateCourseContentModuleDTO toConvertUpdateCourseContentModuleDTO(CoursesContentsEntity coursesContentsEntity) {
-        return new UpdateCourseContentModuleDTO(coursesContentsEntity.getCourseModule());
+        return new UpdateCourseContentModuleDTO(coursesContentsEntity.getContentModule());
     }
 }
