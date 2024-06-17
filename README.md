@@ -9,8 +9,7 @@
 </p>
 
 <p>
-    <a href="#started">Getting Started</a> • 
-    <a href="#routes">API Endpoints</a> •
+    <a href="#started">Getting Started</a> •
     <a href="#colab">Collaborators</a>
 </p>
 
@@ -18,7 +17,8 @@
     <b>
         Summarizing, The Teach Crafter is a back-end application designed to manage online courses efficiently.
         It provides features for creating and managing courses, user enrollment, handling user authentication, a cron job that runs periodically, 
-        and more. The system supports integration with front-end interfaces.
+        and more. The system has been equipped with unit testing to ensure the reliability and performance of its features and
+        supports integration with front-end interfaces.
     </b>
 </p>
 
@@ -29,7 +29,6 @@
 - [JDK 17+](https://www.oracle.com/br/java/technologies/downloads/)
 - [Maven](https://maven.apache.org/download.cgi)
 - [Docker](https://docs.docker.com/)
-- [Postgres](https://hub.docker.com/_/postgres)
 
 <h3>Cloning</h3>
 
@@ -69,10 +68,16 @@ CLOUDINARY_API_KEY=YOUR_CLOUDINARY_API_KEY
 CLOUDINARY_API_SECRET=YOUR_CLOUDINARY_API_SECRET
 ```
 
-<h3>Command to run the container in docker in the background and consequently the database too</h3>
+<h3>Command to run the container in docker in the background</h3>
 
 ```
 docker-compose up -d
+```
+
+<h3>To see the routes documentation, ensure the application is running</h3>
+
+```
+http://localhost:8080/swagger-ui/index.html#/
 ```
 
 <h2 id="colab">🤝 Collaborator</h2>
