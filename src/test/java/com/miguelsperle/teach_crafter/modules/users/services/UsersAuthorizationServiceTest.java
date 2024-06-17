@@ -43,7 +43,7 @@ public class UsersAuthorizationServiceTest {
 
         when(this.passwordEncoder.matches(any(), any())).thenReturn(true);
 
-        String generatedToken = TokenGenerator.generateToken(UsersEntityCreator.createValidAuthenticatedUsersEntity().getId(), "secret_key_authorization_teach-crafter-test");
+        String generatedToken = TokenGenerator.generateToken(UsersEntityCreator.createValidAuthenticatedUsersEntity().getId(), "secret_test");
 
         when(this.tokenService.generateToken(any())).thenReturn(generatedToken);
 
