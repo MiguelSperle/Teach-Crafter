@@ -7,10 +7,9 @@ import com.miguelsperle.teach_crafter.modules.users.entities.coursesContents.Cou
 import com.miguelsperle.teach_crafter.modules.users.entities.coursesContents.exceptions.InvalidReleaseDateException;
 import com.miguelsperle.teach_crafter.modules.users.entities.enrollments.exceptions.EnrollmentNotFoundException;
 import com.miguelsperle.teach_crafter.modules.users.repositories.CoursesContentsRepository;
-import com.miguelsperle.teach_crafter.utils.mappers.CoursesContentsMapper;
-import com.miguelsperle.teach_crafter.utils.mocks.CoursesContentsEntityCreator;
-import com.miguelsperle.teach_crafter.utils.mocks.CoursesEntityCreator;
-import com.miguelsperle.teach_crafter.utils.mocks.UsersEntityCreator;
+import com.miguelsperle.teach_crafter.utils.unit.mocks.CoursesContentsEntityCreator;
+import com.miguelsperle.teach_crafter.utils.unit.mocks.CoursesEntityCreator;
+import com.miguelsperle.teach_crafter.utils.unit.mocks.UsersEntityCreator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -65,9 +64,9 @@ public class CoursesContentsServiceTest {
 
         when(this.coursesContentsRepository.save(any(CoursesContentsEntity.class))).thenReturn(courseContentToBeSaved);
 
-        CreateCourseContentDTO convertedToCreateCourseContentDTO = CoursesContentsMapper.toConvertCreateCourseContentDTO(courseContentToBeSaved);
+        CreateCourseContentDTO createCourseContentDTO = new CreateCourseContentDTO(courseContentToBeSaved.getDescription(), courseContentToBeSaved.getReleaseDate(), courseContentToBeSaved.getContentModule());
 
-        CoursesContentsEntity newCourseContent = this.coursesContentsService.createCourseContent(course.getId(), convertedToCreateCourseContentDTO);
+        CoursesContentsEntity newCourseContent = this.coursesContentsService.createCourseContent(course.getId(), createCourseContentDTO);
 
         assertNotNull(newCourseContent.getId());
         assertThat(newCourseContent).hasFieldOrProperty("id");
@@ -86,14 +85,15 @@ public class CoursesContentsServiceTest {
         CoursesContentsEntity courseContentToBeSaved = CoursesContentsEntityCreator.createCoursesContentsEntityToBeSaved();
         courseContentToBeSaved.setReleaseDate(courseContentToBeSaved.getReleaseDate().plusDays(2));
 
-        CreateCourseContentDTO convertedToCreateCourseContentDTO = CoursesContentsMapper.toConvertCreateCourseContentDTO(courseContentToBeSaved);
+        CreateCourseContentDTO createCourseContentDTO = new CreateCourseContentDTO(courseContentToBeSaved.getDescription(), courseContentToBeSaved.getReleaseDate(), courseContentToBeSaved.getContentModule());
 
         TaskDeniedException exception = assertThrows(TaskDeniedException.class, () -> {
-            this.coursesContentsService.createCourseContent(course.getId(), convertedToCreateCourseContentDTO);
+            this.coursesContentsService.createCourseContent(course.getId(), createCourseContentDTO);
         });
 
         String expectedErrorMessage = "Task not allowed";
 
+        assertInstanceOf(TaskDeniedException.class, exception);
         assertEquals(expectedErrorMessage, exception.getMessage());
     }
 
@@ -111,14 +111,15 @@ public class CoursesContentsServiceTest {
         CoursesContentsEntity courseContentToBeSaved = CoursesContentsEntityCreator.createCoursesContentsEntityToBeSaved();
         courseContentToBeSaved.setReleaseDate(courseContentToBeSaved.getReleaseDate().minusDays(2));
 
-        CreateCourseContentDTO convertedToCreateCourseContentDTO = CoursesContentsMapper.toConvertCreateCourseContentDTO(courseContentToBeSaved);
+        CreateCourseContentDTO createCourseContentDTO = new CreateCourseContentDTO(courseContentToBeSaved.getDescription(), courseContentToBeSaved.getReleaseDate(), courseContentToBeSaved.getContentModule());
 
         InvalidReleaseDateException exception = assertThrows(InvalidReleaseDateException.class, () -> {
-            this.coursesContentsService.createCourseContent(course.getId(), convertedToCreateCourseContentDTO);
+            this.coursesContentsService.createCourseContent(course.getId(), createCourseContentDTO);
         });
 
         String expectedErrorMessage = "Release date cannot be in the past";
 
+        assertInstanceOf(InvalidReleaseDateException.class, exception);
         assertEquals(expectedErrorMessage, exception.getMessage());
     }
 
@@ -137,9 +138,9 @@ public class CoursesContentsServiceTest {
 
         when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
-        UpdateCourseContentDescriptionDTO convertedToUpdateCourseContentDescriptionDTO = CoursesContentsMapper.toConvertUpdateCourseContentDescriptionDTO(CoursesContentsEntityCreator.createCoursesContentsEntityToUpdateDescription());
+        UpdateCourseContentDescriptionDTO updateCourseContentDescriptionDTO = new UpdateCourseContentDescriptionDTO(CoursesContentsEntityCreator.createCoursesContentsEntityToUpdateDescription().getDescription());
 
-        this.coursesContentsService.updateCourseContentDescription(courseContent.getId(), convertedToUpdateCourseContentDescriptionDTO);
+        this.coursesContentsService.updateCourseContentDescription(courseContent.getId(), updateCourseContentDescriptionDTO);
 
         // capture the value after of the method called ( save() )
         ArgumentCaptor<CoursesContentsEntity> userCaptor = ArgumentCaptor.forClass(CoursesContentsEntity.class);
@@ -147,7 +148,7 @@ public class CoursesContentsServiceTest {
         // Verify if the method save was called with a specific argument
         verify(this.coursesContentsRepository).save(userCaptor.capture());
 
-        assertEquals(convertedToUpdateCourseContentDescriptionDTO.newContentDescription(), userCaptor.getValue().getDescription());
+        assertEquals(updateCourseContentDescriptionDTO.newContentDescription(), userCaptor.getValue().getDescription());
         // First argument is what I expect
         // Second argument is the real value obtained
     }
@@ -167,20 +168,21 @@ public class CoursesContentsServiceTest {
 
         when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
-        UpdateCourseContentDescriptionDTO convertedToUpdateCourseContentDescriptionDTO = CoursesContentsMapper.toConvertUpdateCourseContentDescriptionDTO(CoursesContentsEntityCreator.createCoursesContentsEntityToUpdateDescription());
+        UpdateCourseContentDescriptionDTO updateCourseContentDescriptionDTO = new UpdateCourseContentDescriptionDTO(CoursesContentsEntityCreator.createCoursesContentsEntityToUpdateDescription().getDescription());
 
         TaskDeniedException exception = assertThrows(TaskDeniedException.class, () -> {
-            this.coursesContentsService.updateCourseContentDescription(courseContent.getId(), convertedToUpdateCourseContentDescriptionDTO);
+            this.coursesContentsService.updateCourseContentDescription(courseContent.getId(), updateCourseContentDescriptionDTO);
         });
 
         String expectedErrorMessage = "Task not allowed";
 
+        assertInstanceOf(TaskDeniedException.class, exception);
         assertEquals(expectedErrorMessage, exception.getMessage());
     }
 
     @Test
-    @DisplayName("Creator user should be able to update course content video")
-    public void creator_user_should_be_able_to_update_course_content_video() {
+    @DisplayName("Creator user should be able to upload course content video")
+    public void creator_user_should_be_able_to_upload_course_content_video() {
         CoursesEntity course = CoursesEntityCreator.createValidCoursesEntity();
         course.setUsersEntity(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
@@ -212,8 +214,8 @@ public class CoursesContentsServiceTest {
     }
 
     @Test
-    @DisplayName("Creator user should not be able to update course content video if the same individual is not the course owner")
-    public void creator_user_should_not_be_able_to_update_course_content_video_if_the_same_individual_is_not_the_course_owner() {
+    @DisplayName("Creator user should not be able to upload course content video if the same individual is not the course owner")
+    public void creator_user_should_not_be_able_to_upload_course_content_video_if_the_same_individual_is_not_the_course_owner() {
         CoursesEntity course = CoursesEntityCreator.createValidCoursesEntity();
         course.setUsersEntity(UsersEntityCreator.createSecondValidUsersEntity());
 
@@ -234,6 +236,7 @@ public class CoursesContentsServiceTest {
 
         String expectedErrorMessage = "Task not allowed";
 
+        assertInstanceOf(TaskDeniedException.class, exception);
         assertEquals(expectedErrorMessage, exception.getMessage());
     }
 
@@ -252,9 +255,9 @@ public class CoursesContentsServiceTest {
 
         when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
-        UpdateCourseContentReleaseDateDTO convertedToUpdateCourseContentReleaseDateDTO = CoursesContentsMapper.toConvertUpdateCourseContentReleaseDateDTO(CoursesContentsEntityCreator.createCoursesContentsEntityToUpdateReleaseDate());
+        UpdateCourseContentReleaseDateDTO updateCourseContentReleaseDateDTO = new UpdateCourseContentReleaseDateDTO(CoursesContentsEntityCreator.createCoursesContentsEntityToUpdateReleaseDate().getReleaseDate());
 
-        this.coursesContentsService.updateCourseContentReleaseDate(courseContent.getId(), convertedToUpdateCourseContentReleaseDateDTO);
+        this.coursesContentsService.updateCourseContentReleaseDate(courseContent.getId(), updateCourseContentReleaseDateDTO);
 
         // capture the value after of the method called ( save() )
         ArgumentCaptor<CoursesContentsEntity> userCaptor = ArgumentCaptor.forClass(CoursesContentsEntity.class);
@@ -262,7 +265,7 @@ public class CoursesContentsServiceTest {
         // Verify if the method save was called with a specific argument
         verify(this.coursesContentsRepository).save(userCaptor.capture());
 
-        assertEquals(convertedToUpdateCourseContentReleaseDateDTO.newContentReleaseDate(), userCaptor.getValue().getReleaseDate());
+        assertEquals(updateCourseContentReleaseDateDTO.newContentReleaseDate(), userCaptor.getValue().getReleaseDate());
         // First argument is what I expect
         // Second argument is the real value obtained
     }
@@ -282,14 +285,15 @@ public class CoursesContentsServiceTest {
 
         when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
-        UpdateCourseContentReleaseDateDTO convertedToUpdateCourseContentReleaseDateDTO = CoursesContentsMapper.toConvertUpdateCourseContentReleaseDateDTO(CoursesContentsEntityCreator.createCoursesContentsEntityToUpdateReleaseDate());
+        UpdateCourseContentReleaseDateDTO updateCourseContentReleaseDateDTO = new UpdateCourseContentReleaseDateDTO(CoursesContentsEntityCreator.createCoursesContentsEntityToUpdateReleaseDate().getReleaseDate());
 
         TaskDeniedException exception = assertThrows(TaskDeniedException.class, () -> {
-            this.coursesContentsService.updateCourseContentReleaseDate(courseContent.getId(), convertedToUpdateCourseContentReleaseDateDTO);
+            this.coursesContentsService.updateCourseContentReleaseDate(courseContent.getId(), updateCourseContentReleaseDateDTO);
         });
 
         String expectedErrorMessage = "Task not allowed";
 
+        assertInstanceOf(TaskDeniedException.class, exception);
         assertEquals(expectedErrorMessage, exception.getMessage());
     }
 
@@ -308,9 +312,9 @@ public class CoursesContentsServiceTest {
 
         when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
-        UpdateCourseContentModuleDTO convertedToUpdateCourseContentModuleDTO = CoursesContentsMapper.toConvertUpdateCourseContentModuleDTO(CoursesContentsEntityCreator.createCoursesContentsEntityToUpdateModule());
+        UpdateCourseContentModuleDTO updateCourseContentModuleDTO = new UpdateCourseContentModuleDTO(CoursesContentsEntityCreator.createCoursesContentsEntityToUpdateModule().getContentModule());
 
-        this.coursesContentsService.updateCourseContentModule(courseContent.getId(), convertedToUpdateCourseContentModuleDTO);
+        this.coursesContentsService.updateCourseContentModule(courseContent.getId(), updateCourseContentModuleDTO);
 
         // capture the value after of the method called ( save() )
         ArgumentCaptor<CoursesContentsEntity> userCaptor = ArgumentCaptor.forClass(CoursesContentsEntity.class);
@@ -318,7 +322,7 @@ public class CoursesContentsServiceTest {
         // Verify if the method save was called with a specific argument
         verify(this.coursesContentsRepository).save(userCaptor.capture());
 
-        assertEquals(convertedToUpdateCourseContentModuleDTO.newContentModule(), userCaptor.getValue().getContentModule());
+        assertEquals(updateCourseContentModuleDTO.newContentModule(), userCaptor.getValue().getContentModule());
         // First argument is what I expect
         // Second argument is the real value obtained
     }
@@ -338,20 +342,21 @@ public class CoursesContentsServiceTest {
 
         when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
-        UpdateCourseContentModuleDTO convertedToUpdateCourseContentModuleDTO = CoursesContentsMapper.toConvertUpdateCourseContentModuleDTO(CoursesContentsEntityCreator.createCoursesContentsEntityToUpdateModule());
+        UpdateCourseContentModuleDTO updateCourseContentModuleDTO = new UpdateCourseContentModuleDTO(CoursesContentsEntityCreator.createCoursesContentsEntityToUpdateModule().getContentModule());
 
         TaskDeniedException exception = assertThrows(TaskDeniedException.class, () -> {
-            this.coursesContentsService.updateCourseContentModule(courseContent.getId(), convertedToUpdateCourseContentModuleDTO);
+            this.coursesContentsService.updateCourseContentModule(courseContent.getId(), updateCourseContentModuleDTO);
         });
 
         String expectedErrorMessage = "Task not allowed";
 
+        assertInstanceOf(TaskDeniedException.class, exception);
         assertEquals(expectedErrorMessage, exception.getMessage());
     }
 
     @Test
-    @DisplayName("Should be able to return all content of a specific course created by creator user")
-    public void should_be_able_to_return_all_content_of_a_specific_course_created_by_creator_user() {
+    @DisplayName("Should be able to return all contents of a specific course created by creator user")
+    public void should_be_able_to_return_all_contents_of_a_specific_course_created_by_creator_user() {
         CoursesEntity course = CoursesEntityCreator.createValidCoursesEntity();
         course.setUsersEntity(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
@@ -378,8 +383,8 @@ public class CoursesContentsServiceTest {
     }
 
     @Test
-    @DisplayName("Should not be able to return all content of a specific course if the creator user is not the course owner")
-    public void should_not_be_able_to_return_all_content_of_a_specific_course_if_the_creator_user_is_not_the_course_owner() {
+    @DisplayName("Should not be able to return all contents of a specific course if the creator user is not the course owner")
+    public void should_not_be_able_to_return_all_contents_of_a_specific_course_if_the_creator_user_is_not_the_course_owner() {
         CoursesEntity course = CoursesEntityCreator.createValidCoursesEntity();
         course.setUsersEntity(UsersEntityCreator.createSecondValidUsersEntity());
 
@@ -396,12 +401,13 @@ public class CoursesContentsServiceTest {
 
         String expectedErrorMessage = "Task not allowed";
 
+        assertInstanceOf(TaskDeniedException.class, exception);
         assertEquals(expectedErrorMessage, exception.getMessage());
     }
 
     @Test
-    @DisplayName("Should be able to return all published course contents if the user is subscribed in the course")
-    public void should_be_able_to_return_all_published_course_contents_if_the_user_is_subscribed_in_the_course() {
+    @DisplayName("Should be able to return all published contents of a specific course if the user is subscribed in the course")
+    public void should_be_able_to_return_all_published_contents_of_a_specific_course_if_the_user_is_subscribed_in_the_course() {
         when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
         CoursesEntity course = CoursesEntityCreator.createValidCoursesEntity();
@@ -412,11 +418,11 @@ public class CoursesContentsServiceTest {
         courseContent.setReleaseDate(LocalDate.now());
         courseContent.setCoursesEntity(course);
 
-        doNothing().when(this.enrollmentsService).ensureUserIsNotSubscribed(any(), any());
+        doNothing().when(this.enrollmentsService).ensureUserIsSubscribed(any(), any());
 
         when(this.coursesContentsRepository.findAllByCoursesEntityIdAndStatus(any(), any())).thenReturn(List.of(courseContent));
 
-        List<CourseContentResponseDTO> result = this.coursesContentsService.getPublishedCourseContentsForSubscribedUser(course.getId());
+        List<CourseContentResponseDTO> result = this.coursesContentsService.getPublishedContentsForSubscribedUser(course.getId());
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -430,22 +436,23 @@ public class CoursesContentsServiceTest {
     }
 
     @Test
-    @DisplayName("Should not be able to return all published course contents if the user is not subscribed in the course")
-    public void should_not_be_able_to_return_all_published_course_contents_if_the_user_is_not_subscribed_in_the_course() {
+    @DisplayName("Should not be able to return all published contents of a specific course if the user is not subscribed in the course")
+    public void should_not_be_able_to_return_all_published_contents_of_a_specific_course_if_the_user_is_not_subscribed_in_the_course() {
         when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
         doThrow(new EnrollmentNotFoundException("Enrollment does not exist"))
-                .when(this.enrollmentsService).ensureUserIsNotSubscribed(any(), any());
+                .when(this.enrollmentsService).ensureUserIsSubscribed(any(), any());
 
         CoursesEntity course = CoursesEntityCreator.createValidCoursesEntity();
         course.setUsersEntity(UsersEntityCreator.createSecondValidUsersEntity());
 
         EnrollmentNotFoundException exception = assertThrows(EnrollmentNotFoundException.class, () -> {
-            this.coursesContentsService.getPublishedCourseContentsForSubscribedUser(course.getId());
+            this.coursesContentsService.getPublishedContentsForSubscribedUser(course.getId());
         });
 
         String expectedErrorMessage = "Enrollment does not exist";
 
+        assertInstanceOf(EnrollmentNotFoundException.class, exception);
         assertEquals(expectedErrorMessage, exception.getMessage());
     }
 }

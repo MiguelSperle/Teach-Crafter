@@ -87,12 +87,12 @@ public class EnrollmentsService {
     public void deleteCourseEnrollment(String courseId) {
         UsersEntity user = this.usersService.getAuthenticatedUser();
 
-        this.ensureUserIsNotSubscribed(user.getId(), courseId);
+        this.ensureUserIsSubscribed(user.getId(), courseId);
 
         this.enrollmentsRepository.deleteByUsersEntityIdAndCoursesEntityId(user.getId(), courseId);
     }
 
-    public void ensureUserIsNotSubscribed(String userId, String courseId) {
+    public void ensureUserIsSubscribed(String userId, String courseId) {
         this.getEnrollmentByUserIdAndCourseId(userId, courseId).orElseThrow(() -> new EnrollmentNotFoundException("Enrollment does not exist"));
     }
 }

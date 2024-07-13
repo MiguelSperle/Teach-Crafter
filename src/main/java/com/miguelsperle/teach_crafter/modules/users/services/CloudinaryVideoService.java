@@ -61,4 +61,4 @@ public class CloudinaryVideoService {
     }
 }
 // HLS is the most used, it is a streaming protocol for videos
-// it loads only the part who user is watching, and we can change the videos quality whether the internet is bad
+// it loads only the part who user is watching, and we can change the videos quality if the internet is bad

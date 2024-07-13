@@ -1,4 +1,4 @@
-package com.miguelsperle.teach_crafter.utils.mocks;
+package com.miguelsperle.teach_crafter.utils.unit.mocks;
 
 import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetTokens.PasswordResetTokensEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;

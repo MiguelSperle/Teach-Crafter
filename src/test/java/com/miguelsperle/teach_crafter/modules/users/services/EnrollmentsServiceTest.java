@@ -7,9 +7,9 @@ import com.miguelsperle.teach_crafter.modules.users.entities.enrollments.Enrollm
 import com.miguelsperle.teach_crafter.modules.users.entities.enrollments.exceptions.EnrollmentAlreadyExistsException;
 import com.miguelsperle.teach_crafter.modules.users.entities.enrollments.exceptions.EnrollmentNotFoundException;
 import com.miguelsperle.teach_crafter.modules.users.repositories.EnrollmentsRepository;
-import com.miguelsperle.teach_crafter.utils.mocks.CoursesEntityCreator;
-import com.miguelsperle.teach_crafter.utils.mocks.EnrollmentsEntityCreator;
-import com.miguelsperle.teach_crafter.utils.mocks.UsersEntityCreator;
+import com.miguelsperle.teach_crafter.utils.unit.mocks.CoursesEntityCreator;
+import com.miguelsperle.teach_crafter.utils.unit.mocks.EnrollmentsEntityCreator;
+import com.miguelsperle.teach_crafter.utils.unit.mocks.UsersEntityCreator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,8 +49,8 @@ public class EnrollmentsServiceTest {
     }
 
     @Test
-    @DisplayName("User should be able to create a enrollment in some course")
-    public void user_should_be_able_to_create_a_enrollment() {
+    @DisplayName("User should be able to create an enrollment")
+    public void user_should_be_able_to_create_an_enrollment() {
         CoursesEntity course = CoursesEntityCreator.createValidCoursesEntity();
         course.setUsersEntity(UsersEntityCreator.createSecondValidUsersEntity());
 
@@ -69,8 +69,8 @@ public class EnrollmentsServiceTest {
     }
 
     @Test
-    @DisplayName("User should not be able to create a enrollment if the same individual is the course owner")
-    public void user_should_not_be_able_to_create_a_enrollment_if_the_same_individual_is_the_course_owner() {
+    @DisplayName("User should not be able to create an enrollment if the same individual is the course owner")
+    public void user_should_not_be_able_to_create_an_enrollment_if_the_same_individual_is_the_course_owner() {
         CoursesEntity course = CoursesEntityCreator.createValidCoursesEntity();
         course.setUsersEntity(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
@@ -82,12 +82,13 @@ public class EnrollmentsServiceTest {
 
         String expectedErrorMessage = "Task not allowed";
 
+        assertInstanceOf(TaskDeniedException.class, exception);
         assertEquals(expectedErrorMessage, exception.getMessage());
     }
 
     @Test
-    @DisplayName("User should not be able to create a enrollment if the course does not have available spots")
-    public void user_should_not_be_able_to_create_a_enrollment_if_the_course_does_not_have_available_spots() {
+    @DisplayName("User should not be able to create an enrollment if the course does not have available spots")
+    public void user_should_not_be_able_to_create_an_enrollment_if_the_course_does_not_have_available_spots() {
         CoursesEntity course = CoursesEntityCreator.createValidCoursesEntity();
         course.setUsersEntity(UsersEntityCreator.createSecondValidUsersEntity());
 
@@ -111,12 +112,13 @@ public class EnrollmentsServiceTest {
 
         String expectedErrorMessage = "No available spots";
 
+        assertInstanceOf(NoAvailableSpotsException.class, exception);
         assertEquals(expectedErrorMessage, exception.getMessage());
     }
 
     @Test
-    @DisplayName("User should not be able to create a enrollment if the same individual is already subscribed in the course")
-    public void user_should_not_be_able_to_create_a_enrollment_if_the_same_individual_is_already_subscribed_in_the_course() {
+    @DisplayName("User should not be able to create an enrollment if the same individual is already subscribed in the course")
+    public void user_should_not_be_able_to_create_an_enrollment_if_the_same_individual_is_already_subscribed_in_the_course() {
         CoursesEntity course = CoursesEntityCreator.createValidCoursesEntity();
         course.setUsersEntity(UsersEntityCreator.createSecondValidUsersEntity());
 
@@ -134,12 +136,13 @@ public class EnrollmentsServiceTest {
 
         String expectedErrorMessage = "You have already subscribed in this course";
 
+        assertInstanceOf(EnrollmentAlreadyExistsException.class, exception);
         assertEquals(expectedErrorMessage, exception.getMessage());
     }
 
     @Test
-    @DisplayName("User should be able to delete a enrollment of a course")
-    public void user_should_be_able_to_delete_a_enrollment_of_a_course() {
+    @DisplayName("User should be able to delete an enrollment of a course")
+    public void user_should_be_able_to_delete_an_enrollment_of_a_course() {
         CoursesEntity course = CoursesEntityCreator.createValidCoursesEntity();
         course.setUsersEntity(UsersEntityCreator.createSecondValidUsersEntity());
 
@@ -156,8 +159,8 @@ public class EnrollmentsServiceTest {
     }
 
     @Test
-    @DisplayName("User should not be able to delete a enrollment of a course if the same individual is not subscribed in the course")
-    public void user_should_not_be_able_to_delete_a_enrollment_of_a_course_if_the_same_individual_is_not_subscribed_in_the_course() {
+    @DisplayName("User should not be able to delete an enrollment of a course if the same individual is not subscribed in the course")
+    public void user_should_not_be_able_to_delete_an_enrollment_of_a_course_if_the_same_individual_is_not_subscribed_in_the_course() {
         CoursesEntity course = CoursesEntityCreator.createValidCoursesEntity();
         course.setUsersEntity(UsersEntityCreator.createSecondValidUsersEntity());
 
@@ -169,6 +172,7 @@ public class EnrollmentsServiceTest {
 
         String expectedErrorMessage = "Enrollment does not exist";
 
+        assertInstanceOf(EnrollmentNotFoundException.class, exception);
         assertEquals(expectedErrorMessage, exception.getMessage());
     }
 }

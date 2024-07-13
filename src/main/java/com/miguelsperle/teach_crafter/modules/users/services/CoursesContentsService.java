@@ -142,12 +142,12 @@ public class CoursesContentsService {
         return this.coursesContentsRepository.findAllByCoursesEntityId(courseId);
     }
 
-    public List<CourseContentResponseDTO> getPublishedCourseContentsForSubscribedUser(String courseId) {
+    public List<CourseContentResponseDTO> getPublishedContentsForSubscribedUser(String courseId) {
         UsersEntity user = this.usersService.getAuthenticatedUser();
 
-        this.enrollmentsService.ensureUserIsNotSubscribed(user.getId(), courseId);
+        this.enrollmentsService.ensureUserIsSubscribed(user.getId(), courseId);
 
-        return this.getAllPublishedCourseContentsByCourseIdAndStatus(courseId).stream().map(coursesContentsEntity ->
+        return this.getAllPublishedContentsByCourseIdAndStatus(courseId).stream().map(coursesContentsEntity ->
                 new CourseContentResponseDTO(
                         coursesContentsEntity.getId(),
                         coursesContentsEntity.getDescription(),
@@ -159,7 +159,7 @@ public class CoursesContentsService {
                 )).toList();
     }
 
-    private List<CoursesContentsEntity> getAllPublishedCourseContentsByCourseIdAndStatus(String courseId) {
+    private List<CoursesContentsEntity> getAllPublishedContentsByCourseIdAndStatus(String courseId) {
         return this.coursesContentsRepository.findAllByCoursesEntityIdAndStatus(courseId, "PUBLISHED");
     }
 

@@ -1,4 +1,4 @@
-package com.miguelsperle.teach_crafter.utils.mocks;
+package com.miguelsperle.teach_crafter.utils.unit.mocks;
 
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.CoursesEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.enrollments.EnrollmentsEntity;

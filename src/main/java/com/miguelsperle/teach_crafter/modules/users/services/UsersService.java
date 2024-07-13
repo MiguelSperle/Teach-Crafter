@@ -47,7 +47,7 @@ public class UsersService {
 
         final String AVATAR_URL_IMAGE = "https://res.cloudinary.com/dnsxuxnto/image/upload/v1691878181/bm6z0rap3mkstebtopol.png";
 
-        newUser.setUsername(createUserDTO.username().toLowerCase());
+        newUser.setUsername(createUserDTO.username());
         newUser.setRole(createUserDTO.role());
         newUser.setName(createUserDTO.name());
         newUser.setEmail(createUserDTO.email());
@@ -84,7 +84,7 @@ public class UsersService {
 
         user.setName(updateUserNameDTO.newName());
 
-        this.usersRepository.save(user);
+        this.save(user);
     }
 
     public void updateUserUsername(UpdateUserUsernameDTO updateUserUsernameDTO) {
@@ -96,7 +96,7 @@ public class UsersService {
 
         user.setUsername(updateUserUsernameDTO.newUsername());
 
-        this.usersRepository.save(user);
+        this.save(user);
     }
 
     private void verifyUserAlreadyExistsByUsername(String username) {
@@ -120,7 +120,7 @@ public class UsersService {
 
         user.setEmail(updateUserEmailDTO.newEmail());
 
-        this.usersRepository.save(user);
+        this.save(user);
     }
 
     private void verifyUserAlreadyExistsByNewEmail(String email) {
@@ -136,7 +136,7 @@ public class UsersService {
 
         user.setPassword(this.passwordEncoder.encode(updateLoggedUserPasswordDTO.newPassword()));
 
-        this.usersRepository.save(user);
+        this.save(user);
     }
 
     public void updateUserImage(MultipartFile imageFile) {
@@ -144,7 +144,7 @@ public class UsersService {
 
         user.setAvatarUrl(this.cloudinaryImageService.uploadImageFile(imageFile, "profile_pics"));
 
-        this.usersRepository.save(user);
+        this.save(user);
     }
 
 

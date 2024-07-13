@@ -7,9 +7,9 @@ import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetTokens
 import com.miguelsperle.teach_crafter.modules.users.entities.passwordResetTokens.exceptions.ExpiredPasswordResetTokenException;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 import com.miguelsperle.teach_crafter.modules.users.repositories.PasswordResetTokensRepository;
-import com.miguelsperle.teach_crafter.utils.mappers.PasswordResetTokensMapper;
-import com.miguelsperle.teach_crafter.utils.mocks.PasswordResetTokensEntityCreator;
-import com.miguelsperle.teach_crafter.utils.mocks.UsersEntityCreator;
+
+import com.miguelsperle.teach_crafter.utils.unit.mocks.PasswordResetTokensEntityCreator;
+import com.miguelsperle.teach_crafter.utils.unit.mocks.UsersEntityCreator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,14 +48,14 @@ public class PasswordResetTokensServiceTest {
 
     @Test
     @DisplayName("User not logged should be able to create a password reset token to reset their password")
-    public void user_not_logged_should_be_able_to_create_a_password_reset_token_to_reset_their_password(){
+    public void user_not_logged_should_be_able_to_create_a_password_reset_token_to_reset_their_password() {
         when(this.usersService.getUserByEmail(any())).thenReturn(Optional.of(UsersEntityCreator.createValidAuthenticatedUsersEntity()));
 
         when(this.passwordResetTokensRepository.save(any(PasswordResetTokensEntity.class))).thenReturn(PasswordResetTokensEntityCreator.createPasswordResetTokensEntityToBeSaved());
 
-        CreatePasswordResetTokenDTO convertedToCreatePasswordResetTokenDTO = PasswordResetTokensMapper.toConvertCreatePasswordResetTokenDTO(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+        CreatePasswordResetTokenDTO createPasswordResetTokenDTO = new CreatePasswordResetTokenDTO(UsersEntityCreator.createValidAuthenticatedUsersEntity().getEmail());
 
-        PasswordResetTokensEntity newPasswordResetToken = this.passwordResetTokenService.createPasswordResetToken(convertedToCreatePasswordResetTokenDTO);
+        PasswordResetTokensEntity newPasswordResetToken = this.passwordResetTokenService.createPasswordResetToken(createPasswordResetTokenDTO);
 
         verify(this.emailSenderService).sendSimpleMessage(any(), any(), any());
 
@@ -65,7 +65,7 @@ public class PasswordResetTokensServiceTest {
 
     @Test
     @DisplayName("User not logged should not be able to create a password reset token to reset their password if one already exists")
-    public void user_not_logged_should_be_able_to_create_a_password_reset_token_to_reset_their_password_if_one_already_exists(){
+    public void user_not_logged_should_be_able_to_create_a_password_reset_token_to_reset_their_password_if_one_already_exists() {
         when(this.usersService.getUserByEmail(any())).thenReturn(Optional.of(UsersEntityCreator.createValidAuthenticatedUsersEntity()));
 
         PasswordResetTokensEntity passwordResetToken = PasswordResetTokensEntityCreator.createValidPasswordResetTokensEntity();
@@ -74,16 +74,17 @@ public class PasswordResetTokensServiceTest {
 
         when(this.passwordResetTokensRepository.findByUsersEntityId(any())).thenReturn(Optional.of(passwordResetToken));
 
-        CreatePasswordResetTokenDTO convertedToCreatePasswordResetTokenDTO = PasswordResetTokensMapper.toConvertCreatePasswordResetTokenDTO(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+        CreatePasswordResetTokenDTO createPasswordResetTokenDTO = new CreatePasswordResetTokenDTO(UsersEntityCreator.createValidAuthenticatedUsersEntity().getEmail());
 
         ActivePasswordResetTokenException exception = assertThrows(ActivePasswordResetTokenException.class, () -> {
-            this.passwordResetTokenService.createPasswordResetToken(convertedToCreatePasswordResetTokenDTO);
+            this.passwordResetTokenService.createPasswordResetToken(createPasswordResetTokenDTO);
         });
 
         verify(this.emailSenderService).sendSimpleMessage(any(), any(), any());
 
-        String expectedErrorMessage = "You have an active password reset token. Please check your email to continue with password recovery.";
+        String expectedErrorMessage = "You have an active password reset token. Please check your email to continue with password recovery";
 
+        assertInstanceOf(ActivePasswordResetTokenException.class, exception);
         assertEquals(expectedErrorMessage, exception.getMessage());
         // First argument is what I expect
         // Second argument is the real value obtained
@@ -92,7 +93,7 @@ public class PasswordResetTokensServiceTest {
 
     @Test
     @DisplayName("Should be able to delete expired password reset token")
-    public void should_be_able_to_delete_expired_password_reset_token(){
+    public void should_be_able_to_delete_expired_password_reset_token() {
         when(this.usersService.getUserByEmail(any())).thenReturn(Optional.of(UsersEntityCreator.createValidAuthenticatedUsersEntity()));
 
         PasswordResetTokensEntity expiredPasswordResetToken = PasswordResetTokensEntityCreator.createValidPasswordResetTokensEntity();
@@ -102,16 +103,16 @@ public class PasswordResetTokensServiceTest {
 
         when(this.passwordResetTokensRepository.findByUsersEntityId(any())).thenReturn(Optional.of(expiredPasswordResetToken));
 
-        CreatePasswordResetTokenDTO convertedToCreatePasswordResetTokenDTO = PasswordResetTokensMapper.toConvertCreatePasswordResetTokenDTO(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+        CreatePasswordResetTokenDTO createPasswordResetTokenDTO = new CreatePasswordResetTokenDTO(UsersEntityCreator.createValidAuthenticatedUsersEntity().getEmail());
 
-        this.passwordResetTokenService.createPasswordResetToken(convertedToCreatePasswordResetTokenDTO);
+        this.passwordResetTokenService.createPasswordResetToken(createPasswordResetTokenDTO);
 
         verify(this.passwordResetTokensRepository).deleteById(expiredPasswordResetToken.getId());
     }
 
     @Test
     @DisplayName("User not logged should be able to reset their password")
-    public void user_not_logged_should_be_able_to_reset_their_password(){
+    public void user_not_logged_should_be_able_to_reset_their_password() {
         PasswordResetTokensEntity passwordResetToken = PasswordResetTokensEntityCreator.createValidPasswordResetTokensEntity();
         passwordResetToken.setUsersEntity(UsersEntityCreator.createValidAuthenticatedUsersEntity());
         passwordResetToken.setExpiresIn(this.genExpirationDate());
@@ -124,9 +125,9 @@ public class PasswordResetTokensServiceTest {
 
         when(this.passwordEncoder.encode(any())).thenReturn(mockHashPassword);
 
-        ResetPasswordUserNotLoggedDTO convertedResetPasswordUserNotLoggedDTO = PasswordResetTokensMapper.toConvertResetPasswordUserNotLoggedDTO(UsersEntityCreator.createUsersEntityToUpdatePassword(), passwordResetToken.getToken());
+        ResetPasswordUserNotLoggedDTO resetPasswordUserNotLoggedDTO = new ResetPasswordUserNotLoggedDTO(UsersEntityCreator.createUsersEntityToUpdatePassword().getPassword(), passwordResetToken.getToken());
 
-        this.passwordResetTokenService.resetPasswordUserNotLogged(convertedResetPasswordUserNotLoggedDTO);
+        this.passwordResetTokenService.resetPasswordUserNotLogged(resetPasswordUserNotLoggedDTO);
 
         // Capture the value after of the method called ( save() )
         ArgumentCaptor<UsersEntity> userCaptor = ArgumentCaptor.forClass(UsersEntity.class);
@@ -144,7 +145,7 @@ public class PasswordResetTokensServiceTest {
 
     @Test
     @DisplayName("User not logged should not be able to reset their password if the token is expired")
-    public void user_not_logged_should_not_be_able_to_reset_their_password_if_the_token_is_expired(){
+    public void user_not_logged_should_not_be_able_to_reset_their_password_if_the_token_is_expired() {
         PasswordResetTokensEntity passwordResetToken = PasswordResetTokensEntityCreator.createValidPasswordResetTokensEntity();
         passwordResetToken.setUsersEntity(UsersEntityCreator.createValidAuthenticatedUsersEntity());
         passwordResetToken.setExpiresIn(new Date(System.currentTimeMillis() - 1000));
@@ -152,16 +153,17 @@ public class PasswordResetTokensServiceTest {
 
         when(this.passwordResetTokensRepository.findByToken(any())).thenReturn(Optional.of(passwordResetToken));
 
-        ResetPasswordUserNotLoggedDTO convertedResetPasswordUserNotLoggedDTO = PasswordResetTokensMapper.toConvertResetPasswordUserNotLoggedDTO(UsersEntityCreator.createUsersEntityToUpdatePassword(), passwordResetToken.getToken());
+        ResetPasswordUserNotLoggedDTO resetPasswordUserNotLoggedDTO = new ResetPasswordUserNotLoggedDTO(UsersEntityCreator.createUsersEntityToUpdatePassword().getPassword(), passwordResetToken.getToken());
 
         ExpiredPasswordResetTokenException exception = assertThrows(ExpiredPasswordResetTokenException.class, () -> {
-            this.passwordResetTokenService.resetPasswordUserNotLogged(convertedResetPasswordUserNotLoggedDTO);
+            this.passwordResetTokenService.resetPasswordUserNotLogged(resetPasswordUserNotLoggedDTO);
         });
 
         verify(this.passwordResetTokensRepository).deleteById(passwordResetToken.getId());
 
         String expectedErrorMessage = "The password reset token has already expired. Please make the process again";
 
+        assertInstanceOf(ExpiredPasswordResetTokenException.class, exception);
         assertEquals(expectedErrorMessage, exception.getMessage());
         // First argument is what I expect
         // Second argument is the real value obtained

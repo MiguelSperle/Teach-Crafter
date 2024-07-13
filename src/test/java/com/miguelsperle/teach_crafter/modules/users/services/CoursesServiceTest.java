@@ -5,10 +5,9 @@ import com.miguelsperle.teach_crafter.modules.users.dtos.courses.*;
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.CoursesEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.enrollments.EnrollmentsEntity;
 import com.miguelsperle.teach_crafter.modules.users.repositories.CoursesRepository;
-import com.miguelsperle.teach_crafter.utils.mappers.CoursesMapper;
-import com.miguelsperle.teach_crafter.utils.mocks.CoursesEntityCreator;
-import com.miguelsperle.teach_crafter.utils.mocks.EnrollmentsEntityCreator;
-import com.miguelsperle.teach_crafter.utils.mocks.UsersEntityCreator;
+import com.miguelsperle.teach_crafter.utils.unit.mocks.CoursesEntityCreator;
+import com.miguelsperle.teach_crafter.utils.unit.mocks.EnrollmentsEntityCreator;
+import com.miguelsperle.teach_crafter.utils.unit.mocks.UsersEntityCreator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -60,9 +59,9 @@ public class CoursesServiceTest {
 
         when(this.coursesRepository.save(any(CoursesEntity.class))).thenReturn(CoursesEntityCreator.createCoursesEntityToBeSaved());
 
-        CreateCourseDTO convertedToCreateCourseDTO = CoursesMapper.toConvertCreateCourseDTO(CoursesEntityCreator.createCoursesEntityToBeSaved());
+        CreateCourseDTO createCourseDTO = new CreateCourseDTO(CoursesEntityCreator.createCoursesEntityToBeSaved().getName(), CoursesEntityCreator.createCoursesEntityToBeSaved().getDescription(), CoursesEntityCreator.createCoursesEntityToBeSaved().getMaximumAttendees());
 
-        CoursesEntity newCourse = this.coursesService.createCourse(convertedToCreateCourseDTO);
+        CoursesEntity newCourse = this.coursesService.createCourse(createCourseDTO);
 
         assertNotNull(newCourse.getId());
         assertThat(newCourse).hasFieldOrProperty("id");
@@ -81,14 +80,15 @@ public class CoursesServiceTest {
 
         when(this.coursesRepository.findAllByUsersEntityId(any())).thenReturn(existingCourses);
 
-        CreateCourseDTO convertedToCreateCourseDTO = CoursesMapper.toConvertCreateCourseDTO(CoursesEntityCreator.createCoursesEntityToBeSaved());
+        CreateCourseDTO createCourseDTO = new CreateCourseDTO(CoursesEntityCreator.createCoursesEntityToBeSaved().getName(), CoursesEntityCreator.createCoursesEntityToBeSaved().getDescription(), CoursesEntityCreator.createCoursesEntityToBeSaved().getMaximumAttendees());
 
         TaskDeniedException exception = assertThrows(TaskDeniedException.class, () -> {
-            this.coursesService.createCourse(convertedToCreateCourseDTO);
+            this.coursesService.createCourse(createCourseDTO);
         });
 
         String expectedErrorMessage = "Task not allowed";
 
+        assertInstanceOf(TaskDeniedException.class, exception);
         assertEquals(expectedErrorMessage, exception.getMessage());
     }
 
@@ -99,9 +99,9 @@ public class CoursesServiceTest {
 
         when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
-        UpdateCourseNameDTO convertedToUpdateCourseNameDTO = CoursesMapper.toConvertUpdateCourseNameDTO(CoursesEntityCreator.createCoursesEntityToUpdateName());
+        UpdateCourseNameDTO updateCourseNameDTO = new UpdateCourseNameDTO(CoursesEntityCreator.createCoursesEntityToUpdateName().getName());
 
-        this.coursesService.updateCourseName(convertedToUpdateCourseNameDTO, this.course.getId());
+        this.coursesService.updateCourseName(updateCourseNameDTO, this.course.getId());
 
         // capture the value after of the method called ( save() )
         ArgumentCaptor<CoursesEntity> userCaptor = ArgumentCaptor.forClass(CoursesEntity.class);
@@ -109,7 +109,7 @@ public class CoursesServiceTest {
         // Verify if the method save was called with a specific argument
         verify(this.coursesRepository).save(userCaptor.capture());
 
-        assertEquals(convertedToUpdateCourseNameDTO.newCourseName(), userCaptor.getValue().getName());
+        assertEquals(updateCourseNameDTO.newCourseName(), userCaptor.getValue().getName());
         // First argument is what I expect
         // Second argument is the real value obtained
     }
@@ -121,14 +121,15 @@ public class CoursesServiceTest {
 
         when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createSecondValidUsersEntity());
 
-        UpdateCourseNameDTO convertedToUpdateCourseNameDTO = CoursesMapper.toConvertUpdateCourseNameDTO(CoursesEntityCreator.createCoursesEntityToUpdateName());
+        UpdateCourseNameDTO updateCourseNameDTO = new UpdateCourseNameDTO(CoursesEntityCreator.createCoursesEntityToUpdateName().getName());
 
         TaskDeniedException exception = assertThrows(TaskDeniedException.class, () -> {
-            this.coursesService.updateCourseName(convertedToUpdateCourseNameDTO, this.course.getId());
+            this.coursesService.updateCourseName(updateCourseNameDTO, this.course.getId());
         });
 
         String expectedErrorMessage = "Task not allowed";
 
+        assertInstanceOf(TaskDeniedException.class, exception);
         assertEquals(expectedErrorMessage, exception.getMessage());
     }
 
@@ -139,9 +140,9 @@ public class CoursesServiceTest {
 
         when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
-        UpdateCourseDescriptionDTO convertedToUpdateCourseDescriptionDTO = CoursesMapper.toConvertUpdateCourseDescriptionDTO(CoursesEntityCreator.createCoursesEntityToUpdateDescription());
+        UpdateCourseDescriptionDTO updateCourseDescriptionDTO = new UpdateCourseDescriptionDTO(CoursesEntityCreator.createCoursesEntityToUpdateDescription().getDescription());
 
-        this.coursesService.updateCourseDescription(convertedToUpdateCourseDescriptionDTO, this.course.getId());
+        this.coursesService.updateCourseDescription(updateCourseDescriptionDTO, this.course.getId());
 
         // capture the value after of the method called ( save() )
         ArgumentCaptor<CoursesEntity> userCaptor = ArgumentCaptor.forClass(CoursesEntity.class);
@@ -149,7 +150,7 @@ public class CoursesServiceTest {
         // Verify if the method save was called with a specific argument
         verify(this.coursesRepository).save(userCaptor.capture());
 
-        assertEquals(convertedToUpdateCourseDescriptionDTO.newCourseDescription(), userCaptor.getValue().getDescription());
+        assertEquals(updateCourseDescriptionDTO.newCourseDescription(), userCaptor.getValue().getDescription());
         // First argument is what I expect
         // Second argument is the real value obtained
     }
@@ -161,20 +162,21 @@ public class CoursesServiceTest {
 
         when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createSecondValidUsersEntity());
 
-        UpdateCourseDescriptionDTO convertedToUpdateCourseDescriptionDTO = CoursesMapper.toConvertUpdateCourseDescriptionDTO(CoursesEntityCreator.createCoursesEntityToUpdateDescription());
+        UpdateCourseDescriptionDTO updateCourseDescriptionDTO = new UpdateCourseDescriptionDTO(CoursesEntityCreator.createCoursesEntityToUpdateDescription().getDescription());
 
         TaskDeniedException exception = assertThrows(TaskDeniedException.class, () -> {
-            this.coursesService.updateCourseDescription(convertedToUpdateCourseDescriptionDTO, this.course.getId());
+            this.coursesService.updateCourseDescription(updateCourseDescriptionDTO, this.course.getId());
         });
 
         String expectedErrorMessage = "Task not allowed";
 
+        assertInstanceOf(TaskDeniedException.class, exception);
         assertEquals(expectedErrorMessage, exception.getMessage());
     }
 
     @Test
-    @DisplayName("Should be able to deactivate course")
-    public void should_be_able_to_deactivate_course() {
+    @DisplayName("Should be able to deactivate a course")
+    public void should_be_able_to_deactivate_a_course() {
         when(this.coursesRepository.findById(any())).thenReturn(Optional.of(this.course));
 
         when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
@@ -186,8 +188,8 @@ public class CoursesServiceTest {
     }
 
     @Test
-    @DisplayName("Should not be able to deactivate course if user is not the owner")
-    public void should_not_be_able_to_deactivate_course_if_user_is_not_the_owner() {
+    @DisplayName("Should not be able to deactivate a course if user is not the owner")
+    public void should_not_be_able_to_deactivate_a_course_if_user_is_not_the_owner() {
         when(this.coursesRepository.findById(any())).thenReturn(Optional.of(this.course));
 
         when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createSecondValidUsersEntity());
@@ -198,13 +200,14 @@ public class CoursesServiceTest {
 
         String expectedErrorMessage = "Task not allowed";
 
+        assertInstanceOf(TaskDeniedException.class, exception);
         assertEquals(expectedErrorMessage, exception.getMessage());
     }
 
 
     @Test
-    @DisplayName("Should be able to return all courses created by authenticated user")
-    public void should_be_able_to_return_all_courses_created_by_authenticated_user() {
+    @DisplayName("Should be able to return all courses created by creator user")
+    public void should_be_able_to_return_all_courses_created_by_creator_user() {
         when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
         when(this.coursesRepository.findAllByUsersEntityId(any())).thenReturn(List.of(this.course));
@@ -230,8 +233,8 @@ public class CoursesServiceTest {
     }
 
     @Test
-    @DisplayName("Should be able to return all courses by user enrollments")
-    public void should_be_able_to_return_all_courses_by_user_enrollments() {
+    @DisplayName("Should be able to return courses by user enrollments")
+    public void should_be_able_to_return_courses_by_user_enrollments() {
         when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
         EnrollmentsEntity enrollment = EnrollmentsEntityCreator.createValidEnrollmentsEntity();
@@ -253,8 +256,8 @@ public class CoursesServiceTest {
     }
 
     @Test
-    @DisplayName("Should be able to return all courses by description keyword")
-    public void should_be_able_to_return_all_courses_by_description_keyword() {
+    @DisplayName("Should be able to return all courses")
+    public void should_be_able_to_return_all_courses() {
         when(this.coursesRepository.findByDescriptionContainingIgnoreCase(any())).thenReturn(List.of(this.course));
 
         EnrollmentsEntity enrollment = EnrollmentsEntityCreator.createValidEnrollmentsEntity();

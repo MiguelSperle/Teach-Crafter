@@ -1,4 +1,4 @@
-package com.miguelsperle.teach_crafter.utils.mocks;
+package com.miguelsperle.teach_crafter.utils.unit.mocks;
 
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 
@@ -11,6 +11,7 @@ public class UsersEntityCreator {
                 .id("1")
                 .name("James")
                 .email("james123@gmail.com")
+                .role("ROLE_CREATOR")
                 .username("james_captain")
                 .password("$2bç02$Zn5ue7Tl1Mg/SQ7vpIAI8OeNNv3l.UWwF2t7A.cRw3ZQftEil7FZG") // test12345
                 .avatarUrl("IMAGE_URL")
@@ -25,6 +26,7 @@ public class UsersEntityCreator {
                 .id("2")
                 .name("Jayson")
                 .email("jayson@gmail.com")
+                .role("ROLE_CREATOR")
                 .username("jayson_tatum")
                 .password("$c33e29fc98a4d5n329fas292c8a4930739a17f8f39c7b415f2471b15770158") // test1234567
                 .avatarUrl("IMAGE_URL")

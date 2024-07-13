@@ -8,8 +8,7 @@ import org.hibernate.validator.constraints.Length;
 
 public record CreateUserDTO(
         @Schema(example = "example", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotBlank(message = "Username is required to create an account")
-        @Pattern(regexp = "^\\S+$", message = "The field [username] must not contain space")
+        @Pattern(regexp = "^[^\\d\\s]+$", message = "The field [username] is required and must not contain space")
         String username,
 
         @Schema(example = "ROLE_USER OR ROLE_CREATOR",  requiredMode = Schema.RequiredMode.REQUIRED)
@@ -26,7 +25,6 @@ public record CreateUserDTO(
         String email,
 
         @Schema(example = "12345", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 5, maxLength = 100)
-        @NotBlank(message = "Password is required to create an account")
         @Length(min = 5, max = 100, message = "Password must has between 5 and 100 character")
         String password
 ) {

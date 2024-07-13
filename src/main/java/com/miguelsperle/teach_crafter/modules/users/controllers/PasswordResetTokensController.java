@@ -44,7 +44,7 @@ public class PasswordResetTokensController {
                     examples = {
                             @ExampleObject(name = "Missing Current Email", description = "Error returned because the current email is missing in the request", value = "{\"message\": \"Your current email is required to create a token to reset your current password\", \"status\": 400}"),
                             @ExampleObject(name = "Invalid Current Email", description = "Error returned because the current email does not contain a valid value", value = "{\"message\": \"The field [currentEmail] must contain a valid email\", \"status\": 400}")
-            })),
+                    })),
             @ApiResponse(responseCode = "404", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponseDTO.class),
                     examples = {
                             @ExampleObject(name = "No user found", description = "Error returned because no user was found with the specific email address", value = "{\"message\": \"User not found\", \"status\": 404}")
@@ -71,7 +71,7 @@ public class PasswordResetTokensController {
                     })),
             @ApiResponse(responseCode = "400", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponseDTO.class),
                     examples = {
-                            @ExampleObject(name = "Missing New Password", description = "Error returned because the new password is missing in the request", value = "{\"message\": \"A new password is required to reset your current password\", \"status\": 400}"),
+                            @ExampleObject(name = "Invalid New Password", description = "Error returned because the new password does not contain between 5 and 100 character", value = "{\"message\": \"Password must has between 5 and 100 character\", \"status\": 400}"),
                             @ExampleObject(name = "Missing Token", description = "Error returned because the token is missing in the request", value = "{\"message\": \"The token is required to reset your current password\", \"status\": 400}"),
                     })),
             @ApiResponse(responseCode = "403", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponseDTO.class),

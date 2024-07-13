@@ -21,7 +21,7 @@ public class TokenService {
 
     public String generateToken(UsersEntity user) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(secret);
+            Algorithm algorithm = Algorithm.HMAC256(this.secret);
 
             return JWT.create()
                     .withIssuer("teach-crafter")
@@ -35,7 +35,7 @@ public class TokenService {
 
     public String validateToken(String token) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(secret);
+            Algorithm algorithm = Algorithm.HMAC256(this.secret);
 
             return JWT.require(algorithm)
                     .withIssuer("teach-crafter")

@@ -111,7 +111,7 @@ public class PasswordResetTokensService {
 
         UsersEntity user = this.usersService.getUserById(passwordResetToken.getUsersEntity().getId());
 
-        user.setPassword(passwordEncoder.encode(resetPasswordUserNotLoggedDTO.newPassword()));
+        user.setPassword(this.passwordEncoder.encode(resetPasswordUserNotLoggedDTO.newPassword()));
         this.deleteExpiredPasswordResetToken(passwordResetToken);
 
         this.usersService.save(user);

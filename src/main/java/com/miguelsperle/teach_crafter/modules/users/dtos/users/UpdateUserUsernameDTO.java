@@ -6,8 +6,7 @@ import jakarta.validation.constraints.Pattern;
 
 public record UpdateUserUsernameDTO(
         @Schema(example = "alien example", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotBlank(message = "A new username is required to update your current username")
-        @Pattern(regexp = "^\\S+$", message = "The field [newUsername] must not contain space")
+        @Pattern(regexp = "^[^\\d\\s]+$", message = "The field [newUsername] is required and must not contain space")
         String newUsername,
 
         @Schema(example = "12345", requiredMode = Schema.RequiredMode.REQUIRED)

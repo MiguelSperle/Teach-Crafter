@@ -115,7 +115,7 @@ public class CoursesController {
                     examples = {
                             @ExampleObject(name = "Missing New Course Description", description = "Error returned because the new course description is missing in the request", value = "{\"message\": \"A new course description is required to update the current course description\", \"status\": 400}"),
                     })),
-            @ApiResponse(responseCode = "403", content = @Content(mediaType = "application/json",schema = @Schema(oneOf = {MessageResponseDTO.class, CustomAuthenticationEntryResponseDTO.class, CustomAccessDeniedHandlerResponseDTO.class}),
+            @ApiResponse(responseCode = "403", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {MessageResponseDTO.class, CustomAuthenticationEntryResponseDTO.class, CustomAccessDeniedHandlerResponseDTO.class}),
                     examples = {
                             @ExampleObject(name = "Creator User Not Course Owner", description = "Error returned because the creator user tried to update a course that is not theirs", value = "{\"message\": \"Task not allowed\", \"status\": 403}"),
                             @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}"),
@@ -248,6 +248,10 @@ public class CoursesController {
                     examples = {
                             @ExampleObject(value = "{\"message\": \"Course content video uploaded successfully\", \"status\": 200}")
                     })),
+            @ApiResponse(responseCode = "400", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponseDTO.class),
+                    examples = {
+                            @ExampleObject(name = "Missing Video File", description = "Error returned because video file is missing in the request", value = "{\"message\": \"Video file is required\", \"status\": 400}")
+                    })),
             @ApiResponse(responseCode = "403", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {MessageResponseDTO.class, CustomAuthenticationEntryResponseDTO.class, CustomAccessDeniedHandlerResponseDTO.class}),
                     examples = {
                             @ExampleObject(name = "Creator User Not Course Owner", description = "Error returned because the creator user tried to upload a video for a specific content of a course that is not theirs", value = "{\"message\": \"Task not allowed\", \"status\": 403}"),
@@ -261,7 +265,10 @@ public class CoursesController {
                     }))
     })
     @SecurityRequirement(name = "jwt_auth")
-    public ResponseEntity<Object> uploadCourseContentVideo(@PathVariable String courseContentId, @RequestPart("videoFile") MultipartFile videoFile) {
+    public ResponseEntity<Object> uploadCourseContentVideo(@PathVariable String courseContentId, @RequestPart(value = "videoFile", required = false) MultipartFile videoFile) {
+        if (videoFile == null || videoFile.isEmpty())
+            return ResponseEntity.badRequest().body(new MessageResponseDTO("Video file is required", HttpStatus.BAD_REQUEST.value()));
+
         this.coursesContentsService.uploadCourseContentVideo(courseContentId, videoFile);
 
         return ResponseEntity.ok()
@@ -279,7 +286,7 @@ public class CoursesController {
                     examples = {
                             @ExampleObject(name = "Missing New Content Description", description = "Error returned because the new content description is missing in the request", value = "{\"message\": \"A new content description is required to update the current content description\", \"status\": 400}")
                     })),
-            @ApiResponse(responseCode = "403", content = @Content(mediaType = "application/json",schema = @Schema(oneOf = {MessageResponseDTO.class, CustomAuthenticationEntryResponseDTO.class, CustomAccessDeniedHandlerResponseDTO.class}),
+            @ApiResponse(responseCode = "403", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {MessageResponseDTO.class, CustomAuthenticationEntryResponseDTO.class, CustomAccessDeniedHandlerResponseDTO.class}),
                     examples = {
                             @ExampleObject(name = "Creator User Not Course Owner", description = "Error returned because the creator user tried to update a specific content of a course that is not theirs", value = "{\"message\": \"Task not allowed\", \"status\": 403}"),
                             @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}"),
@@ -308,6 +315,10 @@ public class CoursesController {
                     examples = {
                             @ExampleObject(value = "{\"message\": \"Course content video updated successfully\", \"status\": 200}")
                     })),
+            @ApiResponse(responseCode = "400", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponseDTO.class),
+                    examples = {
+                            @ExampleObject(name = "Missing Video File", description = "Error returned because video file is missing in the request", value = "{\"message\": \"Video file is required\", \"status\": 400}")
+                    })),
             @ApiResponse(responseCode = "403", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {MessageResponseDTO.class, CustomAuthenticationEntryResponseDTO.class, CustomAccessDeniedHandlerResponseDTO.class}),
                     examples = {
                             @ExampleObject(name = "Creator User Not Course Owner", description = "Error returned because the creator user tried to update a specific content of a course that is not theirs", value = "{\"message\": \"Task not allowed\", \"status\": 403}"),
@@ -321,7 +332,10 @@ public class CoursesController {
                     }))
     })
     @SecurityRequirement(name = "jwt_auth")
-    public ResponseEntity<Object> updateCourseContentVideo(@PathVariable String courseContentId, @RequestPart("videoFile") MultipartFile videoFile) {
+    public ResponseEntity<Object> updateCourseContentVideo(@PathVariable String courseContentId, @RequestPart(value = "videoFile", required = false) MultipartFile videoFile) {
+        if (videoFile == null || videoFile.isEmpty())
+            return ResponseEntity.badRequest().body(new MessageResponseDTO("Video file is required", HttpStatus.BAD_REQUEST.value()));
+
         this.coursesContentsService.uploadCourseContentVideo(courseContentId, videoFile);
 
         return ResponseEntity.ok()
@@ -397,7 +411,7 @@ public class CoursesController {
     }
 
     @GetMapping("/{courseId}/contents/creator-owned")
-    @Operation(summary = "Fetch all content of a specific course created by the creator user", description = "This route is responsible for allowing a creator user to fetch all content of a specific course created by them")
+    @Operation(summary = "Fetch all contents of a specific course created by the creator user", description = "This route is responsible for allowing a creator user to fetch all contents of a specific course created by them")
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = CourseContentResponseDTO.class)))),
             @ApiResponse(responseCode = "403", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {MessageResponseDTO.class, CustomAuthenticationEntryResponseDTO.class, CustomAccessDeniedHandlerResponseDTO.class}),
@@ -417,7 +431,7 @@ public class CoursesController {
     }
 
     @GetMapping("/{courseId}/contents/subscribed")
-    @Operation(summary = "Fetch all published content of a specific course for a subscribed user", description = "This route is responsible for allowing a subscribed user to fetch all published content of a specific course")
+    @Operation(summary = "Fetch all published contents of a specific course for a subscribed user", description = "This route is responsible for allowing a subscribed user to fetch all published contents of a specific course")
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = CourseContentResponseDTO.class)))),
             @ApiResponse(responseCode = "403", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomAuthenticationEntryResponseDTO.class),
@@ -430,7 +444,7 @@ public class CoursesController {
                     }))
     })
     @SecurityRequirement(name = "jwt_auth")
-    public List<CourseContentResponseDTO> getPublishedCourseContentsForSubscribedUser(@PathVariable String courseId) {
-        return this.coursesContentsService.getPublishedCourseContentsForSubscribedUser(courseId);
+    public List<CourseContentResponseDTO> getPublishedContentsForSubscribedUser(@PathVariable String courseId) {
+        return this.coursesContentsService.getPublishedContentsForSubscribedUser(courseId);
     }
 }

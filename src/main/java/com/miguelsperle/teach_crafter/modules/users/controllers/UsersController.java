@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 @RestController
 @RequestMapping("/users")
@@ -41,12 +42,10 @@ public class UsersController {
                     })),
             @ApiResponse(responseCode = "400", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponseDTO.class),
                     examples = {
-                            @ExampleObject(name = "Missing Username", description = "Error returned because the username is missing in the request", value = "{\"message\": \"Username is required to create an account\", \"status\": 400}"),
                             @ExampleObject(name = "Missing Role", description = "Error returned because the role is missing in the request", value = "{\"message\": \"Role is required to create an account\", \"status\": 400}"),
                             @ExampleObject(name = "Missing Name", description = "Error returned because the name is missing in the request", value = "{\"message\": \"Name is required to create an account\", \"status\": 400}"),
                             @ExampleObject(name = "Missing Email", description = "Error returned because the email is missing in the request", value = "{\"message\": \"Email is required to create an account\", \"status\": 400}"),
-                            @ExampleObject(name = "Missing Password", description = "Error returned because the password is missing in the request", value = "{\"message\": \"Password is required to create an account\", \"status\": 400}"),
-                            @ExampleObject(name = "Invalid Username", description = "Error returned because the username does not contain a valid value", value = "{\"message\": \"The field [username] must not contain space\", \"status\": 400}"),
+                            @ExampleObject(name = "Invalid Username", description = "Error returned because the username does not contain a valid value", value = "{\"message\": \"The field [username] is required and must not contain space\", \"status\": 400}"),
                             @ExampleObject(name = "Invalid Email", description = "Error returned because the email does not contain a valid value", value = "{\"message\": \"The field [email] must contain a valid email\", \"status\": 400}"),
                             @ExampleObject(name = "Invalid Password", description = "Error returned because the password does not contain between 5 and 100 character", value = "{\"message\": \"Password must has between 5 and 100 character\", \"status\": 400}")
                     })),
@@ -100,9 +99,8 @@ public class UsersController {
                     })),
             @ApiResponse(responseCode = "400", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponseDTO.class),
                     examples = {
-                            @ExampleObject(name = "Missing New Username", description = "Error returned because the new username is missing in the request", value = "{\"message\": \"A new username is required to update your current username\", \"status\": 400}"),
                             @ExampleObject(name = "Missing Current Password", description = "Error returned because the current password is missing in the request", value = "{\"message\": \"Your current password is required to update your username\", \"status\": 400}"),
-                            @ExampleObject(name = "Invalid New Username", description = "Error returned because the new username does not contain a valid value", value = "{\"message\": \"The field [newUsername] must not contain space\", \"status\": 400}")
+                            @ExampleObject(name = "Invalid New Username", description = "Error returned because the new username does not contain a valid value", value = "{\"message\": \"The field [newUsername] is required and must not contain space\", \"status\": 400}")
                     })),
             @ApiResponse(responseCode = "401", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponseDTO.class),
                     examples = {
@@ -172,10 +170,9 @@ public class UsersController {
                     })),
             @ApiResponse(responseCode = "400", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponseDTO.class),
                     examples = {
-                            @ExampleObject(name = "Missing New Password", description = "Error returned because the new password is missing in the request", value = "{\"message\": \"A new password is required to update your current password\", \"status\": 400}"),
                             @ExampleObject(name = "Missing Current Password", description = "Error returned because the current password is missing in the request", value = "{\"message\": \"Your current password is required to update your password\", \"status\": 400}"),
                             @ExampleObject(name = "Invalid New Password", description = "Error returned because the new password does not contain between 5 and 100 character", value = "{\"message\": \"Password must has between 5 and 100 character\", \"status\": 400}")
-            })),
+                    })),
             @ApiResponse(responseCode = "401", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponseDTO.class),
                     examples = {
                             @ExampleObject(name = "Incorrect Current Password", description = "Error returned because the user provided the incorrect current password to update their password", value = "{\"message\": \"Incorrect current password\", \"status\": 401}"),
@@ -202,13 +199,20 @@ public class UsersController {
                     examples = {
                             @ExampleObject(value = "{\"message\": \"Image updated successfully\", \"status\": 200}")
                     })),
+            @ApiResponse(responseCode = "400", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponseDTO.class),
+                    examples = {
+                            @ExampleObject(name = "Missing Image File", description = "Error returned because image file is missing in the request", value = "{\"message\": \"Image file is required\", \"status\": 400}")
+                    })),
             @ApiResponse(responseCode = "403", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomAuthenticationEntryResponseDTO.class),
                     examples = {
                             @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}")
                     })),
     })
     @SecurityRequirement(name = "jwt_auth")
-    public ResponseEntity<Object> updateUserImage(@RequestPart("imageFile") MultipartFile imageFile) {
+    public ResponseEntity<Object> updateUserImage(@RequestPart(value = "imageFile", required = false) MultipartFile imageFile) {
+        if (imageFile == null || imageFile.isEmpty())
+            return ResponseEntity.badRequest().body(new MessageResponseDTO("Image file is required", HttpStatus.BAD_REQUEST.value()));
+
         this.usersService.updateUserImage(imageFile);
 
         return ResponseEntity.ok()
