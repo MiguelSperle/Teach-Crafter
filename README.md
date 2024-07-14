@@ -17,7 +17,7 @@
     <b>
         Summarizing, The Teach Crafter is a back-end application designed to manage online courses efficiently.
         It provides features for creating and managing courses, user enrollment, handling user authentication, a cron job that runs periodically, 
-        and more. The system has been equipped with unit testing to ensure the reliability and performance of its features and
+        and more. The system has been equipped with unit testing and integration testing to ensure the reliability and performance of its features and
         supports integration with front-end interfaces.
     </b>
 </p>
