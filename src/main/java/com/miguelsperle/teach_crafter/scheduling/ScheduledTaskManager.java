@@ -23,17 +23,17 @@ public class ScheduledTaskManager {
     public void changePendingContentToPublished() {
         List<CoursesContentsEntity> pendingCoursesContents = this.coursesContentsService.getAllCoursesContentsByPendingStatus(PENDING_STATUS);
 
-        List<CoursesContentsEntity> publishedCoursesContentsToSave = new ArrayList<>();
+        List<CoursesContentsEntity> editedContentsToSave = new ArrayList<>();
 
         for (CoursesContentsEntity courseContent : pendingCoursesContents) {
             if (this.isCourseContentPublishable(courseContent)) {
                 courseContent.setStatus(PUBLISHED_STATUS);
-                publishedCoursesContentsToSave.add(courseContent);
+                editedContentsToSave.add(courseContent);
             }
         }
 
-        if (!publishedCoursesContentsToSave.isEmpty()) {
-            this.coursesContentsService.saveAllCoursesContents(publishedCoursesContentsToSave);
+        if (!editedContentsToSave.isEmpty()) {
+            this.coursesContentsService.saveAllCoursesContents(editedContentsToSave);
         }
     }
 
