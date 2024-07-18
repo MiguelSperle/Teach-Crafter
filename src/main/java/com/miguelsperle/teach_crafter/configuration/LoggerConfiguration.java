@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration // Essa anotação indica que a classe contém métodos que podem ser usados para definir beans do Spring
+@Configuration // As classes que contém essa anotação, elas definem e configuram os beans e são gerencidas automaticamente pelo spring
 public class LoggerConfiguration {
     @Bean
     public Logger logger() { // Sempre que o Spring precisar de um Logger, ele chamará esse método para obter uma instância
