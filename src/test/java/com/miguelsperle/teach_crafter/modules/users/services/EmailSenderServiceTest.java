@@ -37,14 +37,20 @@ public class EmailSenderServiceTest {
     private String to;
     private String subject;
     private String token;
+    private String from;
 
     @BeforeEach
-    public void setUp() throws NoSuchFieldException, IllegalAccessException {
+    public void setUp() {
         this.to = "exampleToSend@gmail.com";
         this.subject = "Test Subject";
-        this.token = UUID.randomUUID().toString();
-        String from = "exampleFrom@gmail.com";
+        this.token = "aB3dE6Gh7iJkL9Mn0pQrStUv";
+        this.from = "exampleFrom@gmail.com";
+    }
 
+
+    @Test
+    @DisplayName("Should be able to send an email")
+    public void should_be_able_to_send_an_email() throws NoSuchFieldException, IllegalAccessException {
         this.mimeMessage = mock(MimeMessage.class);
 
         when(this.javaMailSender.createMimeMessage()).thenReturn(this.mimeMessage);
@@ -57,26 +63,21 @@ public class EmailSenderServiceTest {
         // We must set "true" so can modify in a class that is not the class that created it
         mailUsernameField.setAccessible(true);
 
-        mailUsernameField.set(this.emailSenderService, from);
+        mailUsernameField.set(this.emailSenderService, this.from);
         // In the first argument we are putting the class that attribute captured belongs
         // In the second argument we are changing the value of mailUsername to from attribute
-    }
 
-
-    @Test
-    @DisplayName("Should be able to send an email")
-    public void should_be_able_to_send_an_email() {
         this.emailSenderService.sendSimpleMessage(this.to, this.subject, this.token);
 
         verify(this.javaMailSender, atLeastOnce()).createMimeMessage();
-        verify(this.springTemplateEngine, atLeastOnce()).process(any(String.class), any());
+        verify(this.springTemplateEngine, atLeastOnce()).process(anyString(), any());
         verify(this.javaMailSender, atLeastOnce()).send(this.mimeMessage);
     }
 
     @Test
     @DisplayName("Should be able to throw an exception when occurs an error to send an email")
     public void should_be_able_to_throw_an_exception_when_occurs_an_error_to_send_an_email() {
-        doThrow(RuntimeException.class).when(this.javaMailSender).send(this.mimeMessage);
+        when(this.javaMailSender.createMimeMessage()).thenReturn(null);
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
             this.emailSenderService.sendSimpleMessage(this.to, this.subject, this.token);

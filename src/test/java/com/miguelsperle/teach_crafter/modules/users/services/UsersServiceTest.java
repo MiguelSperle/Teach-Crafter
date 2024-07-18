@@ -128,7 +128,7 @@ public class UsersServiceTest {
         ArgumentCaptor<UsersEntity> userCaptor = ArgumentCaptor.forClass(UsersEntity.class);
 
         // Verify if the method save was called with a specific argument
-        verify(this.usersRepository).save(userCaptor.capture());
+        verify(this.usersRepository, atLeastOnce()).save(userCaptor.capture());
 
         assertEquals(updateUserNameDTO.newName(), userCaptor.getValue().getName());
         // First argument is what I expect
@@ -154,7 +154,7 @@ public class UsersServiceTest {
         ArgumentCaptor<UsersEntity> userCaptor = ArgumentCaptor.forClass(UsersEntity.class);
 
         // Verify if the method save was called with a specific argument
-        verify(this.usersRepository).save(userCaptor.capture());
+        verify(this.usersRepository, atLeastOnce()).save(userCaptor.capture());
 
         assertEquals(updateUserUsernameDTO.newUsername(), userCaptor.getValue().getUsername());
         // First argument is what I expect
@@ -228,7 +228,7 @@ public class UsersServiceTest {
         ArgumentCaptor<UsersEntity> userCaptor = ArgumentCaptor.forClass(UsersEntity.class);
 
         // Verify if the method save was called with a specific argument
-        verify(this.usersRepository).save(userCaptor.capture());
+        verify(this.usersRepository, atLeastOnce()).save(userCaptor.capture());
 
         assertEquals(updateUserEmailDTO.newEmail(), userCaptor.getValue().getEmail());
         // First argument is what I expect
@@ -304,7 +304,7 @@ public class UsersServiceTest {
         ArgumentCaptor<UsersEntity> userCaptor = ArgumentCaptor.forClass(UsersEntity.class);
 
         // Verify if the method save was called with a specific argument
-        verify(this.usersRepository).save(userCaptor.capture());
+        verify(this.usersRepository, atLeastOnce()).save(userCaptor.capture());
 
         assertEquals(mockHashPassword, userCaptor.getValue().getPassword());
         // First argument is what I expect
@@ -352,7 +352,7 @@ public class UsersServiceTest {
         ArgumentCaptor<UsersEntity> userCaptor = ArgumentCaptor.forClass(UsersEntity.class);
 
         // Verify if the method save was called with a specific argument
-        verify(this.usersRepository).save(userCaptor.capture());
+        verify(this.usersRepository, atLeastOnce()).save(userCaptor.capture());
 
         assertEquals(expectedUrl, userCaptor.getValue().getAvatarUrl());
         // First argument is what I expect

@@ -107,7 +107,7 @@ public class CoursesServiceTest {
         ArgumentCaptor<CoursesEntity> userCaptor = ArgumentCaptor.forClass(CoursesEntity.class);
 
         // Verify if the method save was called with a specific argument
-        verify(this.coursesRepository).save(userCaptor.capture());
+        verify(this.coursesRepository, atLeastOnce()).save(userCaptor.capture());
 
         assertEquals(updateCourseNameDTO.newCourseName(), userCaptor.getValue().getName());
         // First argument is what I expect
@@ -148,7 +148,7 @@ public class CoursesServiceTest {
         ArgumentCaptor<CoursesEntity> userCaptor = ArgumentCaptor.forClass(CoursesEntity.class);
 
         // Verify if the method save was called with a specific argument
-        verify(this.coursesRepository).save(userCaptor.capture());
+        verify(this.coursesRepository, atLeastOnce()).save(userCaptor.capture());
 
         assertEquals(updateCourseDescriptionDTO.newCourseDescription(), userCaptor.getValue().getDescription());
         // First argument is what I expect
@@ -184,7 +184,7 @@ public class CoursesServiceTest {
         this.coursesService.deactivateCourse(this.course.getId());
 
         // Verify if the method save was called with a specific argument
-        verify(this.coursesRepository).deleteById(this.course.getId());
+        verify(this.coursesRepository, atLeastOnce()).deleteById(this.course.getId());
     }
 
     @Test

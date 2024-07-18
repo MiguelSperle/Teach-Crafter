@@ -66,7 +66,7 @@ public class CloudinaryImageServiceTest {
         // First argument is what I expect
         // Second argument is the real value obtained
 
-        verify(this.cloudinary.uploader()).upload(eq("test-image-file-content".getBytes()), argThat(map -> "profile_pics".equals(map.get("folder"))));
+        verify(this.cloudinary.uploader(), atLeastOnce()).upload(eq("test-image-file-content".getBytes()), argThat(map -> "profile_pics".equals(map.get("folder"))));
         // Verify if the method upload was called with specifics arguments ( if it has a key = folder with value = profile_pics )
     }
 

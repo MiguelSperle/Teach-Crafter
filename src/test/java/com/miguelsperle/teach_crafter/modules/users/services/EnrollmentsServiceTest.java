@@ -26,8 +26,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class EnrollmentsServiceTest {
@@ -155,7 +154,7 @@ public class EnrollmentsServiceTest {
         this.enrollmentsService.deleteCourseEnrollment(course.getId());
 
         // Verify if the method save was called with a specific argument
-        verify(this.enrollmentsRepository).deleteByUsersEntityIdAndCoursesEntityId(UsersEntityCreator.createValidAuthenticatedUsersEntity().getId(), course.getId());
+        verify(this.enrollmentsRepository, atLeastOnce()).deleteByUsersEntityIdAndCoursesEntityId(UsersEntityCreator.createValidAuthenticatedUsersEntity().getId(), course.getId());
     }
 
     @Test

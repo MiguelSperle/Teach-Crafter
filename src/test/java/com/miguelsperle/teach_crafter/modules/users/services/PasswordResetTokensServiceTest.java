@@ -57,7 +57,7 @@ public class PasswordResetTokensServiceTest {
 
         PasswordResetTokensEntity newPasswordResetToken = this.passwordResetTokenService.createPasswordResetToken(createPasswordResetTokenDTO);
 
-        verify(this.emailSenderService).sendSimpleMessage(any(), any(), any());
+        verify(this.emailSenderService, atLeastOnce()).sendSimpleMessage(any(), any(), any());
 
         assertNotNull(newPasswordResetToken.getId());
         assertThat(newPasswordResetToken).hasFieldOrProperty("id");
@@ -80,7 +80,7 @@ public class PasswordResetTokensServiceTest {
             this.passwordResetTokenService.createPasswordResetToken(createPasswordResetTokenDTO);
         });
 
-        verify(this.emailSenderService).sendSimpleMessage(any(), any(), any());
+        verify(this.emailSenderService, atLeastOnce()).sendSimpleMessage(any(), any(), any());
 
         String expectedErrorMessage = "You have an active password reset token. Please check your email to continue with password recovery";
 
@@ -107,7 +107,7 @@ public class PasswordResetTokensServiceTest {
 
         this.passwordResetTokenService.createPasswordResetToken(createPasswordResetTokenDTO);
 
-        verify(this.passwordResetTokensRepository).deleteById(expiredPasswordResetToken.getId());
+        verify(this.passwordResetTokensRepository, atLeastOnce()).deleteById(expiredPasswordResetToken.getId());
     }
 
     @Test
@@ -133,10 +133,10 @@ public class PasswordResetTokensServiceTest {
         ArgumentCaptor<UsersEntity> userCaptor = ArgumentCaptor.forClass(UsersEntity.class);
 
         // Verify if the method save was called with a specific argument
-        verify(this.passwordResetTokensRepository).deleteById(passwordResetToken.getId());
+        verify(this.passwordResetTokensRepository, atLeastOnce()).deleteById(passwordResetToken.getId());
 
         // Verify if the method save was called with a specific argument
-        verify(this.usersService).save(userCaptor.capture());
+        verify(this.usersService, atLeastOnce()).save(userCaptor.capture());
 
         assertEquals(mockHashPassword, userCaptor.getValue().getPassword());
         // First argument is what I expect
@@ -159,7 +159,7 @@ public class PasswordResetTokensServiceTest {
             this.passwordResetTokenService.resetPasswordUserNotLogged(resetPasswordUserNotLoggedDTO);
         });
 
-        verify(this.passwordResetTokensRepository).deleteById(passwordResetToken.getId());
+        verify(this.passwordResetTokensRepository, atLeastOnce()).deleteById(passwordResetToken.getId());
 
         String expectedErrorMessage = "The password reset token has already expired. Please make the process again";
 

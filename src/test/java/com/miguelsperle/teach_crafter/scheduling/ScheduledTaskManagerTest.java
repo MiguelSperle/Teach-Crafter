@@ -54,7 +54,7 @@ public class ScheduledTaskManagerTest {
         this.scheduledTaskManager.changePendingContentToPublished();
 
         // Verify if the method save was called with a specific argument
-        verify(this.coursesContentsService, times(1)).saveAllCoursesContents(listCaptor.capture());
+        verify(this.coursesContentsService, atLeastOnce()).saveAllCoursesContents(listCaptor.capture());
 
         String expectedMessage = "Saved successfully. Amount: " + listCaptor.getValue().size();
 

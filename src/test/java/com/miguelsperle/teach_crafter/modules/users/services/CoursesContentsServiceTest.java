@@ -28,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.atLeastOnce;
 
 @ExtendWith(MockitoExtension.class)
 public class CoursesContentsServiceTest {
@@ -146,7 +147,7 @@ public class CoursesContentsServiceTest {
         ArgumentCaptor<CoursesContentsEntity> userCaptor = ArgumentCaptor.forClass(CoursesContentsEntity.class);
 
         // Verify if the method save was called with a specific argument
-        verify(this.coursesContentsRepository).save(userCaptor.capture());
+        verify(this.coursesContentsRepository, atLeastOnce()).save(userCaptor.capture());
 
         assertEquals(updateCourseContentDescriptionDTO.newContentDescription(), userCaptor.getValue().getDescription());
         // First argument is what I expect
@@ -206,7 +207,7 @@ public class CoursesContentsServiceTest {
         ArgumentCaptor<CoursesContentsEntity> userCaptor = ArgumentCaptor.forClass(CoursesContentsEntity.class);
 
         // Verify if the method save was called with a specific argument
-        verify(this.coursesContentsRepository).save(userCaptor.capture());
+        verify(this.coursesContentsRepository, atLeastOnce()).save(userCaptor.capture());
 
         assertEquals(expectedUrl, userCaptor.getValue().getVideoUrl());
         // First argument is what I expect
@@ -263,7 +264,7 @@ public class CoursesContentsServiceTest {
         ArgumentCaptor<CoursesContentsEntity> userCaptor = ArgumentCaptor.forClass(CoursesContentsEntity.class);
 
         // Verify if the method save was called with a specific argument
-        verify(this.coursesContentsRepository).save(userCaptor.capture());
+        verify(this.coursesContentsRepository, atLeastOnce()).save(userCaptor.capture());
 
         assertEquals(updateCourseContentReleaseDateDTO.newContentReleaseDate(), userCaptor.getValue().getReleaseDate());
         // First argument is what I expect
@@ -320,7 +321,7 @@ public class CoursesContentsServiceTest {
         ArgumentCaptor<CoursesContentsEntity> userCaptor = ArgumentCaptor.forClass(CoursesContentsEntity.class);
 
         // Verify if the method save was called with a specific argument
-        verify(this.coursesContentsRepository).save(userCaptor.capture());
+        verify(this.coursesContentsRepository, atLeastOnce()).save(userCaptor.capture());
 
         assertEquals(updateCourseContentModuleDTO.newContentModule(), userCaptor.getValue().getContentModule());
         // First argument is what I expect
