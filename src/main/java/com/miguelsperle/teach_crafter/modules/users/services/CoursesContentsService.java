@@ -6,6 +6,7 @@ import com.miguelsperle.teach_crafter.modules.users.entities.courses.CoursesEnti
 import com.miguelsperle.teach_crafter.modules.users.entities.coursesContents.CoursesContentsEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.coursesContents.exceptions.CourseContentNotFoundException;
 import com.miguelsperle.teach_crafter.modules.users.entities.coursesContents.exceptions.InvalidReleaseDateException;
+import com.miguelsperle.teach_crafter.modules.users.entities.enrollments.exceptions.EnrollmentNotFoundException;
 import com.miguelsperle.teach_crafter.modules.users.entities.users.UsersEntity;
 import com.miguelsperle.teach_crafter.modules.users.repositories.CoursesContentsRepository;
 import org.springframework.stereotype.Service;
@@ -142,10 +143,14 @@ public class CoursesContentsService {
         return this.coursesContentsRepository.findAllByCoursesEntityId(courseId);
     }
 
+    public void ensureUserIsSubscribed(String userId, String courseId) {
+        this.enrollmentsService.getEnrollmentByUserIdAndCourseId(userId, courseId).orElseThrow(() -> new EnrollmentNotFoundException("Enrollment does not exist"));
+    }
+
     public List<CourseContentResponseDTO> getPublishedContentsForSubscribedUser(String courseId) {
         UsersEntity user = this.usersService.getAuthenticatedUser();
 
-        this.enrollmentsService.ensureUserIsSubscribed(user.getId(), courseId);
+        this.ensureUserIsSubscribed(user.getId(), courseId);
 
         return this.getAllPublishedContentsByCourseIdAndStatus(courseId).stream().map(coursesContentsEntity ->
                 new CourseContentResponseDTO(

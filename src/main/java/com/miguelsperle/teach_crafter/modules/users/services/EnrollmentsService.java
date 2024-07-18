@@ -79,7 +79,7 @@ public class EnrollmentsService {
             throw new EnrollmentAlreadyExistsException("You have already subscribed in this course");
     }
 
-    private Optional<EnrollmentsEntity> getEnrollmentByUserIdAndCourseId(String userId, String courseId) {
+    public Optional<EnrollmentsEntity> getEnrollmentByUserIdAndCourseId(String userId, String courseId) {
         return this.enrollmentsRepository.findByUsersEntityIdAndCoursesEntityId(userId, courseId);
     }
 

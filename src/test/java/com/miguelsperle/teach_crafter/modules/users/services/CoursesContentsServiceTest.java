@@ -5,10 +5,12 @@ import com.miguelsperle.teach_crafter.modules.users.dtos.coursesContents.*;
 import com.miguelsperle.teach_crafter.modules.users.entities.courses.CoursesEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.coursesContents.CoursesContentsEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.coursesContents.exceptions.InvalidReleaseDateException;
+import com.miguelsperle.teach_crafter.modules.users.entities.enrollments.EnrollmentsEntity;
 import com.miguelsperle.teach_crafter.modules.users.entities.enrollments.exceptions.EnrollmentNotFoundException;
 import com.miguelsperle.teach_crafter.modules.users.repositories.CoursesContentsRepository;
 import com.miguelsperle.teach_crafter.utils.unit.mocks.CoursesContentsEntityCreator;
 import com.miguelsperle.teach_crafter.utils.unit.mocks.CoursesEntityCreator;
+import com.miguelsperle.teach_crafter.utils.unit.mocks.EnrollmentsEntityCreator;
 import com.miguelsperle.teach_crafter.utils.unit.mocks.UsersEntityCreator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -419,7 +421,11 @@ public class CoursesContentsServiceTest {
         courseContent.setReleaseDate(LocalDate.now());
         courseContent.setCoursesEntity(course);
 
-        doNothing().when(this.enrollmentsService).ensureUserIsSubscribed(any(), any());
+        EnrollmentsEntity enrollment = EnrollmentsEntityCreator.createValidEnrollmentsEntity();
+        enrollment.setUsersEntity(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+        enrollment.setCoursesEntity(course);
+
+        when(this.enrollmentsService.getEnrollmentByUserIdAndCourseId(any(), any())).thenReturn(Optional.of(enrollment));
 
         when(this.coursesContentsRepository.findAllByCoursesEntityIdAndStatus(any(), any())).thenReturn(List.of(courseContent));
 
@@ -441,8 +447,7 @@ public class CoursesContentsServiceTest {
     public void should_not_be_able_to_return_all_published_contents_of_a_specific_course_if_the_user_is_not_subscribed_in_the_course() {
         when(this.usersService.getAuthenticatedUser()).thenReturn(UsersEntityCreator.createValidAuthenticatedUsersEntity());
 
-        doThrow(new EnrollmentNotFoundException("Enrollment does not exist"))
-                .when(this.enrollmentsService).ensureUserIsSubscribed(any(), any());
+        when(this.enrollmentsService.getEnrollmentByUserIdAndCourseId(any(), any())).thenReturn(Optional.empty());
 
         CoursesEntity course = CoursesEntityCreator.createValidCoursesEntity();
         course.setUsersEntity(UsersEntityCreator.createSecondValidUsersEntity());
