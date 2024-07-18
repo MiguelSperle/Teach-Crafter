@@ -85,8 +85,8 @@ public class CloudinaryVideoServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw an exception when a byte retrieval error occurs during video upload")
-    public void should_throw_an_exception_when_a_byte_retrieval_error_occurs_during_video_upload() throws IOException {
+    @DisplayName("Should be able to throw an exception when a byte retrieval error occurs during video upload")
+    public void should_be_able_to_throw_an_exception_when_a_byte_retrieval_error_occurs_during_video_upload() throws IOException {
         when(this.mockFile.getBytes()).thenThrow(IOException.class);
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {

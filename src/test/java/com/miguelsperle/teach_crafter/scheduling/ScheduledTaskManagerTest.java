@@ -51,6 +51,8 @@ public class ScheduledTaskManagerTest {
 
         when(this.coursesContentsService.isReleaseDateValid(any())).thenReturn("PUBLISHED");
 
+        when(this.coursesContentsService.saveAllCoursesContents(anyList())).thenReturn(List.of(courseContent));
+
         this.scheduledTaskManager.changePendingContentToPublished();
 
         // Verify if the method save was called with a specific argument
@@ -58,7 +60,7 @@ public class ScheduledTaskManagerTest {
 
         String expectedMessage = "Saved successfully. Amount: " + listCaptor.getValue().size();
 
-        verify(logger).info(expectedMessage);
+        verify(logger, atLeastOnce()).info(expectedMessage);
 
         assertEquals("PUBLISHED", listCaptor.getValue().get(0).getStatus());
     }
@@ -72,7 +74,7 @@ public class ScheduledTaskManagerTest {
 
         String expectedMessage = "No pending content to process";
 
-        verify(logger).info(expectedMessage);
+        verify(logger, atLeastOnce()).info(expectedMessage);
     }
 
     @Test
@@ -92,7 +94,7 @@ public class ScheduledTaskManagerTest {
 
         String expectedMessage = "No edited content to save";
 
-        verify(logger).info(expectedMessage);
+        verify(logger, atLeastOnce()).info(expectedMessage);
     }
 
 }

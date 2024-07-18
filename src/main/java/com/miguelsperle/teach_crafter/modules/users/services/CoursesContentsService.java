@@ -168,8 +168,8 @@ public class CoursesContentsService {
         return this.coursesContentsRepository.findAllByCoursesEntityIdAndStatus(courseId, "PUBLISHED");
     }
 
-    public void saveAllCoursesContents(List<CoursesContentsEntity> coursesContents) {
-        this.coursesContentsRepository.saveAll(coursesContents);
+    public List<CoursesContentsEntity> saveAllCoursesContents(List<CoursesContentsEntity> coursesContents) {
+        return this.coursesContentsRepository.saveAll(coursesContents);
     }
 
     public List<CoursesContentsEntity> getAllCoursesContentsByPendingStatus(String pendingStatus) {

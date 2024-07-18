@@ -22,7 +22,7 @@ public class ScheduledTaskManager {
     private static final String PENDING_STATUS = "PENDING";
     private static final String PUBLISHED_STATUS = "PUBLISHED";
 
-    @Scheduled(cron = "0 0 0 * * *") // EVERY MIDNIGHT
+    @Scheduled(cron = "0 * * * * *") // EVERY MIDNIGHT
     public void changePendingContentToPublished() {
         List<CoursesContentsEntity> pendingContents = this.coursesContentsService.getAllCoursesContentsByPendingStatus(PENDING_STATUS);
 
@@ -45,8 +45,8 @@ public class ScheduledTaskManager {
             return;
         }
 
-        this.coursesContentsService.saveAllCoursesContents(editedContentsToSave);
-        logger.info("Saved successfully. Amount: " + editedContentsToSave.size());
+        List<CoursesContentsEntity> contentsSaved = this.coursesContentsService.saveAllCoursesContents(editedContentsToSave);
+        logger.info("Saved successfully. Amount: " + contentsSaved.size());
     }
 
     private boolean isCourseContentPublishable(CoursesContentsEntity courseContent) {

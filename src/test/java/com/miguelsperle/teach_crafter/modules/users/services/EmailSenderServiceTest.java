@@ -13,7 +13,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.lang.reflect.Field;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,10 +29,6 @@ public class EmailSenderServiceTest {
     @Mock
     private SpringTemplateEngine springTemplateEngine;
 
-    @Value("${spring.mail.username}")
-    private String mailUsername;
-
-    private MimeMessage mimeMessage;
     private String to;
     private String subject;
     private String token;
@@ -51,9 +46,9 @@ public class EmailSenderServiceTest {
     @Test
     @DisplayName("Should be able to send an email")
     public void should_be_able_to_send_an_email() throws NoSuchFieldException, IllegalAccessException {
-        this.mimeMessage = mock(MimeMessage.class);
+        MimeMessage mimeMessage = mock(MimeMessage.class);
 
-        when(this.javaMailSender.createMimeMessage()).thenReturn(this.mimeMessage);
+        when(this.javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
 
         when(this.springTemplateEngine.process(any(String.class), any())).thenReturn("<html>Mocked Template</html>");
 
@@ -71,7 +66,7 @@ public class EmailSenderServiceTest {
 
         verify(this.javaMailSender, atLeastOnce()).createMimeMessage();
         verify(this.springTemplateEngine, atLeastOnce()).process(anyString(), any());
-        verify(this.javaMailSender, atLeastOnce()).send(this.mimeMessage);
+        verify(this.javaMailSender, atLeastOnce()).send(mimeMessage);
     }
 
     @Test
