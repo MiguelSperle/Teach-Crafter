@@ -19,7 +19,8 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
-        CustomAccessDeniedHandlerResponseDTO accessDeniedResponseDTO = new CustomAccessDeniedHandlerResponseDTO(RESOURCE_ACCESS_RESTRICTED_MESSAGE, HttpStatus.FORBIDDEN.value());
+        CustomAccessDeniedHandlerResponseDTO accessDeniedResponseDTO =
+                new CustomAccessDeniedHandlerResponseDTO(RESOURCE_ACCESS_RESTRICTED_MESSAGE, HttpStatus.FORBIDDEN.value());
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);

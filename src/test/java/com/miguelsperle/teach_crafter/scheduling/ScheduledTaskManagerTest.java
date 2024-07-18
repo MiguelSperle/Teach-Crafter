@@ -15,7 +15,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
 import java.util.List;
+
+import org.slf4j.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,6 +31,9 @@ public class ScheduledTaskManagerTest {
 
     @Mock
     private CoursesContentsService coursesContentsService;
+
+    @Mock
+    private Logger logger;
 
     @Captor
     private ArgumentCaptor<List<CoursesContentsEntity>> listCaptor;
@@ -50,6 +56,43 @@ public class ScheduledTaskManagerTest {
         // Verify if the method save was called with a specific argument
         verify(this.coursesContentsService, times(1)).saveAllCoursesContents(listCaptor.capture());
 
+        String expectedMessage = "Saved successfully. Amount: " + listCaptor.getValue().size();
+
+        verify(logger).info(expectedMessage);
+
         assertEquals("PUBLISHED", listCaptor.getValue().get(0).getStatus());
     }
+
+    @Test
+    @DisplayName("Should be able to log a message if no pending content found")
+    public void should_be_able_to_log_a_message_if_no_pending_content_found() {
+        when(this.coursesContentsService.getAllCoursesContentsByPendingStatus(any())).thenReturn(Collections.emptyList());
+
+        this.scheduledTaskManager.changePendingContentToPublished();
+
+        String expectedMessage = "No pending content to process";
+
+        verify(logger).info(expectedMessage);
+    }
+
+    @Test
+    @DisplayName("Should be able to log a message if no edited content to save")
+    public void should_be_able_to_log_a_message_if_no_edited_content_to_save() {
+        CoursesEntity course = CoursesEntityCreator.createValidCoursesEntity();
+        course.setUsersEntity(UsersEntityCreator.createValidAuthenticatedUsersEntity());
+
+        CoursesContentsEntity courseContent = CoursesContentsEntityCreator.createValidCoursesContentsEntity();
+        courseContent.setCoursesEntity(course);
+
+        when(this.coursesContentsService.getAllCoursesContentsByPendingStatus(any())).thenReturn(List.of(courseContent));
+
+        when(this.coursesContentsService.isReleaseDateValid(any())).thenReturn("PENDING");
+
+        this.scheduledTaskManager.changePendingContentToPublished();
+
+        String expectedMessage = "No edited content to save";
+
+        verify(logger).info(expectedMessage);
+    }
+
 }

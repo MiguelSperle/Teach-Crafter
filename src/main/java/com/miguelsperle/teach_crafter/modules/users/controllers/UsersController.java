@@ -77,7 +77,9 @@ public class UsersController {
                     })),
             @ApiResponse(responseCode = "403", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomAuthenticationEntryResponseDTO.class),
                     examples = {
-                            @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}")
+                            @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}"),
+                            @ExampleObject(name = "Invalid Authorization Token", description = "Error returned because authorization token is invalid", value = "{\"message\": \"Invalid authorization token\", \"status\": 403}"),
+                            @ExampleObject(name = "Failure During Authentication", description = "Error returned because a failure occurred during authentication", value = "{\"message\": \"Authentication failed\", \"status\": 403}")
                     })),
     })
     @SecurityRequirement(name = "jwt_auth")
@@ -108,7 +110,9 @@ public class UsersController {
                     })),
             @ApiResponse(responseCode = "403", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomAuthenticationEntryResponseDTO.class),
                     examples = {
-                            @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}")
+                            @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}"),
+                            @ExampleObject(name = "Invalid Authorization Token", description = "Error returned because authorization token is invalid", value = "{\"message\": \"Invalid authorization token\", \"status\": 403}"),
+                            @ExampleObject(name = "Failure During Authentication", description = "Error returned because a failure occurred during authentication", value = "{\"message\": \"Authentication failed\", \"status\": 403}")
                     })),
             @ApiResponse(responseCode = "409", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponseDTO.class),
                     examples = {
@@ -144,7 +148,9 @@ public class UsersController {
                     })),
             @ApiResponse(responseCode = "403", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomAuthenticationEntryResponseDTO.class),
                     examples = {
-                            @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}")
+                            @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}"),
+                            @ExampleObject(name = "Invalid Authorization Token", description = "Error returned because authorization token is invalid", value = "{\"message\": \"Invalid authorization token\", \"status\": 403}"),
+                            @ExampleObject(name = "Failure During Authentication", description = "Error returned because a failure occurred during authentication", value = "{\"message\": \"Authentication failed\", \"status\": 403}")
                     })),
             @ApiResponse(responseCode = "409", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponseDTO.class),
                     examples = {
@@ -179,7 +185,9 @@ public class UsersController {
                     })),
             @ApiResponse(responseCode = "403", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomAuthenticationEntryResponseDTO.class),
                     examples = {
-                            @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}")
+                            @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}"),
+                            @ExampleObject(name = "Invalid Authorization Token", description = "Error returned because authorization token is invalid", value = "{\"message\": \"Invalid authorization token\", \"status\": 403}"),
+                            @ExampleObject(name = "Failure During Authentication", description = "Error returned because a failure occurred during authentication", value = "{\"message\": \"Authentication failed\", \"status\": 403}")
                     })),
     })
     @SecurityRequirement(name = "jwt_auth")
@@ -205,7 +213,9 @@ public class UsersController {
                     })),
             @ApiResponse(responseCode = "403", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomAuthenticationEntryResponseDTO.class),
                     examples = {
-                            @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}")
+                            @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}"),
+                            @ExampleObject(name = "Invalid Authorization Token", description = "Error returned because authorization token is invalid", value = "{\"message\": \"Invalid authorization token\", \"status\": 403}"),
+                            @ExampleObject(name = "Failure During Authentication", description = "Error returned because a failure occurred during authentication", value = "{\"message\": \"Authentication failed\", \"status\": 403}")
                     })),
     })
     @SecurityRequirement(name = "jwt_auth")
@@ -225,7 +235,9 @@ public class UsersController {
             @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDTO.class))),
             @ApiResponse(responseCode = "403", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomAuthenticationEntryResponseDTO.class),
                     examples = {
-                            @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}")
+                            @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}"),
+                            @ExampleObject(name = "Invalid Authorization Token", description = "Error returned because authorization token is invalid", value = "{\"message\": \"Invalid authorization token\", \"status\": 403}"),
+                            @ExampleObject(name = "Failure During Authentication", description = "Error returned because a failure occurred during authentication", value = "{\"message\": \"Authentication failed\", \"status\": 403}")
                     })),
     })
     @SecurityRequirement(name = "jwt_auth")

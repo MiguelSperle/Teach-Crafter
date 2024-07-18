@@ -59,6 +59,8 @@ public class CoursesController {
                     examples = {
                             @ExampleObject(name = "Course Creation Limited Reached", description = "Error returned because the creator user has already reached the maximum limit of 5 course creations", value = "{\"message\": \"Task not allowed\", \"status\": 403}"),
                             @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}"),
+                            @ExampleObject(name = "Invalid Authorization Token", description = "Error returned because authorization token is invalid", value = "{\"message\": \"Invalid authorization token\", \"status\": 403}"),
+                            @ExampleObject(name = "Failure During Authentication", description = "Error returned because a failure occurred during authentication", value = "{\"message\": \"Authentication failed\", \"status\": 403}"),
                             @ExampleObject(name = "Creator Role Required", description = "Error returned because the user does not have the 'creator' role required to access this resource", value = "{\"message\": \"Access to this resource is restricted\", \"status\": 403}")
                     })),
     })
@@ -87,6 +89,8 @@ public class CoursesController {
                     examples = {
                             @ExampleObject(name = "Creator User Not Course Owner", description = "Error returned because the creator user tried to update a course that is not theirs", value = "{\"message\": \"Task not allowed\", \"status\": 403}"),
                             @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}"),
+                            @ExampleObject(name = "Invalid Authorization Token", description = "Error returned because authorization token is invalid", value = "{\"message\": \"Invalid authorization token\", \"status\": 403}"),
+                            @ExampleObject(name = "Failure During Authentication", description = "Error returned because a failure occurred during authentication", value = "{\"message\": \"Authentication failed\", \"status\": 403}"),
                             @ExampleObject(name = "Creator Role Required", description = "Error returned because the user does not have the 'creator' role required to access this resource", value = "{\"message\": \"Access to this resource is restricted\", \"status\": 403}")
                     })),
             @ApiResponse(responseCode = "404", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponseDTO.class),
@@ -119,6 +123,8 @@ public class CoursesController {
                     examples = {
                             @ExampleObject(name = "Creator User Not Course Owner", description = "Error returned because the creator user tried to update a course that is not theirs", value = "{\"message\": \"Task not allowed\", \"status\": 403}"),
                             @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}"),
+                            @ExampleObject(name = "Invalid Authorization Token", description = "Error returned because authorization token is invalid", value = "{\"message\": \"Invalid authorization token\", \"status\": 403}"),
+                            @ExampleObject(name = "Failure During Authentication", description = "Error returned because a failure occurred during authentication", value = "{\"message\": \"Authentication failed\", \"status\": 403}"),
                             @ExampleObject(name = "Creator Role Required", description = "Error returned because the user does not have the 'creator' role required to access this resource", value = "{\"message\": \"Access to this resource is restricted\", \"status\": 403}")
                     })),
             @ApiResponse(responseCode = "404", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponseDTO.class),
@@ -143,6 +149,8 @@ public class CoursesController {
             @ApiResponse(responseCode = "403", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {CustomAuthenticationEntryResponseDTO.class, CustomAccessDeniedHandlerResponseDTO.class}),
                     examples = {
                             @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}"),
+                            @ExampleObject(name = "Invalid Authorization Token", description = "Error returned because authorization token is invalid", value = "{\"message\": \"Invalid authorization token\", \"status\": 403}"),
+                            @ExampleObject(name = "Failure During Authentication", description = "Error returned because a failure occurred during authentication", value = "{\"message\": \"Authentication failed\", \"status\": 403}"),
                             @ExampleObject(name = "Creator Role Required", description = "Error returned because the user does not have the 'creator' role required to access this resource", value = "{\"message\": \"Access to this resource is restricted\", \"status\": 403}")
                     })),
     })
@@ -162,6 +170,8 @@ public class CoursesController {
                     examples = {
                             @ExampleObject(name = "Creator User Not Course Owner", description = "Error returned because the creator user tried to deactivate a course that is not theirs", value = "{\"message\": \"Task not allowed\", \"status\": 403}"),
                             @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}"),
+                            @ExampleObject(name = "Invalid Authorization Token", description = "Error returned because authorization token is invalid", value = "{\"message\": \"Invalid authorization token\", \"status\": 403}"),
+                            @ExampleObject(name = "Failure During Authentication", description = "Error returned because a failure occurred during authentication", value = "{\"message\": \"Authentication failed\", \"status\": 403}"),
                             @ExampleObject(name = "Creator Role Required", description = "Error returned because the user does not have the 'creator' role required to access this resource", value = "{\"message\": \"Access to this resource is restricted\", \"status\": 403}")
                     })),
             @ApiResponse(responseCode = "404", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponseDTO.class),
@@ -182,7 +192,9 @@ public class CoursesController {
             @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = CourseResponseDTO.class)))),
             @ApiResponse(responseCode = "403", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomAuthenticationEntryResponseDTO.class),
                     examples = {
-                            @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}")
+                            @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}"),
+                            @ExampleObject(name = "Invalid Authorization Token", description = "Error returned because authorization token is invalid", value = "{\"message\": \"Invalid authorization token\", \"status\": 403}"),
+                            @ExampleObject(name = "Failure During Authentication", description = "Error returned because a failure occurred during authentication", value = "{\"message\": \"Authentication failed\", \"status\": 403}")
                     })),
     })
     @SecurityRequirement(name = "jwt_auth")
@@ -196,7 +208,9 @@ public class CoursesController {
             @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = CoursesSubscribedResponseDTO.class)))),
             @ApiResponse(responseCode = "403", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomAuthenticationEntryResponseDTO.class),
                     examples = {
-                            @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}")
+                            @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}"),
+                            @ExampleObject(name = "Invalid Authorization Token", description = "Error returned because authorization token is invalid", value = "{\"message\": \"Invalid authorization token\", \"status\": 403}"),
+                            @ExampleObject(name = "Failure During Authentication", description = "Error returned because a failure occurred during authentication", value = "{\"message\": \"Authentication failed\", \"status\": 403}")
                     })),
     })
     @SecurityRequirement(name = "jwt_auth")
@@ -224,6 +238,8 @@ public class CoursesController {
                     examples = {
                             @ExampleObject(name = "Creator User Not Course Owner", description = "Error returned because the creator user tried to create a content for a course that is not theirs", value = "{\"message\": \"Task not allowed\", \"status\": 403}"),
                             @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}"),
+                            @ExampleObject(name = "Invalid Authorization Token", description = "Error returned because authorization token is invalid", value = "{\"message\": \"Invalid authorization token\", \"status\": 403}"),
+                            @ExampleObject(name = "Failure During Authentication", description = "Error returned because a failure occurred during authentication", value = "{\"message\": \"Authentication failed\", \"status\": 403}"),
                             @ExampleObject(name = "Creator Role Required", description = "Error returned because the user does not have the 'creator' role required to access this resource", value = "{\"message\": \"Access to this resource is restricted\", \"status\": 403}")
                     })),
             @ApiResponse(responseCode = "404", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponseDTO.class),
@@ -256,6 +272,8 @@ public class CoursesController {
                     examples = {
                             @ExampleObject(name = "Creator User Not Course Owner", description = "Error returned because the creator user tried to upload a video for a specific content of a course that is not theirs", value = "{\"message\": \"Task not allowed\", \"status\": 403}"),
                             @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}"),
+                            @ExampleObject(name = "Invalid Authorization Token", description = "Error returned because authorization token is invalid", value = "{\"message\": \"Invalid authorization token\", \"status\": 403}"),
+                            @ExampleObject(name = "Failure During Authentication", description = "Error returned because a failure occurred during authentication", value = "{\"message\": \"Authentication failed\", \"status\": 403}"),
                             @ExampleObject(name = "Creator Role Required", description = "Error returned because the user does not have the 'creator' role required to access this resource", value = "{\"message\": \"Access to this resource is restricted\", \"status\": 403}")
                     })),
             @ApiResponse(responseCode = "404", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponseDTO.class),
@@ -290,6 +308,8 @@ public class CoursesController {
                     examples = {
                             @ExampleObject(name = "Creator User Not Course Owner", description = "Error returned because the creator user tried to update a specific content of a course that is not theirs", value = "{\"message\": \"Task not allowed\", \"status\": 403}"),
                             @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}"),
+                            @ExampleObject(name = "Invalid Authorization Token", description = "Error returned because authorization token is invalid", value = "{\"message\": \"Invalid authorization token\", \"status\": 403}"),
+                            @ExampleObject(name = "Failure During Authentication", description = "Error returned because a failure occurred during authentication", value = "{\"message\": \"Authentication failed\", \"status\": 403}"),
                             @ExampleObject(name = "Creator Role Required", description = "Error returned because the user does not have the 'creator' role required to access this resource", value = "{\"message\": \"Access to this resource is restricted\", \"status\": 403}")
                     })),
             @ApiResponse(responseCode = "404", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponseDTO.class),
@@ -323,6 +343,8 @@ public class CoursesController {
                     examples = {
                             @ExampleObject(name = "Creator User Not Course Owner", description = "Error returned because the creator user tried to update a specific content of a course that is not theirs", value = "{\"message\": \"Task not allowed\", \"status\": 403}"),
                             @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}"),
+                            @ExampleObject(name = "Invalid Authorization Token", description = "Error returned because authorization token is invalid", value = "{\"message\": \"Invalid authorization token\", \"status\": 403}"),
+                            @ExampleObject(name = "Failure During Authentication", description = "Error returned because a failure occurred during authentication", value = "{\"message\": \"Authentication failed\", \"status\": 403}"),
                             @ExampleObject(name = "Creator Role Required", description = "Error returned because the user does not have the 'creator' role required to access this resource", value = "{\"message\": \"Access to this resource is restricted\", \"status\": 403}")
                     })),
             @ApiResponse(responseCode = "404", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponseDTO.class),
@@ -358,6 +380,8 @@ public class CoursesController {
                     examples = {
                             @ExampleObject(name = "Creator User Not Course Owner", description = "Error returned because the creator user tried to update a specific content of a course that is not theirs", value = "{\"message\": \"Task not allowed\", \"status\": 403}"),
                             @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}"),
+                            @ExampleObject(name = "Invalid Authorization Token", description = "Error returned because authorization token is invalid", value = "{\"message\": \"Invalid authorization token\", \"status\": 403}"),
+                            @ExampleObject(name = "Failure During Authentication", description = "Error returned because a failure occurred during authentication", value = "{\"message\": \"Authentication failed\", \"status\": 403}"),
                             @ExampleObject(name = "Creator Role Required", description = "Error returned because the user does not have the 'creator' role required to access this resource", value = "{\"message\": \"Access to this resource is restricted\", \"status\": 403}")
                     })),
             @ApiResponse(responseCode = "404", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponseDTO.class),
@@ -392,6 +416,8 @@ public class CoursesController {
                     examples = {
                             @ExampleObject(name = "Creator User Not Course Owner", description = "Error returned because the creator user tried to update a specific content of a course that is not theirs", value = "{\"message\": \"Task not allowed\", \"status\": 403}"),
                             @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}"),
+                            @ExampleObject(name = "Invalid Authorization Token", description = "Error returned because authorization token is invalid", value = "{\"message\": \"Invalid authorization token\", \"status\": 403}"),
+                            @ExampleObject(name = "Failure During Authentication", description = "Error returned because a failure occurred during authentication", value = "{\"message\": \"Authentication failed\", \"status\": 403}"),
                             @ExampleObject(name = "Creator Role Required", description = "Error returned because the user does not have the 'creator' role required to access this resource", value = "{\"message\": \"Access to this resource is restricted\", \"status\": 403}")
                     })),
             @ApiResponse(responseCode = "404", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponseDTO.class),
@@ -418,6 +444,8 @@ public class CoursesController {
                     examples = {
                             @ExampleObject(name = "Creator User Not Course Owner", description = "Error returned because the creator user tried to fetch all contents of a specific course that is not theirs", value = "{\"message\": \"Task not allowed\", \"status\": 403}"),
                             @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}"),
+                            @ExampleObject(name = "Invalid Authorization Token", description = "Error returned because authorization token is invalid", value = "{\"message\": \"Invalid authorization token\", \"status\": 403}"),
+                            @ExampleObject(name = "Failure During Authentication", description = "Error returned because a failure occurred during authentication", value = "{\"message\": \"Authentication failed\", \"status\": 403}"),
                             @ExampleObject(name = "Creator Role Required", description = "Error returned because the user does not have the 'creator' role required to access this resource", value = "{\"message\": \"Access to this resource is restricted\", \"status\": 403}")
                     })),
             @ApiResponse(responseCode = "404", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponseDTO.class),
@@ -436,7 +464,9 @@ public class CoursesController {
             @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = CourseContentResponseDTO.class)))),
             @ApiResponse(responseCode = "403", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomAuthenticationEntryResponseDTO.class),
                     examples = {
-                            @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}")
+                            @ExampleObject(name = "Missing Authorization Token", description = "Error returned because authorization token is missing in the request header", value = "{\"message\": \"Authorization token missing in request header\", \"status\": 403}"),
+                            @ExampleObject(name = "Invalid Authorization Token", description = "Error returned because authorization token is invalid", value = "{\"message\": \"Invalid authorization token\", \"status\": 403}"),
+                            @ExampleObject(name = "Failure During Authentication", description = "Error returned because a failure occurred during authentication", value = "{\"message\": \"Authentication failed\", \"status\": 403}")
                     })),
             @ApiResponse(responseCode = "404", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponseDTO.class),
                     examples = {
